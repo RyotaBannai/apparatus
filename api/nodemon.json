@@ -1,0 +1,5 @@
+{
+  "watch": ["src"],
+  "ext": "ts ejs css js graphql json",
+  "exec": "ts-node ./src/server.ts"
+}
