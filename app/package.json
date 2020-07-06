@@ -20,6 +20,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
+    "@types/uuid": "^8.0.0",
     "apollo-boost": "^0.4.9",
     "apollo-link-context": "^1.0.20",
     "bootstrap": "^4.5.0",
@@ -40,7 +41,8 @@
     "redux-observable": "^1.2.0",
     "rxjs": "^6.5.5",
     "typescript": "^3.7.5",
-    "webpack-dev-server": "^3.10.3"
+    "uuid": "^8.2.0",
+    "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
     "start": "react-scripts start",

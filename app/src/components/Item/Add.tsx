@@ -27,53 +27,51 @@ export const Add: React.FC<Props> = ({ title }) => {
   if (error) return <p>Error :(</p>;
   return (
     <div>
-      <div>
-        <h2>Add New Item</h2>
-        <Grid
-          container
-          justify="center"
-          alignItems="center"
-          direction="column"
-          spacing={1}
-        >
-          <Grid item>
-            <InputLabel htmlFor="data">Data</InputLabel>
-            <OutlinedInput
-              id="data"
-              required
-              inputRef={(node) => {
-                _data = node;
-              }}
-            />
-          </Grid>
-          <Grid item>
-            <InputLabel htmlFor="type">Type</InputLabel>
-            <OutlinedInput
-              id="type"
-              required
-              inputRef={(node) => {
-                type = node;
-              }}
-            />
-          </Grid>
-          <Grid item>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={(e) => {
-                e.preventDefault();
-                console.log(_data.value);
-                add({ variables: { data: _data.value, type: type.value } });
-                _data.value = "";
-                type.value = "";
-              }}
-            >
-              Add Item
-            </Button>
-            {called ? <Grid item>"Item is stored!"</Grid> : ""}
-          </Grid>
+      <h2>Add New Item</h2>
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        direction="column"
+        spacing={1}
+      >
+        <Grid item>
+          <InputLabel htmlFor="data">Data</InputLabel>
+          <OutlinedInput
+            id="data"
+            required
+            inputRef={(node) => {
+              _data = node;
+            }}
+          />
         </Grid>
-      </div>
+        <Grid item>
+          <InputLabel htmlFor="type">Type</InputLabel>
+          <OutlinedInput
+            id="type"
+            required
+            inputRef={(node) => {
+              type = node;
+            }}
+          />
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={(e) => {
+              e.preventDefault();
+              console.log(_data.value);
+              add({ variables: { data: _data.value, type: type.value } });
+              _data.value = "";
+              type.value = "";
+            }}
+          >
+            Add Item
+          </Button>
+          {called ? <Grid item>"Item is stored!"</Grid> : ""}
+        </Grid>
+      </Grid>
     </div>
   );
 };

@@ -75,7 +75,7 @@ export default function App() {
       <div className="App">
         <Router>
           <Index>
-            <Route exact path="/" component={AddItemPage} />
+            <Route exact path="/item" component={AddItemPage} />
             <Route exact path="/sub" component={Sub} />
             <Route exact path="/pagination" component={Pagination} />
             <Route exact path="/login" component={Login} />
