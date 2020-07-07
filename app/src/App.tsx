@@ -12,7 +12,7 @@ import { setContext } from "apollo-link-context";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 import "./App.css";
-import { Index } from "./pages/layouts/Index";
+import { Layout } from "./pages/layouts/Layout";
 import { AddItemPage } from "./pages/AddItemPage";
 import { Sub } from "./pages/Sub";
 import { Pagination } from "./pages/DemoPagination";
@@ -74,13 +74,13 @@ export default function App() {
     <ApolloProvider client={client}>
       <div className="App">
         <Router>
-          <Index>
+          <Layout>
             <Route exact path="/item" component={AddItemPage} />
             <Route exact path="/sub" component={Sub} />
             <Route exact path="/pagination" component={Pagination} />
             <Route exact path="/login" component={Login} />
             <Route exact path="/signin" component={Signin} />
-          </Index>
+          </Layout>
         </Router>
       </div>
     </ApolloProvider>
