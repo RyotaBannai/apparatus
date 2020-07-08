@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   InputLabel,
   OutlinedInput,
@@ -53,56 +53,62 @@ interface Props {
 export const ApparatusLine: React.FC<Props> = ({ id }) => {
   const classes = useStyles();
   const [addItem] = useMutation(L_ADD_ITEM);
+  const [show, setShow] = useState<boolean>(true);
 
-  return (
-    <Grid container alignItems="flex-end" direction="row" spacing={1}>
-      <Grid item>
-        <InputLabel htmlFor="type">Type</InputLabel>
-        <Select
-          id="type"
-          required
-          className={classes.formType}
-          variant="outlined"
-          autoWidth
-          defaultValue="line"
-          onChange={(e: any) => {
-            e.preventDefault();
-            let variables: any = {
-              id,
-              type: e.target.value,
-              update_data: "type",
-            };
-            addItem({
-              variables,
-            });
-          }}
-        >
-          <MenuItem value="line">Line</MenuItem>
-          <MenuItem value="field">Field</MenuItem>
-        </Select>
+  if (!show) return <></>;
+  else
+    return (
+      <Grid container alignItems="flex-end" direction="row" spacing={1}>
+        <Grid item>
+          <InputLabel htmlFor="type">Type</InputLabel>
+          <Select
+            id="type"
+            required
+            className={classes.formType}
+            variant="outlined"
+            autoWidth
+            defaultValue="line"
+            onChange={(e: any) => {
+              e.preventDefault();
+              let variables: any = {
+                id,
+                type: e.target.value,
+                update_data: "type",
+              };
+              addItem({
+                variables,
+              });
+            }}
+          >
+            <MenuItem value="line">Line</MenuItem>
+            <MenuItem value="field">Field</MenuItem>
+          </Select>
+        </Grid>
+        <Grid item>
+          <InputLabel htmlFor="data">Data</InputLabel>
+          <OutlinedInput
+            id="data"
+            required
+            className={classes.formData}
+            onChange={(e: any) => {
+              e.preventDefault();
+              let variables: any = {
+                id,
+                data: e.target.value,
+                update_data: "data",
+              };
+              addItem({
+                variables,
+              });
+            }}
+          />
+        </Grid>
+        <Grid item>
+          <Icon className={classes.deleteForm} onClick={() => setShow(!show)}>
+            {/* TODO: remove data from apollo cache */}
+            delete_forever
+          </Icon>
+        </Grid>
       </Grid>
-      <Grid item>
-        <InputLabel htmlFor="data">Data</InputLabel>
-        <OutlinedInput
-          id="data"
-          required
-          className={classes.formData}
-          onChange={(e: any) => {
-            e.preventDefault();
-            let variables: any = {
-              id,
-              data: e.target.value,
-              update_data: "data",
-            };
-            addItem({
-              variables,
-            });
-          }}
-        />
-      </Grid>
-      <Grid item>
-        <Icon className={classes.deleteForm}>delete_forever</Icon>
-      </Grid>
-    </Grid>
-  );
+    );
 };

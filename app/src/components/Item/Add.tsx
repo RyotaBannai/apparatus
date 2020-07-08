@@ -5,6 +5,7 @@ import { Button, Grid, Icon } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ApparatusLine } from "./ApparatusLine";
 import cyan from "@material-ui/core/colors/cyan";
+import * as _ from "lodash";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -45,14 +46,26 @@ const L_GET_ITEM = gql`
 class Counter {
   constructor(private _uuid: number = 0) {}
   get uuid() {
-    return this._uuid++;
+    return this._uuid;
+  }
+  set uuid(num) {
+    this._uuid = this._uuid + num;
   }
 }
 const counter = new Counter();
+const takeId = () => {
+  counter.uuid = 1;
+  return counter.uuid;
+};
 
 export const Add: React.FC<Props> = () => {
   const classes = useStyles();
-  let default_form = [<ApparatusLine id={counter.uuid} />]; // <ApparatusLine key={id} id={id} />
+  let default_form = [
+    {
+      id: takeId(),
+      item: <ApparatusLine id={counter.uuid} />,
+    },
+  ];
   const [children, setChild] = useState(default_form);
   const { data } = useQuery(L_GET_ITEM);
   const [add, { loading, error, called }] = useMutation(S_ADD_ITEM);
@@ -63,7 +76,7 @@ export const Add: React.FC<Props> = () => {
     <div>
       <h2>Add New Item</h2>
       {JSON.stringify(data)}
-      {children.map((child) => child)}
+      {children.map((child) => child.item)}
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>
           <Button
@@ -74,7 +87,13 @@ export const Add: React.FC<Props> = () => {
             disableTouchRipple
             onClick={(e) => {
               e.preventDefault();
-              setChild([...children, <ApparatusLine id={counter.uuid} />]);
+              setChild([
+                ...children,
+                {
+                  id: takeId(),
+                  item: <ApparatusLine id={counter.uuid} />,
+                },
+              ]);
             }}
           >
             Add Item
