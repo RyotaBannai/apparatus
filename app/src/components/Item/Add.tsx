@@ -1,11 +1,34 @@
 import React from "react";
 import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
-import { Button, InputLabel, OutlinedInput, Grid } from "@material-ui/core";
+import {
+  Button,
+  InputLabel,
+  OutlinedInput,
+  Grid,
+  Select,
+  MenuItem,
+} from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 
-interface Props {
-  title: string;
-}
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    formType: {
+      minWidth: 80,
+      "& div": {
+        padding: theme.spacing(1),
+      },
+    },
+    formData: {
+      minWidth: 120,
+      "& input": {
+        padding: theme.spacing(1),
+      },
+    },
+  })
+);
+
+interface Props {}
 
 const ADD_ITEM = gql`
   mutation ADD_ITEM($data: String!, $type: String!) {
@@ -17,7 +40,9 @@ const ADD_ITEM = gql`
   }
 `;
 
-export const Add: React.FC<Props> = ({ title }) => {
+export const Add: React.FC<Props> = () => {
+  const classes = useStyles();
+
   let _data: any = "";
   let type: any = "";
 
@@ -28,30 +53,32 @@ export const Add: React.FC<Props> = ({ title }) => {
   return (
     <div>
       <h2>Add New Item</h2>
-      <Grid
-        container
-        justify="center"
-        alignItems="center"
-        direction="column"
-        spacing={1}
-      >
+      <Grid container alignItems="center" direction="row" spacing={1}>
+        <Grid item>
+          <InputLabel htmlFor="type">Type</InputLabel>
+          <Select
+            id="type"
+            required
+            className={classes.formType}
+            variant="outlined"
+            autoWidth
+            inputRef={(node) => {
+              type = node;
+            }}
+            defaultValue="line"
+          >
+            <MenuItem value="line">Line</MenuItem>
+            <MenuItem value="field">Field</MenuItem>
+          </Select>
+        </Grid>
         <Grid item>
           <InputLabel htmlFor="data">Data</InputLabel>
           <OutlinedInput
             id="data"
             required
+            className={classes.formData}
             inputRef={(node) => {
               _data = node;
-            }}
-          />
-        </Grid>
-        <Grid item>
-          <InputLabel htmlFor="type">Type</InputLabel>
-          <OutlinedInput
-            id="type"
-            required
-            inputRef={(node) => {
-              type = node;
             }}
           />
         </Grid>

@@ -46,11 +46,11 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
             { text: "Sub", link: "/sub" },
             { text: "Pagination", link: "#" },
           ].map((data, index) => (
-            <NavLink exact to={data.link} activeClassName="active">
+            <NavLink exact to={data.link}>
               <ListItem
                 button
                 key={index}
-                selected={true}
+                // TODO: selected にするための state を管理 selected={true}
                 disableRipple
                 disableTouchRipple
               >

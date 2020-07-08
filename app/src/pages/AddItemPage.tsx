@@ -6,7 +6,7 @@ interface Props {}
 export const AddItemPage: React.FC<Props> = () => {
   return (
     <div>
-      <ItemAdd title={"Apollo Experiment"} />
+      <ItemAdd />
     </div>
   );
 };

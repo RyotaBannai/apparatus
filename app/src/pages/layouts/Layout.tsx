@@ -6,6 +6,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
 const drawerWidth = 240;
+const navBarWidth = 64;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
-    marginTop: "64px",
+    marginTop: navBarWidth,
   },
 }));
 
@@ -32,7 +33,7 @@ export const Layout: React.FC<Props> = (props) => {
         rel="stylesheet"
         href="https://fonts.googleapis.com/icon?family=Material+Icons"
       />
-      <div className="container">
+      <div className="/*container*/">
         <div className={classes.root}>
           <CssBaseline />
           <Nav />
