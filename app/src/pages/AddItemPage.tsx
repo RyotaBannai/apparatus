@@ -24,7 +24,7 @@ const resolvers = {
       if (this_item === undefined) {
         let newItem = {
           id: variables.id,
-          type: variables.data ?? "", // null or undefined
+          type: variables.type ?? "line", // null or undefined
           data: variables.data ?? "",
           __typename: "Item",
         };

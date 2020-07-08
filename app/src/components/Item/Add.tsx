@@ -1,24 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
 import { gql } from "apollo-boost";
-import { useMutation } from "@apollo/react-hooks";
-import { Button, Grid } from "@material-ui/core";
+import { useQuery, useMutation } from "@apollo/react-hooks";
+import { Button, Grid, Icon } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ApparatusLine } from "./ApparatusLine";
+import cyan from "@material-ui/core/colors/cyan";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    root: {},
+    addButton: {
+      color: "#fff",
+      backgroundColor: cyan[700],
+      "&:hover": {
+        backgroundColor: cyan[800],
+      },
+      "&:focus": {
+        outlineColor: cyan[800],
+      },
+    },
   })
 );
 
 interface Props {}
 
-const G_ADD_ITEM = gql`
+const S_ADD_ITEM = gql`
   mutation ADD_ITEM($data: String!, $type: String!) {
     createItem(data: { data: $data, type: $type }) {
       id
       data
       type
+    }
+  }
+`;
+
+const L_GET_ITEM = gql`
+  {
+    items @client {
+      type
+      data
     }
   }
 `;
@@ -33,21 +52,42 @@ const counter = new Counter();
 
 export const Add: React.FC<Props> = () => {
   const classes = useStyles();
-
-  const [add, { loading, error, data, called }] = useMutation(G_ADD_ITEM);
-  let id = counter.uuid;
+  let default_form = [<ApparatusLine id={counter.uuid} />]; // <ApparatusLine key={id} id={id} />
+  const [children, setChild] = useState(default_form);
+  const { data } = useQuery(L_GET_ITEM);
+  const [add, { loading, error, called }] = useMutation(S_ADD_ITEM);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :(</p>;
   return (
     <div>
       <h2>Add New Item</h2>
-      <ApparatusLine key={id} id={id} />
+      {JSON.stringify(data)}
+      {children.map((child) => child)}
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>
           <Button
             variant="contained"
+            className={classes.addButton}
+            startIcon={<Icon>add_circle</Icon>}
+            disableRipple
+            disableTouchRipple
+            onClick={(e) => {
+              e.preventDefault();
+              setChild([...children, <ApparatusLine id={counter.uuid} />]);
+            }}
+          >
+            Add Item
+          </Button>
+          {called ? <Grid item>"Item is stored!"</Grid> : ""}
+        </Grid>
+        <Grid item>
+          <Button
+            variant="contained"
             color="primary"
+            endIcon={<Icon>arrow_right</Icon>}
+            disableRipple
+            disableTouchRipple
             onClick={(e) => {
               e.preventDefault();
               // console.log(_data.value);
@@ -56,7 +96,7 @@ export const Add: React.FC<Props> = () => {
               // type.value = "";
             }}
           >
-            Add Item
+            Save Item
           </Button>
           {called ? <Grid item>"Item is stored!"</Grid> : ""}
         </Grid>

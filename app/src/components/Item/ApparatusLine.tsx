@@ -5,19 +5,13 @@ import {
   Grid,
   Select,
   MenuItem,
+  Icon,
 } from "@material-ui/core";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import blueGrey from "@material-ui/core/colors/blueGrey";
+import grey from "@material-ui/core/colors/grey";
 import { useQuery, useMutation, useApolloClient } from "@apollo/react-hooks";
 import gql from "graphql-tag";
-
-const L_GET_ITEM = gql`
-  {
-    items @client {
-      type
-      data
-    }
-  }
-`;
 
 const L_ADD_ITEM = gql`
   mutation AddItem(
@@ -45,6 +39,10 @@ const useStyles = makeStyles((theme: Theme) =>
         padding: theme.spacing(1),
       },
     },
+    deleteForm: {
+      cursor: "pointer",
+      color: blueGrey[800],
+    },
   })
 );
 
@@ -54,13 +52,10 @@ interface Props {
 
 export const ApparatusLine: React.FC<Props> = ({ id }) => {
   const classes = useStyles();
-
-  const { data } = useQuery(L_GET_ITEM);
   const [addItem] = useMutation(L_ADD_ITEM);
 
   return (
-    <Grid container alignItems="center" direction="row" spacing={1}>
-      {JSON.stringify(data)}
+    <Grid container alignItems="flex-end" direction="row" spacing={1}>
       <Grid item>
         <InputLabel htmlFor="type">Type</InputLabel>
         <Select
@@ -104,6 +99,9 @@ export const ApparatusLine: React.FC<Props> = ({ id }) => {
             });
           }}
         />
+      </Grid>
+      <Grid item>
+        <Icon className={classes.deleteForm}>delete_forever</Icon>
       </Grid>
     </Grid>
   );
