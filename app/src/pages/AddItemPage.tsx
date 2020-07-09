@@ -49,6 +49,18 @@ const resolvers = {
       }
       return null;
     },
+    deleteItem : (_root: any, variables: any, { cache, getCacheKey }: any) => {
+      console.log('called')
+      const data = cache.readQuery({ query });
+      let removed_item = _.remove(data.items, function(item: any) {
+        return item.id == variables.id;
+      });
+      cache.writeQuery({
+        query,
+        data: { items: [...data.items] },
+      });
+      return null;
+    }
   },
   Query: {
     getItemByID: (_root: any, variables: any, { cache, getCacheKey }: any) => {

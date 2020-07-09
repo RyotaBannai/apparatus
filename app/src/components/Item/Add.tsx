@@ -68,10 +68,13 @@ export const Add: React.FC<Props> = () => {
   ];
   const [children, setChild] = useState(default_form);
   const { data } = useQuery(L_GET_ITEM);
-  const [add, { loading, error, called }] = useMutation(S_ADD_ITEM);
+  const [
+    s_addItem,
+    { loading: sa_loading, error: sa_error, called: sa_called },
+  ] = useMutation(S_ADD_ITEM);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :(</p>;
+  if (sa_loading) return <p>Loading...</p>;
+  if (sa_error) return <p>Error :(</p>;
   return (
     <div>
       <h2>Add New Item</h2>
@@ -98,7 +101,6 @@ export const Add: React.FC<Props> = () => {
           >
             Add Item
           </Button>
-          {called ? <Grid item>"Item is stored!"</Grid> : ""}
         </Grid>
         <Grid item>
           <Button
@@ -109,15 +111,16 @@ export const Add: React.FC<Props> = () => {
             disableTouchRipple
             onClick={(e) => {
               e.preventDefault();
+
               // console.log(_data.value);
-              // add({ variables: { data: _data.value, type: type.value } });
+              // s_addItem({ variables: { data: _data.value, type: type.value } });
               // _data.value = "";
               // type.value = "";
             }}
           >
             Save Item
           </Button>
-          {called ? <Grid item>"Item is stored!"</Grid> : ""}
+          {sa_called ? <Grid item>"Item is stored!"</Grid> : ""}
         </Grid>
       </Grid>
     </div>

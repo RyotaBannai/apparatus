@@ -25,6 +25,14 @@ const L_ADD_ITEM = gql`
   }
 `;
 
+const L_DELETE_ITEM = gql`
+  mutation DeleteItem($id: Float!) {
+    deleteItem(id: $id) @client {
+      id
+    }
+  }
+`;
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     formType: {
@@ -52,8 +60,12 @@ interface Props {
 
 export const ApparatusLine: React.FC<Props> = ({ id }) => {
   const classes = useStyles();
-  const [addItem] = useMutation(L_ADD_ITEM);
+  const [l_addItem] = useMutation(L_ADD_ITEM);
   const [show, setShow] = useState<boolean>(true);
+  const [
+    l_deleteItem,
+    { loading: ld_loading, error: ld_error, called: ld_called },
+  ] = useMutation(L_DELETE_ITEM);
 
   if (!show) return <></>;
   else
@@ -75,7 +87,7 @@ export const ApparatusLine: React.FC<Props> = ({ id }) => {
                 type: e.target.value,
                 update_data: "type",
               };
-              addItem({
+              l_addItem({
                 variables,
               });
             }}
@@ -97,14 +109,26 @@ export const ApparatusLine: React.FC<Props> = ({ id }) => {
                 data: e.target.value,
                 update_data: "data",
               };
-              addItem({
+              l_addItem({
                 variables,
               });
             }}
           />
         </Grid>
         <Grid item>
-          <Icon className={classes.deleteForm} onClick={() => setShow(!show)}>
+          <Icon
+            className={classes.deleteForm}
+            onClick={(e: any) => {
+              e.preventDefault();
+              setShow(!show);
+              let variables: { id: number } = {
+                id,
+              };
+              l_deleteItem({
+                variables,
+              });
+            }}
+          >
             {/* TODO: remove data from apollo cache */}
             delete_forever
           </Icon>
