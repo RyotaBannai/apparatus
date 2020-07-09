@@ -129,7 +129,6 @@ export const ApparatusLine: React.FC<Props> = ({ id }) => {
               });
             }}
           >
-            {/* TODO: remove data from apollo cache */}
             delete_forever
           </Icon>
         </Grid>

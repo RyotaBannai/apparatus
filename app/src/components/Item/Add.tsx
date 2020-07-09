@@ -6,6 +6,8 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ApparatusLine } from "./ApparatusLine";
 import cyan from "@material-ui/core/colors/cyan";
 import * as _ from "lodash";
+import { from } from "rxjs";
+import { tap, map } from "rxjs/operators";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -43,6 +45,12 @@ const L_GET_ITEM = gql`
   }
 `;
 
+const L_CLEAN_ITEMS = gql`
+  mutation CLEAN_ITEMS {
+    cleanItems @client
+  }
+`;
+
 class Counter {
   constructor(private _uuid: number = 0) {}
   get uuid() {
@@ -67,11 +75,32 @@ export const Add: React.FC<Props> = () => {
     },
   ];
   const [children, setChild] = useState(default_form);
+  const callSetChild = (_children: Array<any> | null) => {
+    let newChildren;
+    if (_children instanceof Array) {
+      newChildren = [
+        ..._children,
+        {
+          id: takeId(),
+          item: <ApparatusLine id={counter.uuid} />,
+        },
+      ];
+    } else {
+      newChildren = [
+        {
+          id: takeId(),
+          item: <ApparatusLine id={counter.uuid} />,
+        },
+      ];
+    }
+    setChild(newChildren);
+  };
   const { data } = useQuery(L_GET_ITEM);
   const [
     s_addItem,
     { loading: sa_loading, error: sa_error, called: sa_called },
   ] = useMutation(S_ADD_ITEM);
+  const [l_cleanItems] = useMutation(L_CLEAN_ITEMS);
 
   if (sa_loading) return <p>Loading...</p>;
   if (sa_error) return <p>Error :(</p>;
@@ -90,13 +119,7 @@ export const Add: React.FC<Props> = () => {
             disableTouchRipple
             onClick={(e) => {
               e.preventDefault();
-              setChild([
-                ...children,
-                {
-                  id: takeId(),
-                  item: <ApparatusLine id={counter.uuid} />,
-                },
-              ]);
+              callSetChild(children);
             }}
           >
             Add Item
@@ -111,11 +134,34 @@ export const Add: React.FC<Props> = () => {
             disableTouchRipple
             onClick={(e) => {
               e.preventDefault();
-
-              // console.log(_data.value);
-              // s_addItem({ variables: { data: _data.value, type: type.value } });
-              // _data.value = "";
-              // type.value = "";
+              from(data.items)
+                .pipe(
+                  map((item) => {
+                    _.unset(item, "__typename");
+                    return item;
+                  })
+                )
+                .subscribe({
+                  next(variables) {
+                    console.log(variables);
+                    if (
+                      variables instanceof Object &&
+                      "data" in variables &&
+                      variables["data"] !== ""
+                    )
+                      s_addItem({
+                        variables,
+                      });
+                  },
+                  error(err) {
+                    console.log(`Rxjs at Item Add component. ${err}`);
+                  },
+                  complete() {
+                    console.log("done");
+                    l_cleanItems();
+                    callSetChild(null);
+                  },
+                });
             }}
           >
             Save Item

@@ -61,10 +61,21 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
         </List>
         <Divider />
         <List>
-          {["Login", "Singin"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
+          {[
+            { text: "Login", link: "/login" },
+            { text: "Sign in", link: "/signin" },
+          ].map((data, index) => (
+            <NavLink exact to={data.link}>
+              <ListItem
+                button
+                key={index}
+                // TODO: selected にするための state を管理 selected={true}
+                disableRipple
+                disableTouchRipple
+              >
+                <ListItemText primary={data.text} />
+              </ListItem>
+            </NavLink>
           ))}
         </List>
       </div>

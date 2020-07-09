@@ -2,7 +2,13 @@ import React from "react";
 import { useLazyQuery, useApolloClient } from "@apollo/react-hooks";
 import { ApolloClient, ApolloError } from "apollo-client";
 import gql from "graphql-tag";
-import { Button, InputLabel, OutlinedInput, Grid } from "@material-ui/core";
+import {
+  Button,
+  InputLabel,
+  OutlinedInput,
+  Grid,
+  Icon,
+} from "@material-ui/core";
 
 const LOGIN = gql`
   query LOGIN($email: String!, $password: String!) {
@@ -73,6 +79,7 @@ export const Login: React.FC<Props> = () => {
             <Button
               variant="contained"
               color="primary"
+              endIcon={<Icon>arrow_right</Icon>}
               onClick={(e: any) => {
                 console.log("clicked");
                 e.preventDefault();
@@ -85,7 +92,7 @@ export const Login: React.FC<Props> = () => {
                 });
               }}
             >
-              Add Todo
+              Login
             </Button>
           </Grid>
           <Grid item>{JSON.stringify(data)}</Grid>

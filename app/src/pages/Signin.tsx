@@ -8,6 +8,7 @@ import {
   InputLabel,
   OutlinedInput,
   Grid,
+  Icon,
 } from "@material-ui/core";
 
 const ADD_USER = gql`
@@ -37,6 +38,7 @@ export const Signin: React.FC<Props> = () => {
   });
   return (
     <div>
+      <h2>Sign In</h2>
       <div style={{ margin: "10px" }}>
         <Grid
           container
@@ -79,6 +81,7 @@ export const Signin: React.FC<Props> = () => {
             <Button
               variant="contained"
               color="primary"
+              endIcon={<Icon>arrow_right</Icon>}
               onClick={(e: any) => {
                 console.log("clicked");
                 e.preventDefault();
@@ -95,7 +98,7 @@ export const Signin: React.FC<Props> = () => {
                 password.value = "";
               }}
             >
-              Add Todo
+              Sign In
             </Button>
           </Grid>
           <Grid item>{JSON.stringify(data)}</Grid>
