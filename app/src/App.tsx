@@ -35,7 +35,6 @@ const cache = new InMemoryCache({
 });
 const data = {
   items: [],
-  itemForms: [],
   visibilityFilter: "SHOW_ALL",
   networkStatus: {
     __typename: "NetworkStatus",

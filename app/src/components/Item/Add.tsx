@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { gql } from "apollo-boost";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { Button, Grid, Icon } from "@material-ui/core";
+import { Button, Grid, Icon, Snackbar } from "@material-ui/core";
+import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ApparatusLine } from "./ApparatusLine";
 import cyan from "@material-ui/core/colors/cyan";
 import * as _ from "lodash";
 import { from } from "rxjs";
 import { tap, map } from "rxjs/operators";
+
+function Alert(props: AlertProps) {
+  return <MuiAlert elevation={6} variant="filled" {...props} />;
+}
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -39,6 +44,7 @@ const S_ADD_ITEM = gql`
 const L_GET_ITEM = gql`
   {
     items @client {
+      id
       type
       data
     }
@@ -68,13 +74,21 @@ const takeId = () => {
 
 export const Add: React.FC<Props> = () => {
   const classes = useStyles();
-  let default_form = [
+  let default_form: any[] = [
     {
       id: takeId(),
       item: <ApparatusLine id={counter.uuid} />,
     },
   ];
-  const [children, setChild] = useState(default_form);
+  const [children, setChild] = useState<Array<any>>([]);
+  const [saveSnackBarOpen, setOpen] = useState(false);
+  const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpen(false);
+  };
+
   const callSetChild = (_children: Array<any> | null) => {
     let newChildren;
     if (_children instanceof Array) {
@@ -101,6 +115,40 @@ export const Add: React.FC<Props> = () => {
     { loading: sa_loading, error: sa_error, called: sa_called },
   ] = useMutation(S_ADD_ITEM);
   const [l_cleanItems] = useMutation(L_CLEAN_ITEMS);
+
+  useEffect(() => {
+    if (data.items.length > 0) {
+      let newChildren: any[] = [];
+      from(data.items)
+        .pipe(
+          map((item) => {
+            _.unset(item, "__typename");
+            return item;
+          })
+        )
+        .subscribe({
+          next(item) {
+            if (item instanceof Object && "id" in item) {
+              newChildren = [
+                ...newChildren,
+                {
+                  id: item["id"],
+                  item: <ApparatusLine {...item} />,
+                },
+              ];
+            }
+          },
+          error(err) {
+            console.log(`Rxjs at Item Add component. ${err}`);
+          },
+          complete() {
+            setChild(newChildren);
+          },
+        });
+    } else {
+      setChild(default_form);
+    }
+  }, []);
 
   if (sa_loading) return <p>Loading...</p>;
   if (sa_error) return <p>Error :(</p>;
@@ -143,7 +191,6 @@ export const Add: React.FC<Props> = () => {
                 )
                 .subscribe({
                   next(variables) {
-                    console.log(variables);
                     if (
                       variables instanceof Object &&
                       "data" in variables &&
@@ -157,16 +204,24 @@ export const Add: React.FC<Props> = () => {
                     console.log(`Rxjs at Item Add component. ${err}`);
                   },
                   complete() {
-                    console.log("done");
                     l_cleanItems();
                     callSetChild(null);
+                    setOpen(true);
                   },
                 });
             }}
           >
             Save Item
           </Button>
-          {sa_called ? <Grid item>"Item is stored!"</Grid> : ""}
+          <Snackbar
+            open={saveSnackBarOpen}
+            autoHideDuration={3000}
+            onClose={handleClose}
+          >
+            <Alert onClose={handleClose} severity="success">
+              Successfully saved!
+            </Alert>
+          </Snackbar>
         </Grid>
       </Grid>
     </div>

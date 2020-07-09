@@ -56,9 +56,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   id: number;
+  type?: string;
+  data?: string;
 }
 
-export const ApparatusLine: React.FC<Props> = ({ id }) => {
+export const ApparatusLine: React.FC<Props> = ({ id, type, data }) => {
   const classes = useStyles();
   const [l_addItem] = useMutation(L_ADD_ITEM);
   const [show, setShow] = useState<boolean>(true);
@@ -79,7 +81,7 @@ export const ApparatusLine: React.FC<Props> = ({ id }) => {
             className={classes.formType}
             variant="outlined"
             autoWidth
-            defaultValue="line"
+            defaultValue={type ?? 'line'}
             onChange={(e: any) => {
               e.preventDefault();
               let variables: any = {
@@ -102,6 +104,7 @@ export const ApparatusLine: React.FC<Props> = ({ id }) => {
             id="data"
             required
             className={classes.formData}
+            defaultValue={data ?? ''}
             onChange={(e: any) => {
               e.preventDefault();
               let variables: any = {
