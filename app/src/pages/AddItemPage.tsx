@@ -33,18 +33,22 @@ const resolvers = {
           data: { items: [...data.items, newItem] },
         });
       } else {
-        let newItem;
+        let newItem: any;
         if (variables.update_data === "type") {
           newItem = { ...this_item, type: variables.type };
         } else {
           newItem = { ...this_item, data: variables.data };
         }
-        let removed_item = _.remove(data.items, function(item: any) {
-          return item.id == variables.id;
+        let newItems = data.items.map((item: any) => {
+          if (item.id == variables.id){
+            return newItem;
+          } else {
+            return item;
+          }
         });
         cache.writeQuery({
           query,
-          data: { items: [...data.items, newItem] },
+          data: { items: newItems },
         });
       }
       return null;

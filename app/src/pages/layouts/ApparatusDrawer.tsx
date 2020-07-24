@@ -43,8 +43,7 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
             { text: "Item", link: "/item" },
             { text: "Set", link: "#" },
             { text: "List", link: "#" },
-            { text: "Sub", link: "/sub" },
-            { text: "Pagination", link: "#" },
+            // { text: "Pagination", link: "#" },
           ].map((data, index) => (
             <NavLink exact to={data.link}>
               <ListItem
