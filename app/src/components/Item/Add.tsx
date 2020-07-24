@@ -51,6 +51,18 @@ const L_GET_ITEM = gql`
   }
 `;
 
+const L_ADD_ITEM_TO_GLOBAL = gql`
+  mutation AddItem(
+    $id: Float!
+    $type: String
+    $data: String
+    $update_data: String!
+  ) {
+    addItem(id: $id, type: $type, data: $data, update_data: $update_data)
+      @client
+  }
+`;
+
 const L_CLEAN_ITEMS = gql`
   mutation CLEAN_ITEMS {
     cleanItems @client
@@ -77,7 +89,9 @@ export const Add: React.FC<Props> = () => {
   let default_form: any[] = [
     {
       id: takeId(),
-      item: <ApparatusLine id={counter.uuid} />,
+      item: (
+        <ApparatusLine id={counter.uuid} L_ADD_ITEM={L_ADD_ITEM_TO_GLOBAL} />
+      ),
     },
   ];
   const [children, setChild] = useState<Array<any>>([]);
@@ -96,14 +110,24 @@ export const Add: React.FC<Props> = () => {
         ..._children,
         {
           id: takeId(),
-          item: <ApparatusLine id={counter.uuid} />,
+          item: (
+            <ApparatusLine
+              id={counter.uuid}
+              L_ADD_ITEM={L_ADD_ITEM_TO_GLOBAL}
+            />
+          ),
         },
       ];
     } else {
       newChildren = [
         {
           id: takeId(),
-          item: <ApparatusLine id={counter.uuid} />,
+          item: (
+            <ApparatusLine
+              id={counter.uuid}
+              L_ADD_ITEM={L_ADD_ITEM_TO_GLOBAL}
+            />
+          ),
         },
       ];
     }
@@ -133,7 +157,12 @@ export const Add: React.FC<Props> = () => {
                 ...newChildren,
                 {
                   id: item["id"],
-                  item: <ApparatusLine {...item} />,
+                  item: (
+                    <ApparatusLine
+                      {...item}
+                      L_ADD_ITEM={L_ADD_ITEM_TO_GLOBAL}
+                    />
+                  ),
                 },
               ];
             }

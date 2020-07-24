@@ -13,18 +13,6 @@ import grey from "@material-ui/core/colors/grey";
 import { useQuery, useMutation, useApolloClient } from "@apollo/react-hooks";
 import gql from "graphql-tag";
 
-const L_ADD_ITEM = gql`
-  mutation AddItem(
-    $id: Float!
-    $type: String
-    $data: String
-    $update_data: String!
-  ) {
-    addItem(id: $id, type: $type, data: $data, update_data: $update_data)
-      @client
-  }
-`;
-
 const L_DELETE_ITEM = gql`
   mutation DeleteItem($id: Float!) {
     deleteItem(id: $id) @client {
@@ -56,11 +44,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
   id: number;
+  L_ADD_ITEM: import("graphql").DocumentNode;
   type?: string;
   data?: string;
 }
 
-export const ApparatusLine: React.FC<Props> = ({ id, type, data }) => {
+export const ApparatusLine: React.FC<Props> = ({ id, type, data, L_ADD_ITEM }) => {
   const classes = useStyles();
   const [l_addItem] = useMutation(L_ADD_ITEM);
   const [show, setShow] = useState<boolean>(true);
