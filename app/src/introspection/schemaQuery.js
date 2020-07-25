@@ -1,4 +1,4 @@
-const fetch = require("node-fetch");
+const fetch = require("cross-fetch");
 const fs = require("fs");
 
 fetch(`http://localhost:4000/graphql`, {
@@ -23,20 +23,29 @@ fetch(`http://localhost:4000/graphql`, {
 })
   .then((result) => result.json())
   .then((result) => {
-    // here we're filtering out any type information unrelated to unions or interfaces
-    const filteredData = result.data.__schema.types.filter(
-      (type) => type.possibleTypes !== null
-    );
-    result.data.__schema.types = filteredData;
-    fs.writeFileSync(
-      "./fragmentTypes.json",
-      JSON.stringify(result.data),
+    const possibleTypes = {};
+
+    result.data.__schema.types.forEach((supertype) => {
+      if (supertype.possibleTypes) {
+        possibleTypes[supertype.name] = supertype.possibleTypes.map(
+          (subtype) => subtype.name
+        );
+      }
+    });
+
+    fs.writeFile(
+      "./possibleTypes.json",
+      JSON.stringify(possibleTypes),
       (err) => {
         if (err) {
-          console.error("Error writing fragmentTypes file", err);
+          console.error("Error writing possibleTypes.json", err);
         } else {
           console.log("Fragment types successfully extracted!");
         }
       }
     );
+  })
+  .catch((error) => {
+    // Will not execute
+    console.log("caught", error.message);
   });

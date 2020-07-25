@@ -1,1 +1,11 @@
-{"__schema":{"types":[{"kind":"UNION","name":"LoginOutput","possibleTypes":[{"name":"TokenEntity"},{"name":"LoginFails"}]}]}}
+{
+  "__schema": {
+    "types": [
+      {
+        "kind": "UNION",
+        "name": "LoginOutput",
+        "possibleTypes": [{ "name": "TokenEntity" }, { "name": "LoginFails" }]
+      }
+    ]
+  }
+}
