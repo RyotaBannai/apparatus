@@ -8,6 +8,7 @@ import {
   InMemoryCache,
   concat,
 } from "@apollo/client";
+import { Sets } from "./modules/set/actions";
 import possibleTypes from "./introspection/possibleTypes.json";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
@@ -21,6 +22,17 @@ import { Signin } from "./pages/Signin";
 
 const cache = new InMemoryCache({
   possibleTypes,
+  typePolicies: {
+    Query: {
+      fields: {
+        sets: {
+          read() {
+            return Sets();
+          },
+        },
+      },
+    },
+  },
 });
 
 const httpLink = new HttpLink({ uri: "http://localhost:4000/graphql" });
@@ -38,9 +50,6 @@ const authMiddleware = new ApolloLink((operation, forward) => {
 const client = new ApolloClient({
   link: concat(authMiddleware, httpLink),
   cache,
-  resolvers: {
-    /** Please define resolvers in each component  addResolvers API **/
-  },
   connectToDevTools: true,
 });
 
