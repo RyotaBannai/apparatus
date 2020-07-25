@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { gql } from "apollo-boost";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { gql, useQuery, useMutation } from "@apollo/client";
+import { useSet } from "../../modules/set/actions";
 import { Button, Grid, Icon, Snackbar } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import { ApparatusLine } from "./ApparatusLine";
+import { ApparatusSet } from "./ApparatusSet";
 import cyan from "@material-ui/core/colors/cyan";
 import * as _ from "lodash";
 import { from } from "rxjs";
@@ -41,25 +41,12 @@ const S_ADD_ITEM = gql`
   }
 `;
 
-const L_GET_ITEM = gql`
+const L_GET_SET = gql`
   {
-    items @client {
+    sets @client {
       id
-      type
-      data
+      items
     }
-  }
-`;
-
-const L_ADD_ITEM_TO_GLOBAL = gql`
-  mutation AddItem(
-    $id: Float!
-    $type: String
-    $data: String
-    $update_data: String!
-  ) {
-    addItem(id: $id, type: $type, data: $data, update_data: $update_data)
-      @client
   }
 `;
 
@@ -89,11 +76,10 @@ export const Add: React.FC<Props> = () => {
   let default_form: any[] = [
     {
       id: takeId(),
-      item: (
-        <ApparatusLine id={counter.uuid} L_ADD_ITEM={L_ADD_ITEM_TO_GLOBAL} />
-      ),
+      item: <ApparatusSet id={counter.uuid} />,
     },
   ];
+  const { allSets } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
@@ -110,30 +96,20 @@ export const Add: React.FC<Props> = () => {
         ..._children,
         {
           id: takeId(),
-          item: (
-            <ApparatusLine
-              id={counter.uuid}
-              L_ADD_ITEM={L_ADD_ITEM_TO_GLOBAL}
-            />
-          ),
+          item: <ApparatusSet id={counter.uuid} />,
         },
       ];
     } else {
       newChildren = [
         {
           id: takeId(),
-          item: (
-            <ApparatusLine
-              id={counter.uuid}
-              L_ADD_ITEM={L_ADD_ITEM_TO_GLOBAL}
-            />
-          ),
+          item: <ApparatusSet id={counter.uuid} />,
         },
       ];
     }
     setChild(newChildren);
   };
-  const { data } = useQuery(L_GET_ITEM);
+  const { data } = useQuery(L_GET_SET);
   const [
     s_addItem,
     { loading: sa_loading, error: sa_error, called: sa_called },
@@ -141,9 +117,9 @@ export const Add: React.FC<Props> = () => {
   const [l_cleanItems] = useMutation(L_CLEAN_ITEMS);
 
   useEffect(() => {
-    if (data.items.length > 0) {
+    if (data.sets.length > 0) {
       let newChildren: any[] = [];
-      from(data.items)
+      from(data.sets)
         .pipe(
           map((item) => {
             _.unset(item, "__typename");
@@ -157,12 +133,7 @@ export const Add: React.FC<Props> = () => {
                 ...newChildren,
                 {
                   id: item["id"],
-                  item: (
-                    <ApparatusLine
-                      {...item}
-                      L_ADD_ITEM={L_ADD_ITEM_TO_GLOBAL}
-                    />
-                  ),
+                  item: <ApparatusSet {...item} />,
                 },
               ];
             }
@@ -184,7 +155,7 @@ export const Add: React.FC<Props> = () => {
   return (
     <div>
       <h2>Add New Item</h2>
-      {JSON.stringify(data)}
+      {JSON.stringify(data, null, 2)}
       {children.map((child) => child.item)}
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>

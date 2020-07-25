@@ -1,12 +1,11 @@
 import React from "react";
 import { Add as ItemAdd } from "../components/Item/Add";
-import { useApolloClient } from "@apollo/react-hooks";
-import gql from "graphql-tag";
+import { useApolloClient, gql } from "@apollo/client";
 import * as _ from "lodash";
 
 interface Props {}
 
-const query = gql`
+const item_query = gql`
   query ItemQuery {
     items @client {
       id
@@ -16,65 +15,39 @@ const query = gql`
   }
 `;
 
+const set_query = gql`
+  query SetQuery {
+    sets @client {
+      id
+      items
+    }
+  }
+`;
+
 const resolvers = {
   Mutation: {
-    addItem: (_root: any, variables: any, { cache, getCacheKey }: any) => {
-      const data = cache.readQuery({ query });
-      let this_item = _.find(data.items, { id: variables.id });
-      if (this_item === undefined) {
-        let newItem = {
-          id: variables.id,
-          type: variables.type ?? "line", // null or undefined
-          data: variables.data ?? "",
-          __typename: "Item",
-        };
-        cache.writeQuery({
-          query,
-          data: { items: [...data.items, newItem] },
-        });
-      } else {
-        let newItem: any;
-        if (variables.update_data === "type") {
-          newItem = { ...this_item, type: variables.type };
-        } else {
-          newItem = { ...this_item, data: variables.data };
-        }
-        let newItems = data.items.map((item: any) => {
-          if (item.id == variables.id){
-            return newItem;
-          } else {
-            return item;
-          }
-        });
-        cache.writeQuery({
-          query,
-          data: { items: newItems },
-        });
-      }
-      return null;
-    },
-    deleteItem : (_root: any, variables: any, { cache, getCacheKey }: any) => {
-      const data = cache.readQuery({ query });
+    deleteItem: (_root: any, variables: any, { cache, getCacheKey }: any) => {
+      const data = cache.readQuery({ item_query });
       let removed_item = _.remove(data.items, function(item: any) {
         return item.id == variables.id;
       });
       cache.writeQuery({
-        query,
+        item_query,
         data: { items: [...data.items] },
       });
       return null;
     },
-    cleanItems : (_root: any, variables: any, { cache, getCacheKey }: any) => {
+    cleanItems: (_root: any, variables: any, { cache, getCacheKey }: any) => {
       cache.writeQuery({
-        query,
+        item_query,
         data: { items: [] },
       });
       return null;
-    }
+    },
   },
   Query: {
     getItemByID: (_root: any, variables: any, { cache, getCacheKey }: any) => {
-      const items = cache.readQuery({ query });
+      const items = cache.readQuery({ item_query });
       return items.map((item: any) => item.id === variables.id);
     },
   },
