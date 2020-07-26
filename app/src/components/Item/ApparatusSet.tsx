@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { Button, Grid, Icon, Tooltip, Box } from "@material-ui/core";
+import { useSet } from "../../modules/set/actions";
+import {
+  Button,
+  Box,
+  Grid,
+  Icon,
+  InputLabel,
+  OutlinedInput,
+  Tooltip,
+} from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ApparatusItem } from "./ApparatusItem";
@@ -50,6 +59,12 @@ const useStyles = makeStyles((theme: Theme) =>
     addItemHugeButton: {
       paddingTop: `${theme.spacing(3)}px !important`,
     },
+    formData: {
+      minWidth: 120,
+      "& input": {
+        padding: theme.spacing(1),
+      },
+    },
   })
 );
 
@@ -57,6 +72,7 @@ const L_GET_SET = gql`
   query GET_SET($id: Float!) {
     getSet(id: $id) @client {
       id
+      name
       items
     }
   }
@@ -92,6 +108,7 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
     },
   ];
   const [children, setChild] = useState<Array<any>>([]);
+  const { updateName } = useSet();
 
   const callSetChild = (_children: Array<any> | null) => {
     let newChildren;
@@ -116,6 +133,11 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
       ];
     }
     setChild(newChildren);
+  };
+
+  const updateSetName = (e: any) => {
+    e.preventDefault();
+    updateName(id, e.target.value);
   };
 
   const { data } = useQuery(L_GET_SET, {
@@ -165,8 +187,23 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
   else
     return (
       <Box className={is_set() ? classes.set : classes.item}>
-        {JSON.stringify(data?.getSet.items)}
-        {is_set() ? <h6>Set</h6> : <></>}
+        {JSON.stringify(data?.getSet)}
+        {is_set() ? (
+          <Grid container alignItems="flex-end" direction="row" spacing={1}>
+            <Grid item>
+              <InputLabel htmlFor="data">Set Name</InputLabel>
+              <OutlinedInput
+                id="data"
+                required
+                className={classes.formData}
+                defaultValue={"Set"}
+                onChange={updateSetName}
+              />
+            </Grid>
+          </Grid>
+        ) : (
+          <></>
+        )}
         {children.map((child) => child.item)}
         <Grid container alignItems="center" direction="row" spacing={1}>
           {is_set() ? (

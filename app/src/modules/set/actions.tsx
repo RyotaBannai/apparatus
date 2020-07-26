@@ -1,18 +1,21 @@
 import { makeVar, ReactiveVar } from "@apollo/client";
-import { Item, Items } from "../item/actions";
+import { Item, Items, itemOrUndefined } from "../item/actions";
 import * as _ from "lodash";
 
-interface Set {
+export interface Set {
   id: number;
+  name: string;
   items: Items;
 }
+
+type setOrUndefined = Set | undefined;
 
 interface addItem {
   id: number;
   item: Item & { update_data: string };
 }
 
-type Sets = Array<Set | undefined>;
+export type Sets = Array<Set | undefined>;
 
 export const Sets = makeVar<Sets>([]);
 
@@ -33,6 +36,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
           if (newItems.length !== 0)
             return {
               id,
+              name: set.name,
               items: newItems,
             };
         } else {
@@ -44,12 +48,11 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     return newItems.length;
   };
   const addItem = (newItem: addItem) => {
-    console.log(newItem);
     let item = newItem.item;
     let this_set: Set;
     let is_defined = if_set_defined(newItem.id);
     if (is_defined === undefined) {
-      this_set = { id: newItem.id, items: [] };
+      this_set = { id: newItem.id, name: "Set", items: [] };
       Sets([...Sets(), this_set]);
     } else {
       this_set = is_defined;
@@ -83,9 +86,10 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     }
     let updated_set: Set = {
       id: this_set.id,
+      name: this_set.name,
       items: newItems,
     };
-    let sets = Sets().map((set: Set | undefined) => {
+    let sets = Sets().map((set: setOrUndefined) => {
       if (set !== undefined && set.id == this_set.id) {
         return updated_set;
       } else {
@@ -94,5 +98,36 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     });
     Sets(sets);
   };
-  return { allSets, addItem, deleteItem };
+  const updateName = (id: number, name: string) => {
+    let sets = Sets().map((set: setOrUndefined) => {
+      if (set !== undefined && set.id == id) {
+        return {
+          id,
+          name,
+          items: set.items,
+        };
+      } else {
+        return set;
+      }
+    });
+    Sets(sets);
+  };
+  const filterSet = (): string => {
+    let set = allSets()
+      .filter((set: setOrUndefined) => set)
+      .map((set: setOrUndefined) => {
+        return {
+          ...set,
+          items: set?.items.filter((item: itemOrUndefined) => {
+            if (item instanceof Object && "data" in item && item["data"] !== "")
+              return true;
+            else return false;
+          }),
+        };
+      });
+    return JSON.stringify(set);
+  };
+  const cleanSet = () => Sets([]);
+
+  return { allSets, addItem, deleteItem, updateName, filterSet, cleanSet };
 }

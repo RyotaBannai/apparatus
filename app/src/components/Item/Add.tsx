@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { gql, useQuery, useMutation, ApolloError } from "@apollo/client";
 import { useSet } from "../../modules/set/actions";
 import { Button, Grid, Icon, Snackbar } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
@@ -31,12 +31,10 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {}
 
-const S_ADD_ITEM = gql`
-  mutation ADD_ITEM($data: String!, $type: String!) {
-    createItem(data: { data: $data, type: $type }) {
-      id
-      data
-      type
+const S_ADD_ITEMS = gql`
+  mutation ADD_ITEMS($data: String!) {
+    createItems(data: { data: $data }) {
+      res
     }
   }
 `;
@@ -45,14 +43,9 @@ const L_GET_SET = gql`
   {
     sets @client {
       id
+      name
       items
     }
-  }
-`;
-
-const L_CLEAN_ITEMS = gql`
-  mutation CLEAN_ITEMS {
-    cleanItems @client
   }
 `;
 
@@ -79,7 +72,7 @@ export const Add: React.FC<Props> = () => {
       item: <ApparatusSet id={counter.uuid} />,
     },
   ];
-  const { allSets } = useSet();
+  const { filterSet, cleanSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
@@ -100,6 +93,7 @@ export const Add: React.FC<Props> = () => {
         },
       ];
     } else {
+      setChild([]);
       newChildren = [
         {
           id: takeId(),
@@ -111,10 +105,32 @@ export const Add: React.FC<Props> = () => {
   };
   const { data } = useQuery(L_GET_SET);
   const [
-    s_addItem,
+    s_addItems,
     { loading: sa_loading, error: sa_error, called: sa_called },
-  ] = useMutation(S_ADD_ITEM);
-  const [l_cleanItems] = useMutation(L_CLEAN_ITEMS);
+  ] = useMutation(S_ADD_ITEMS, {
+    onCompleted({ createItems: { res } }) {
+      if (res === "Success") {
+        cleanSet();
+        callSetChild(null);
+        setOpen(true);
+      } else {
+        console.log(
+          "Apollo mutation createItems response's status is unexpected."
+        );
+      }
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
+  const sendItems = (e: any) => {
+    e.preventDefault();
+    let jsoned_set = filterSet();
+    s_addItems({
+      variables: { data: jsoned_set },
+    });
+  };
 
   useEffect(() => {
     if (data.sets.length > 0) {
@@ -180,36 +196,7 @@ export const Add: React.FC<Props> = () => {
             endIcon={<Icon>arrow_right</Icon>}
             disableRipple
             disableTouchRipple
-            onClick={(e) => {
-              e.preventDefault();
-              from(data.items)
-                .pipe(
-                  map((item) => {
-                    _.unset(item, "__typename");
-                    return item;
-                  })
-                )
-                .subscribe({
-                  next(variables) {
-                    if (
-                      variables instanceof Object &&
-                      "data" in variables &&
-                      variables["data"] !== ""
-                    )
-                      s_addItem({
-                        variables,
-                      });
-                  },
-                  error(err) {
-                    console.log(`Rxjs at Item Add component. ${err}`);
-                  },
-                  complete() {
-                    l_cleanItems();
-                    callSetChild(null);
-                    setOpen(true);
-                  },
-                });
-            }}
+            onClick={sendItems}
           >
             Save Item
           </Button>
