@@ -33,7 +33,6 @@ export class User extends Base {
   @Column({ nullable: true })
   passwordHash?: string; //  @Column({ select: false })
 
-  //@Field()
   @OneToOne((type) => UserMeta, (user_meta) => user_meta.user, {
     cascade: true,
   })

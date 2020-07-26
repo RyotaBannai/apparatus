@@ -5,13 +5,9 @@ import { ItemResolver } from "./modules/item/ItemResolver";
 import { UserResolver } from "./modules/user/UserResolver";
 import { jwtMiddleware } from "./entity/User";
 import { customAuthChecker } from "./entity/User";
-import { ApolloServer, AuthenticationError } from "apollo-server-express";
+import { ApolloServer } from "apollo-server-express";
 import cors from "cors";
-import helmet from "helmet";
 import express from "express";
-import path from "path";
-import passport from "passport";
-import * as passportJWT from "passport-jwt";
 
 const main = async () => {
   const options = await getConnectionOptions(
@@ -29,7 +25,7 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res }) => {
-      jwtMiddleware(req, res);
+      //jwtMiddleware(req, res);
     },
   });
 

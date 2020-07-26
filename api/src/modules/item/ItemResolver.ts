@@ -10,7 +10,13 @@ import {
   Root,
   createParamDecorator,
 } from "type-graphql";
-import { Item, addItemInput, GetItemArgs } from "../../entity/Item";
+import {
+  Item,
+  Response,
+  addItemInput,
+  addItemInputs,
+  GetItemArgs,
+} from "../../entity/Item";
 import { Context } from "vm";
 import { List } from "../../entity/List";
 import { ItemList } from "../../entity/ItemList";
@@ -27,6 +33,27 @@ export class ItemResolver {
     console.log(ctx); // { _extensionStack: GraphQLExtensionStack { extensions: [] } }
     const new_item = Item.create(newItemData);
     return await new_item.save();
+  }
+
+  @Mutation(() => Response)
+  async createItems(
+    @Arg("data") newItemData: addItemInputs // client should use data as key and value of object te same as addItemInput type
+    // ): Promise<Item[]> {
+  ): Promise<Object> {
+    console.log(newItemData);
+    console.log(JSON.parse(newItemData.data));
+    //const new_item = Item.create(newItemData);
+    //return await new_item.save();
+    // .forEach((set: any) => {
+    //   set.items.forEach(
+    //     (item: itemOrUndefined) =>
+    //       (itemsInShape = [
+    //         ...itemsInShape,
+    //         { ...item, set_id: set.id, set_name: set.name },
+    //       ])
+    //   );
+    // })
+    return { res: "ok" };
   }
 
   @Mutation(() => Item)

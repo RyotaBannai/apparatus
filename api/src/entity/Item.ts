@@ -13,8 +13,9 @@ import { Min, Max } from "class-validator";
 import { Base } from "./Base";
 import { UserMeta } from "./UserMeta";
 import { ItemList } from "./ItemList";
+import { ItemSet } from "./ItemSet";
 import { List } from "./List";
-type ItemType = "word" | "phrase" | "sentence" | "quiz";
+type ItemType = "line" | "field" | "quiz";
 
 @ObjectType()
 @Entity()
@@ -32,8 +33,10 @@ export class Item extends Base {
   @JoinColumn()
   listConnector: ItemList[];
 
-  // @Column({ nullable: true })
-  // setConnector: ItemSet[]];
+  @Field((type) => [ItemSet])
+  @OneToMany((type) => ItemSet, (item_set) => item_set.item)
+  @JoinColumn()
+  setConnector: ItemSet[];
 
   @ManyToOne((type) => UserMeta, (user_meta) => user_meta.item)
   user_meta: UserMeta;
@@ -62,6 +65,12 @@ export class addItemInput implements Partial<Item> {
   type: ItemType;
 }
 
+@InputType({ description: "New items data" })
+export class addItemInputs implements Partial<Item> {
+  @Field((type) => String, { nullable: true })
+  data: string;
+}
+
 @ArgsType()
 export class GetItemArgs {
   @Field((type) => Int, { nullable: true })
@@ -84,4 +93,10 @@ export class GetItemArgs {
   get endIndex(): number {
     return this.startIndex + this.take;
   }
+}
+
+@ObjectType()
+export class Response {
+  @Field((type) => String)
+  res: string;
 }
