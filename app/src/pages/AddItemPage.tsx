@@ -15,15 +15,6 @@ const item_query = gql`
   }
 `;
 
-const set_query = gql`
-  query SetQuery {
-    sets @client {
-      id
-      items
-    }
-  }
-`;
-
 const resolvers = {
   Mutation: {
     deleteItem: (_root: any, variables: any, { cache, getCacheKey }: any) => {

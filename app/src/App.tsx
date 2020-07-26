@@ -25,10 +25,11 @@ const cache = new InMemoryCache({
   typePolicies: {
     Query: {
       fields: {
-        sets: {
-          read() {
-            return Sets();
-          },
+        sets() {
+          return Sets();
+        },
+        getSet(name: string, { args }) {
+          return Sets().find((set) => set?.id === args?.id);
         },
       },
     },

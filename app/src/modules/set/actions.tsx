@@ -25,10 +25,11 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     }
   };
   const deleteItem = (id: number, item_id: number) => {
+    let newItems = [];
     let sets = Sets()
       .map((set: Set | undefined) => {
         if (set !== undefined && set.id == id) {
-          let newItems = set.items.filter((item: Item) => item.id !== item_id);
+          newItems = set.items.filter((item: Item) => item.id !== item_id);
           if (newItems.length !== 0)
             return {
               id,
@@ -40,6 +41,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
       })
       .filter((set: any) => set);
     Sets(sets);
+    return newItems.length;
   };
   const addItem = (newItem: addItem) => {
     console.log(newItem);

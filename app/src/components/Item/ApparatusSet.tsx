@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
-import { Button, Grid, Icon } from "@material-ui/core";
+import { Button, Grid, Icon, Tooltip, Box } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ApparatusItem } from "./ApparatusItem";
 import cyan from "@material-ui/core/colors/cyan";
+import indigo from "@material-ui/core/colors/indigo";
+import grey from "@material-ui/core/colors/grey";
 import * as _ from "lodash";
 import { from } from "rxjs";
 import { tap, map } from "rxjs/operators";
@@ -21,12 +23,39 @@ const useStyles = makeStyles((theme: Theme) =>
         outlineColor: cyan[800],
       },
     },
+    toSet: {
+      cursor: "pointer",
+      color: cyan[700],
+      "&:hover": {
+        color: cyan[800],
+      },
+      "&:focus": {
+        color: cyan[800],
+      },
+    },
+    set: {
+      backgroundColor: indigo[50],
+      padding: theme.spacing(1),
+      margin: theme.spacing(1),
+      borderRadius: 5,
+      border: `2px solid ${indigo[100]}`,
+    },
+    item: {
+      backgroundColor: grey[100],
+      padding: theme.spacing(1),
+      margin: theme.spacing(1),
+      borderRadius: 5,
+      border: `2px solid ${grey[200]}`,
+    },
+    addItemHugeButton: {
+      paddingTop: `${theme.spacing(3)}px !important`,
+    },
   })
 );
 
-const L_GET_ITEM_By_SET = gql`
-  query Items_By_Set($id: Float!) {
-    items_of_set(id: $id) @client {
+const L_GET_SET = gql`
+  query GET_SET($id: Float!) {
+    getSet(id: $id) @client {
       id
       items
     }
@@ -55,10 +84,11 @@ interface Props {
 
 export const ApparatusSet: React.FC<Props> = ({ id }) => {
   const classes = useStyles();
+  const [show, setShow] = useState<boolean>(true);
   let default_form: any[] = [
     {
       id: takeId(),
-      item: <ApparatusItem set_id={id} id={counter.uuid} />,
+      item: <ApparatusItem set_id={id} id={counter.uuid} hideSet={setShow} />,
     },
   ];
   const [children, setChild] = useState<Array<any>>([]);
@@ -70,21 +100,29 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
         ..._children,
         {
           id: takeId(),
-          item: <ApparatusItem set_id={id} id={counter.uuid} />,
+          item: (
+            <ApparatusItem set_id={id} id={counter.uuid} hideSet={setShow} />
+          ),
         },
       ];
     } else {
       newChildren = [
         {
           id: takeId(),
-          item: <ApparatusItem set_id={id} id={counter.uuid} />,
+          item: (
+            <ApparatusItem set_id={id} id={counter.uuid} hideSet={setShow} />
+          ),
         },
       ];
     }
     setChild(newChildren);
   };
 
-  //const { data } = useQuery(L_GET_ITEM_OF_SET);
+  const { data } = useQuery(L_GET_SET, {
+    variables: {
+      id,
+    },
+  });
 
   useEffect(() => {
     //   if (data.items.length > 0) {
@@ -122,28 +160,47 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
     //   }
   }, []);
 
-  return (
-    <div>
-      <h6>Set</h6>
-      {/* {JSON.stringify(data)} */}
-      {children.map((child) => child.item)}
-      <Grid container alignItems="center" direction="row" spacing={1}>
-        <Grid item>
-          <Button
-            variant="contained"
-            className={classes.addButton}
-            startIcon={<Icon>add_circle</Icon>}
-            disableRipple
-            disableTouchRipple
-            onClick={(e) => {
-              e.preventDefault();
-              callSetChild(children);
-            }}
-          >
-            Add Item
-          </Button>
+  const is_set = () => data?.getSet.items.length > 1;
+  if (!show) return <></>;
+  else
+    return (
+      <Box className={is_set() ? classes.set : classes.item}>
+        {JSON.stringify(data?.getSet.items)}
+        {is_set() ? <h6>Set</h6> : <></>}
+        {children.map((child) => child.item)}
+        <Grid container alignItems="center" direction="row" spacing={1}>
+          {is_set() ? (
+            <Grid item className={classes.addItemHugeButton}>
+              <Button
+                variant="contained"
+                className={classes.addButton}
+                startIcon={<Icon>add_circle</Icon>}
+                disableRipple
+                disableTouchRipple
+                onClick={(e) => {
+                  e.preventDefault();
+                  callSetChild(children);
+                }}
+              >
+                Add Item To Set
+              </Button>
+            </Grid>
+          ) : (
+            <Grid item>
+              <Tooltip title="To Set" placement="top">
+                <Icon
+                  className={classes.toSet}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    callSetChild(children);
+                  }}
+                >
+                  add_box
+                </Icon>
+              </Tooltip>
+            </Grid>
+          )}
         </Grid>
-      </Grid>
-    </div>
-  );
+      </Box>
+    );
 };
