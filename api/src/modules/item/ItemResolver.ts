@@ -10,6 +10,7 @@ import {
   Root,
   createParamDecorator,
 } from "type-graphql";
+import { getRepository } from "typeorm";
 import {
   Item,
   Response,
@@ -18,6 +19,8 @@ import {
   GetItemArgs,
 } from "../../entity/Item";
 import { Context } from "vm";
+import { Set } from "../../entity/Set";
+import { ItemSet } from "../../entity/ItemSet";
 import { List } from "../../entity/List";
 import { ItemList } from "../../entity/ItemList";
 
@@ -27,7 +30,7 @@ export class ItemResolver {
 
   @Mutation(() => Item)
   async createItem(
-    @Arg("data") newItemData: addItemInput, // client should use data as key and value of object te same as addItemInput type
+    @Arg("data") newItemData: addItemInput, // client should use data as key and value of object to same as addItemInput type
     @Ctx() ctx: Context
   ): Promise<Item> {
     console.log(ctx); // { _extensionStack: GraphQLExtensionStack { extensions: [] } }
@@ -36,24 +39,34 @@ export class ItemResolver {
   }
 
   @Mutation(() => Response)
-  async createItems(
-    @Arg("data") newItemData: addItemInputs // client should use data as key and value of object te same as addItemInput type
-    // ): Promise<Item[]> {
-  ): Promise<Object> {
-    console.log(newItemData);
-    console.log(JSON.parse(newItemData.data));
-    //const new_item = Item.create(newItemData);
-    //return await new_item.save();
-    // .forEach((set: any) => {
-    //   set.items.forEach(
-    //     (item: itemOrUndefined) =>
-    //       (itemsInShape = [
-    //         ...itemsInShape,
-    //         { ...item, set_id: set.id, set_name: set.name },
-    //       ])
-    //   );
-    // })
-    return { res: "ok" };
+  async createItems(@Arg("data") newItemData: addItemInputs): Promise<Object> {
+    let sets = JSON.parse(newItemData.data);
+    for (const { name, items } of sets) {
+      if (items.length > 1) {
+        let new_set: Set = Set.create({ name: name });
+        await new_set.save();
+        for (const item of items) {
+          let new_item: Item = Item.create({
+            data: item.data,
+            type: item.type,
+          });
+          await new_item.save();
+          let new_item_set: ItemSet = new ItemSet();
+          new_item_set.item = new_item;
+          new_item_set.set = new_set;
+          await getRepository(ItemSet).save(new_item_set);
+        }
+      } else {
+        for (const item of items) {
+          let new_item: Item = Item.create({
+            data: item.data,
+            type: item.type,
+          });
+          await new_item.save();
+        }
+      }
+    }
+    return { res: "Success" };
   }
 
   @Mutation(() => Item)
