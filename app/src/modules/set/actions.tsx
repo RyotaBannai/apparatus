@@ -4,7 +4,7 @@ import * as _ from "lodash";
 
 interface Set {
   id: number;
-  items?: Items;
+  items: Items;
 }
 
 interface addItem {
@@ -12,7 +12,7 @@ interface addItem {
   item: Item & { update_data: string };
 }
 
-type Sets = Set[];
+type Sets = Array<Set | undefined>;
 
 export const Sets = makeVar<Sets>([]);
 
@@ -23,6 +23,23 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     if (if_set_defined(newSet.id) === undefined) {
       Sets([...Sets(), newSet]);
     }
+  };
+  const deleteItem = (id: number, item_id: number) => {
+    let sets = Sets()
+      .map((set: Set | undefined) => {
+        if (set !== undefined && set.id == id) {
+          let newItems = set.items.filter((item: Item) => item.id !== item_id);
+          if (newItems.length !== 0)
+            return {
+              id,
+              items: newItems,
+            };
+        } else {
+          return set;
+        }
+      })
+      .filter((set: any) => set);
+    Sets(sets);
   };
   const addItem = (newItem: addItem) => {
     console.log(newItem);
@@ -46,8 +63,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
         type: item.type ?? "line", // null or undefined
         data: item.data ?? "",
       };
-      newItems =
-        this_set.items !== undefined ? [...this_set.items, newItem] : [newItem];
+      newItems = [...this_set.items, newItem];
     } else {
       let updated_item: Item;
       if (item.update_data === "type") {
@@ -55,23 +71,20 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
       } else {
         updated_item = { ...this_item, data: item.data };
       }
-      newItems =
-        this_set.items !== undefined
-          ? this_set.items.map((_item: Item) => {
-              if (_item.id == item.id) {
-                return updated_item;
-              } else {
-                return _item;
-              }
-            })
-          : this_set.items;
+      newItems = this_set.items.map((_item: Item) => {
+        if (_item.id == item.id) {
+          return updated_item;
+        } else {
+          return _item;
+        }
+      });
     }
     let updated_set: Set = {
       id: this_set.id,
       items: newItems,
     };
-    let sets = Sets().map((set: Set) => {
-      if (set.id == this_set.id) {
+    let sets = Sets().map((set: Set | undefined) => {
+      if (set !== undefined && set.id == this_set.id) {
         return updated_set;
       } else {
         return set;
@@ -79,5 +92,5 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     });
     Sets(sets);
   };
-  return { allSets, addItem };
+  return { allSets, addItem, deleteItem };
 }

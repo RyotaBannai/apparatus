@@ -58,7 +58,7 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
   let default_form: any[] = [
     {
       id: takeId(),
-      item: <ApparatusItem setId={id} id={counter.uuid} />,
+      item: <ApparatusItem set_id={id} id={counter.uuid} />,
     },
   ];
   const [children, setChild] = useState<Array<any>>([]);
@@ -70,14 +70,14 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
         ..._children,
         {
           id: takeId(),
-          item: <ApparatusItem setId={id} id={counter.uuid} />,
+          item: <ApparatusItem set_id={id} id={counter.uuid} />,
         },
       ];
     } else {
       newChildren = [
         {
           id: takeId(),
-          item: <ApparatusItem setId={id} id={counter.uuid} />,
+          item: <ApparatusItem set_id={id} id={counter.uuid} />,
         },
       ];
     }

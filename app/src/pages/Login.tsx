@@ -1,7 +1,6 @@
 import React from "react";
-import { useLazyQuery, useApolloClient } from "@apollo/react-hooks";
-import { ApolloClient, ApolloError } from "apollo-client";
-import gql from "graphql-tag";
+import { gql, useLazyQuery } from "@apollo/client";
+import { ApolloError } from "apollo-client";
 import {
   Button,
   InputLabel,
@@ -29,7 +28,6 @@ interface Props {}
 export const Login: React.FC<Props> = () => {
   let email: any = "";
   let password: any = "";
-  const client: ApolloClient<any> = useApolloClient();
   const [login, { called, loading, data }] = useLazyQuery(LOGIN, {
     onCompleted({ login }) {
       if (login.length > 1) {
@@ -37,7 +35,6 @@ export const Login: React.FC<Props> = () => {
         return;
       }
       localStorage.setItem("token", login[0].token as string);
-      client.writeData({ data: { isLoggedIn: true } });
     },
     onError(error: ApolloError) {
       console.log(error);

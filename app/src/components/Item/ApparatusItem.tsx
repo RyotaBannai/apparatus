@@ -74,7 +74,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface Props {
-  setId: number;
+  set_id: number;
   id: number;
   type?: string;
   data?: string;
@@ -82,20 +82,36 @@ interface Props {
 }
 
 export const ApparatusItem: React.FC<Props> = ({
-  setId,
+  set_id,
   id,
   type,
   data,
   belongToSet = false,
 }) => {
   const classes = useStyles();
-  const { addItem } = useSet();
+  const { addItem, deleteItem } = useSet();
   const [l_addItem] = useMutation(L_ADD_ITEM);
   const [show, setShow] = useState<boolean>(true);
   const [
     l_deleteItem,
     { loading: ld_loading, error: ld_error, called: ld_called },
   ] = useMutation(L_DELETE_ITEM);
+
+  const onChangeType = (e: any) => applyChange(e, "type");
+  const onChangeData = (e: any) => applyChange(e, "data");
+  const applyChange = (e: any, update_data: string) => {
+    e.preventDefault();
+    const update_key = update_data === "type" ? "type" : "data";
+    let item: any = {
+      id: id,
+      [update_key]: e.target.value,
+      update_data: update_data,
+    };
+    addItem({
+      id: set_id,
+      item,
+    });
+  };
 
   if (!show) return <></>;
   else
@@ -110,18 +126,7 @@ export const ApparatusItem: React.FC<Props> = ({
             variant="outlined"
             autoWidth
             defaultValue={type ?? "line"}
-            onChange={(e: any) => {
-              e.preventDefault();
-              let variables: any = {
-                id: setId,
-                itemId: id,
-                type: e.target.value,
-                update_data: "type",
-              };
-              l_addItem({
-                variables,
-              });
-            }}
+            onChange={onChangeType}
           >
             <MenuItem value="line">Line</MenuItem>
             <MenuItem value="field">Field</MenuItem>
@@ -134,18 +139,7 @@ export const ApparatusItem: React.FC<Props> = ({
             required
             className={classes.formData}
             defaultValue={data ?? ""}
-            onChange={(e: any) => {
-              e.preventDefault();
-              let item: any = {
-                id: id,
-                data: e.target.value,
-                update_data: "data",
-              };
-              addItem({
-                id: setId,
-                item,
-              });
-            }}
+            onChange={onChangeData}
           />
         </Grid>
         {(() => {
@@ -180,12 +174,7 @@ export const ApparatusItem: React.FC<Props> = ({
               onClick={(e: any) => {
                 e.preventDefault();
                 setShow(!show);
-                let variables: { id: number } = {
-                  id,
-                };
-                l_deleteItem({
-                  variables,
-                });
+                deleteItem(set_id, id);
               }}
             >
               delete_forever

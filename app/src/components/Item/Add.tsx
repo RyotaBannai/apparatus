@@ -155,7 +155,7 @@ export const Add: React.FC<Props> = () => {
   return (
     <div>
       <h2>Add New Item</h2>
-      {JSON.stringify(data, null, 2)}
+      <pre>{JSON.stringify(data, null, 1)}</pre>
       {children.map((child) => child.item)}
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>
