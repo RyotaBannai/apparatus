@@ -78,21 +78,6 @@ const L_GET_SET = gql`
   }
 `;
 
-class Counter {
-  constructor(private _uuid: number = 0) {}
-  get uuid() {
-    return this._uuid;
-  }
-  set uuid(num) {
-    this._uuid = this._uuid + num;
-  }
-}
-const counter = new Counter();
-const takeId = () => {
-  counter.uuid = 1;
-  return counter.uuid;
-};
-
 interface Props {
   id: number;
   name?: string;
@@ -102,22 +87,19 @@ interface Props {
 export const ApparatusSet: React.FC<Props> = ({ id, name, items }) => {
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
-  let default_item: any[] = [
-    <ApparatusItem set_id={id} id={takeId()} hideSet={setShow} />,
-  ];
   const [children, setChild] = useState<Array<any>>([]);
-  const { updateName } = useSet();
+  const { takeIdForItem, updateName } = useSet();
 
   const callSetChild = (_children: Array<any> | null) => {
     let newChildren;
     if (_children instanceof Array) {
       newChildren = [
         ..._children,
-        <ApparatusItem set_id={id} id={takeId()} hideSet={setShow} />,
+        <ApparatusItem set_id={id} id={takeIdForItem(id)} hideSet={setShow} />,
       ];
     } else {
       newChildren = [
-        <ApparatusItem set_id={id} id={takeId()} hideSet={setShow} />,
+        <ApparatusItem set_id={id} id={takeIdForItem(id)} hideSet={setShow} />,
       ];
     }
     setChild(newChildren);
@@ -152,7 +134,7 @@ export const ApparatusSet: React.FC<Props> = ({ id, name, items }) => {
       }
       setChild(old_items);
     } else {
-      setChild(default_item);
+      callSetChild(null);
     }
   }, []);
 

@@ -128,6 +128,18 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     return JSON.stringify(set);
   };
   const cleanSet = () => Sets([]);
+  const takeId = () => Sets().length;
+  const takeIdForItem = (set_id: number) =>
+    Sets().find((set: setOrUndefined) => set?.id === set_id)?.items.length ?? 0;
 
-  return { allSets, addItem, deleteItem, updateName, filterSet, cleanSet };
+  return {
+    allSets,
+    addItem,
+    deleteItem,
+    updateName,
+    filterSet,
+    cleanSet,
+    takeId,
+    takeIdForItem,
+  };
 }

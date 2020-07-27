@@ -49,25 +49,9 @@ const L_GET_SET = gql`
   }
 `;
 
-class Counter {
-  constructor(private _uuid: number = 0) {}
-  get uuid() {
-    return this._uuid;
-  }
-  set uuid(num) {
-    this._uuid = this._uuid + num;
-  }
-}
-const counter = new Counter();
-const takeId = () => {
-  counter.uuid = 1;
-  return counter.uuid;
-};
-
 export const Add: React.FC<Props> = () => {
   const classes = useStyles();
-  let default_set: any[] = [<ApparatusSet id={takeId()} />];
-  const { filterSet, cleanSet } = useSet();
+  const { takeId, filterSet, cleanSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
@@ -126,7 +110,7 @@ export const Add: React.FC<Props> = () => {
       }
       setChild(old_sets);
     } else {
-      setChild(default_set);
+      callSetChild(null);
     }
   }, []);
 
