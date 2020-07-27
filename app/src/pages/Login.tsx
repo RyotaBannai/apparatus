@@ -78,7 +78,6 @@ export const Login: React.FC<Props> = () => {
               color="primary"
               endIcon={<Icon>arrow_right</Icon>}
               onClick={(e: any) => {
-                console.log("clicked");
                 e.preventDefault();
                 let variables: any = {
                   email: email.value,

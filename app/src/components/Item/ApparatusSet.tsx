@@ -95,17 +95,15 @@ const takeId = () => {
 
 interface Props {
   id: number;
+  name?: string;
   items?: Array<any>;
 }
 
-export const ApparatusSet: React.FC<Props> = ({ id }) => {
+export const ApparatusSet: React.FC<Props> = ({ id, name, items }) => {
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
-  let default_form: any[] = [
-    {
-      id: takeId(),
-      item: <ApparatusItem set_id={id} id={counter.uuid} hideSet={setShow} />,
-    },
+  let default_item: any[] = [
+    <ApparatusItem set_id={id} id={takeId()} hideSet={setShow} />,
   ];
   const [children, setChild] = useState<Array<any>>([]);
   const { updateName } = useSet();
@@ -115,21 +113,11 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
     if (_children instanceof Array) {
       newChildren = [
         ..._children,
-        {
-          id: takeId(),
-          item: (
-            <ApparatusItem set_id={id} id={counter.uuid} hideSet={setShow} />
-          ),
-        },
+        <ApparatusItem set_id={id} id={takeId()} hideSet={setShow} />,
       ];
     } else {
       newChildren = [
-        {
-          id: takeId(),
-          item: (
-            <ApparatusItem set_id={id} id={counter.uuid} hideSet={setShow} />
-          ),
-        },
+        <ApparatusItem set_id={id} id={takeId()} hideSet={setShow} />,
       ];
     }
     setChild(newChildren);
@@ -147,39 +135,25 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
   });
 
   useEffect(() => {
-    //   if (data.items.length > 0) {
-    //     let newChildren: any[] = [];
-    //     from(data.items)
-    //       .pipe(
-    //         map((item) => {
-    //           _.unset(item, "__typename");
-    //           return item;
-    //         })
-    //       )
-    //       .subscribe({
-    //         next(item) {
-    //           if (item instanceof Object && "id" in item) {
-    //             newChildren = [
-    //               ...newChildren,
-    //               {
-    //                 id: item["id"],
-    //                 item: (
-    //                   <ApparatusItem {...item} L_ADD_ITEM={L_ADD_ITEM} />
-    //                 ),
-    //               },
-    //             ];
-    //           }
-    //         },
-    //         error(err) {
-    //           console.log(`Rxjs at Item Add component. ${err}`);
-    //         },
-    //         complete() {
-    //           setChild(newChildren);
-    //         },
-    //       });
-    //   } else {
-    setChild(default_form);
-    //   }
+    if (items !== undefined) {
+      let old_items: any[] = [];
+      for (const item of items) {
+        console.log(item);
+        old_items = [
+          ...old_items,
+          <ApparatusItem
+            set_id={id}
+            id={item.id}
+            type={item.type}
+            data={item.data}
+            hideSet={setShow}
+          />,
+        ];
+      }
+      setChild(old_items);
+    } else {
+      setChild(default_item);
+    }
   }, []);
 
   const is_set = () => data?.getSet.items.length > 1;
@@ -196,7 +170,7 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
                 id="data"
                 required
                 className={classes.formData}
-                defaultValue={"Set"}
+                defaultValue={name ?? "Set"}
                 onChange={updateSetName}
               />
             </Grid>
@@ -204,7 +178,7 @@ export const ApparatusSet: React.FC<Props> = ({ id }) => {
         ) : (
           <></>
         )}
-        {children.map((child) => child.item)}
+        {children.map((child) => child)}
         <Grid container alignItems="center" direction="row" spacing={1}>
           {is_set() ? (
             <Grid item className={classes.addItemHugeButton}>

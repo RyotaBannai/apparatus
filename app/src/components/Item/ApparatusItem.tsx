@@ -91,7 +91,7 @@ export const ApparatusItem: React.FC<Props> = ({
     if (left_items === 0) hideSet(false);
   };
   useEffect(() => {
-    setChange("type", "line");
+    if (type === undefined && data === undefined) setChange("type", "line");
   }, []);
 
   if (!show) return <></>;

@@ -66,12 +66,7 @@ const takeId = () => {
 
 export const Add: React.FC<Props> = () => {
   const classes = useStyles();
-  let default_form: any[] = [
-    {
-      id: takeId(),
-      item: <ApparatusSet id={counter.uuid} />,
-    },
-  ];
+  let default_set: any[] = [<ApparatusSet id={takeId()} />];
   const { filterSet, cleanSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
@@ -85,21 +80,10 @@ export const Add: React.FC<Props> = () => {
   const callSetChild = (_children: Array<any> | null) => {
     let newChildren;
     if (_children instanceof Array) {
-      newChildren = [
-        ..._children,
-        {
-          id: takeId(),
-          item: <ApparatusSet id={counter.uuid} />,
-        },
-      ];
+      newChildren = [..._children, <ApparatusSet id={takeId()} />];
     } else {
       setChild([]);
-      newChildren = [
-        {
-          id: takeId(),
-          item: <ApparatusSet id={counter.uuid} />,
-        },
-      ];
+      newChildren = [<ApparatusSet id={takeId()} />];
     }
     setChild(newChildren);
   };
@@ -134,35 +118,15 @@ export const Add: React.FC<Props> = () => {
 
   useEffect(() => {
     if (data.sets.length > 0) {
-      let newChildren: any[] = [];
-      from(data.sets)
-        .pipe(
-          map((item) => {
-            _.unset(item, "__typename");
-            return item;
-          })
-        )
-        .subscribe({
-          next(item) {
-            if (item instanceof Object && "id" in item) {
-              newChildren = [
-                ...newChildren,
-                {
-                  id: item["id"],
-                  item: <ApparatusSet {...item} />,
-                },
-              ];
-            }
-          },
-          error(err) {
-            console.log(`Rxjs at Item Add component. ${err}`);
-          },
-          complete() {
-            setChild(newChildren);
-          },
-        });
+      let old_sets: any[] = [];
+      for (const set of data.sets) {
+        if (set instanceof Object && "id" in set) {
+          old_sets = [...old_sets, <ApparatusSet {...set} />];
+        }
+      }
+      setChild(old_sets);
     } else {
-      setChild(default_form);
+      setChild(default_set);
     }
   }, []);
 
@@ -171,8 +135,8 @@ export const Add: React.FC<Props> = () => {
   return (
     <div>
       <h2>Add New Item</h2>
-      <pre>{JSON.stringify(data, null, 1)}</pre>
-      {children.map((child) => child.item)}
+      {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
+      {children.map((child) => child)}
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>
           <Button
