@@ -95,11 +95,11 @@ export const ApparatusSet: React.FC<Props> = ({ id, name, items }) => {
     if (_children instanceof Array) {
       newChildren = [
         ..._children,
-        <ApparatusItem set_id={id} id={takeIdForItem(id)} hideSet={setShow} />,
+        <ApparatusItem set_id={id} id={takeIdForItem()} hideSet={setShow} />,
       ];
     } else {
       newChildren = [
-        <ApparatusItem set_id={id} id={takeIdForItem(id)} hideSet={setShow} />,
+        <ApparatusItem set_id={id} id={takeIdForItem()} hideSet={setShow} />,
       ];
     }
     setChild(newChildren);

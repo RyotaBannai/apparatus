@@ -18,6 +18,8 @@ interface addItem {
 export type Sets = Array<Set | undefined>;
 
 export const Sets = makeVar<Sets>([]);
+export const setCount = makeVar<number>(0);
+export const itemCount = makeVar<number>(0);
 
 export function useSet(sets: ReactiveVar<Sets> = Sets) {
   const allSets = () => Sets();
@@ -128,9 +130,8 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     return JSON.stringify(set);
   };
   const cleanSet = () => Sets([]);
-  const takeId = () => Sets().length;
-  const takeIdForItem = (set_id: number) =>
-    Sets().find((set: setOrUndefined) => set?.id === set_id)?.items.length ?? 0;
+  const takeId = () => setCount(setCount() + 1) && setCount();
+  const takeIdForItem = () => itemCount(itemCount() + 1) && itemCount();
 
   return {
     allSets,
