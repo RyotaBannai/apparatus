@@ -7,50 +7,18 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
+  TextField,
   Tooltip,
 } from "@material-ui/core";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import blueGrey from "@material-ui/core/colors/blueGrey";
-import grey from "@material-ui/core/colors/grey";
-import indigo from "@material-ui/core/colors/indigo";
-import cyan from "@material-ui/core/colors/cyan";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    formType: {
-      minWidth: 80,
-      "& div": {
-        padding: theme.spacing(1),
-      },
-    },
-    formData: {
-      minWidth: 120,
-      "& input": {
-        padding: theme.spacing(1),
-      },
-    },
-    deleteForm: {
-      cursor: "pointer",
-      color: blueGrey[800],
-    },
-    toSet: {
-      cursor: "pointer",
-      color: cyan[700],
-      "&:hover": {
-        color: cyan[800],
-      },
-      "&:focus": {
-        color: cyan[800],
-      },
-    },
-  })
-);
+import { useStyles } from "../../assets/style/item/item.style";
 
 interface Props {
   set_id: number;
   id: number;
   type?: string;
   data?: string;
+  description?: string;
+  note?: string;
   hideSet: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -59,27 +27,28 @@ export const ApparatusItem: React.FC<Props> = ({
   id,
   type,
   data,
+  description,
+  note,
   hideSet,
 }) => {
   const classes = useStyles();
-  const { addItem, deleteItem } = useSet();
+  const { addateItem, deleteItem } = useSet();
   const [show, setShow] = useState<boolean>(true);
-  const onChangeType = (e: any) => {
+  const onChangeType = (e: any) => handleEvent(e, "type");
+  const onChangeData = (e: any) => handleEvent(e, "data");
+  const onChangeDescription = (e: any) => handleEvent(e, "description");
+  const onChangeNote = (e: any) => handleEvent(e, "note");
+  const handleEvent = (e: any, form_name: string) => {
     e.preventDefault();
-    setChange("type", e.target.value);
-  };
-  const onChangeData = (e: any) => {
-    e.preventDefault();
-    setChange("data", e.target.value);
+    setChange(form_name, e.target.value);
   };
   const setChange = (update_data: string, value: string) => {
-    const update_key = update_data === "type" ? "type" : "data";
     let item: any = {
       id: id,
-      [update_key]: value,
+      [update_data]: value,
       update_data: update_data,
     };
-    addItem({
+    addateItem({
       id: set_id,
       item,
     });
@@ -97,39 +66,69 @@ export const ApparatusItem: React.FC<Props> = ({
   if (!show) return <></>;
   else
     return (
-      <Grid container alignItems="flex-end" direction="row" spacing={1}>
-        <Grid item>
-          <InputLabel htmlFor="type">Type</InputLabel>
-          <Select
-            id="type"
-            required
-            className={classes.formType}
-            variant="outlined"
-            autoWidth
-            defaultValue={type ?? "line"}
-            onChange={onChangeType}
-          >
-            <MenuItem value="line">Line</MenuItem>
-            <MenuItem value="field">Field</MenuItem>
-          </Select>
+      <div className={classes.item}>
+        <Grid container alignItems="flex-end" direction="row" spacing={1}>
+          <Grid item>
+            <InputLabel htmlFor="type">Type</InputLabel>
+            <Select
+              id="type"
+              required
+              variant="outlined"
+              autoWidth
+              defaultValue={type ?? "line"}
+              className={classes.formType}
+              onChange={onChangeType}
+            >
+              <MenuItem value="line">Line</MenuItem>
+              <MenuItem value="field">Field</MenuItem>
+            </Select>
+          </Grid>
+          <Grid item>
+            <InputLabel htmlFor="data">Data</InputLabel>
+            <OutlinedInput
+              id="data"
+              required
+              defaultValue={data ?? ""}
+              className={classes.formData}
+              onChange={onChangeData}
+            />
+          </Grid>
         </Grid>
-        <Grid item>
-          <InputLabel htmlFor="data">Data</InputLabel>
-          <OutlinedInput
-            id="data"
-            required
-            className={classes.formData}
-            defaultValue={data ?? ""}
-            onChange={onChangeData}
-          />
+        <Grid container alignItems="flex-end" direction="row" spacing={1}>
+          <Grid item>
+            <InputLabel htmlFor="description">Description</InputLabel>
+            <TextField
+              id="description"
+              multiline
+              rowsMax={4}
+              variant="outlined"
+              defaultValue={description ?? ""}
+              className={classes.description}
+              onChange={onChangeDescription}
+            />
+          </Grid>
         </Grid>
-        <Grid item>
-          <Tooltip title="Delete" placement="top">
-            <Icon className={classes.deleteForm} onClick={onDeleteItem}>
-              delete_forever
-            </Icon>
-          </Tooltip>
+        <Grid container alignItems="flex-end" direction="row" spacing={1}>
+          <Grid item>
+            <InputLabel htmlFor="note">Note</InputLabel>
+            <TextField
+              id="note"
+              multiline
+              rowsMax={4}
+              variant="outlined"
+              defaultValue={note ?? ""}
+              className={classes.note}
+              onChange={onChangeNote}
+            />
+          </Grid>
+          <Grid item>
+            <Tooltip title="Delete" placement="top">
+              <Icon className={classes.deleteForm} onClick={onDeleteItem}>
+                delete_forever
+              </Icon>
+            </Tooltip>
+          </Grid>
         </Grid>
-      </Grid>
+      </div>
     );
 };

@@ -49,7 +49,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     Sets(sets);
     return newItems.length;
   };
-  const addItem = (newItem: addItem) => {
+  const addateItem = (newItem: addItem) => {
     let item = newItem.item;
     let this_set: Set;
     let is_defined = if_set_defined(newItem.id);
@@ -69,15 +69,27 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
         id: item.id,
         type: item.type ?? "line", // null or undefined
         data: item.data ?? "",
+        description: item.description ?? "",
+        note: item.note ?? "",
       };
       newItems = [...this_set.items, newItem];
     } else {
       let updated_item: Item;
       if (item.update_data === "type") {
         updated_item = { ...this_item, type: item.type };
-      } else {
+      } else if (item.update_data === "data") {
         updated_item = { ...this_item, data: item.data };
+      } else if (item.update_data === "description") {
+        updated_item = { ...this_item, description: item.description };
+      } else if (item.update_data === "note") {
+        updated_item = { ...this_item, note: item.note };
+      } else if (item.update_data === "companion") {
+        /* TODO: quiz, highlight, etc. conditionals will be written in here. */
+        updated_item = { ...this_item, note: item.note };
+      } else {
+        console.log("error: addateItem receive an unexpected type of data.");
       }
+
       newItems = this_set.items.map((_item: Item) => {
         if (_item.id == item.id) {
           return updated_item;
@@ -135,7 +147,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
 
   return {
     allSets,
-    addItem,
+    addateItem,
     deleteItem,
     updateName,
     filterSet,

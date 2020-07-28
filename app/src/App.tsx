@@ -35,13 +35,14 @@ const cache = new InMemoryCache({
     },
   },
 });
-
-const httpLink = new HttpLink({ uri: "http://localhost:4000/graphql" });
+const uri = "http://localhost:4000/graphql";
+const httpLink = new HttpLink({ uri });
 const authMiddleware = new ApolloLink((operation, forward) => {
+  let token = localStorage.getItem("token");
   operation.setContext(({ headers = {} }) => ({
     headers: {
       ...headers,
-      authorization: localStorage.getItem("token") || null,
+      authorization: token ? `Bearer ${token}` : "",
     },
   }));
 

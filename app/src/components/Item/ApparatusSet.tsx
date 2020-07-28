@@ -123,13 +123,7 @@ export const ApparatusSet: React.FC<Props> = ({ id, name, items }) => {
         console.log(item);
         old_items = [
           ...old_items,
-          <ApparatusItem
-            set_id={id}
-            id={item.id}
-            type={item.type}
-            data={item.data}
-            hideSet={setShow}
-          />,
+          <ApparatusItem {...item} set_id={id} hideSet={setShow} />,
         ];
       }
       setChild(old_items);
