@@ -12,6 +12,7 @@ import {
 import { Min, Max } from "class-validator";
 import { Base } from "./Base";
 import { UserMeta } from "./UserMeta";
+import { ItemMeta } from "./ItemMeta";
 import { ItemList } from "./ItemList";
 import { ItemSet } from "./ItemSet";
 import { List } from "./List";
@@ -27,6 +28,11 @@ export class Item extends Base {
   @Field()
   @Column()
   type: ItemType; // should use graphql enum type
+
+  @Field((type) => ItemMeta)
+  @OneToMany((type) => ItemList, (item_meta) => item_meta.item)
+  @JoinColumn()
+  item_meta: ItemMeta;
 
   @Field((type) => [ItemList])
   @OneToMany((type) => ItemList, (item_list) => item_list.item)
