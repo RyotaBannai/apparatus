@@ -15,10 +15,16 @@ export const useStyles = makeStyles((theme: Theme) =>
         padding: theme.spacing(1),
       },
     },
-    formData: {
+    formDataLine: {
       minWidth: 260,
       "& input": {
         padding: theme.spacing(1),
+      },
+    },
+    formDataField: {
+      minWidth: 350,
+      "& textarea": {
+        minHeight: 125,
       },
     },
     description: {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
+import { gql, useQuery, useMutation } from "@apollo/client";
 import { useSet } from "../../modules/set/actions";
 import {
   Grid,
@@ -11,6 +12,15 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import { useStyles } from "../../assets/style/item/item.style";
+
+const L_GET_ITEM = gql`
+  query GET_ITEM($set_id: Float!, $id: Float!) {
+    getItem(set_id: $set_id, id: $id) @client {
+      type
+      data
+    }
+  }
+`;
 
 interface Props {
   set_id: number;
@@ -34,6 +44,13 @@ export const ApparatusItem: FC<Props> = ({
   const classes = useStyles();
   const { addateItem, deleteItem } = useSet();
   const [show, setShow] = useState<boolean>(true);
+  const { data: this_item } = useQuery(L_GET_ITEM, {
+    variables: {
+      set_id,
+      id,
+    },
+  });
+
   const onChangeType = (e: any) => handleEvent(e, "type");
   const onChangeData = (e: any) => handleEvent(e, "data");
   const onChangeDescription = (e: any) => handleEvent(e, "description");
@@ -67,40 +84,81 @@ export const ApparatusItem: FC<Props> = ({
   else
     return (
       <div className={classes.item}>
-        <Grid container alignItems="flex-end" direction="row" spacing={1}>
-          <Grid item>
-            <InputLabel htmlFor="type">Type</InputLabel>
-            <Select
-              id="type"
-              required
-              variant="outlined"
-              autoWidth
-              defaultValue={type ?? "line"}
-              className={classes.formType}
-              onChange={onChangeType}
-            >
-              <MenuItem value="line">Line</MenuItem>
-              <MenuItem value="field">Field</MenuItem>
-            </Select>
+        {this_item?.getItem?.type === "line" ? (
+          <Grid container alignItems="flex-end" direction="row" spacing={1}>
+            <Grid item>
+              <InputLabel htmlFor="type">Type</InputLabel>
+              <Select
+                id="type"
+                required
+                variant="outlined"
+                autoWidth
+                defaultValue={this_item?.getItem?.type ?? type ?? "line"}
+                className={classes.formType}
+                onChange={onChangeType}
+              >
+                <MenuItem value="line">Line</MenuItem>
+                <MenuItem value="field">Field</MenuItem>
+              </Select>
+            </Grid>
+            <Grid item>
+              <InputLabel htmlFor="data">Data</InputLabel>
+              <OutlinedInput
+                id="data"
+                required
+                defaultValue={this_item?.getItem?.data ?? data ?? ""}
+                className={classes.formDataLine}
+                onChange={onChangeData}
+              />
+            </Grid>
           </Grid>
-          <Grid item>
-            <InputLabel htmlFor="data">Data</InputLabel>
-            <OutlinedInput
-              id="data"
-              required
-              defaultValue={data ?? ""}
-              className={classes.formData}
-              onChange={onChangeData}
-            />
-          </Grid>
-        </Grid>
+        ) : (
+          <>
+            <Grid container alignItems="flex-end" direction="row" spacing={1}>
+              <Grid item>
+                <InputLabel htmlFor="type">Type</InputLabel>
+                <Select
+                  id="type"
+                  required
+                  variant="outlined"
+                  autoWidth
+                  defaultValue={this_item?.getItem?.type ?? type ?? "line"}
+                  className={classes.formType}
+                  onChange={onChangeType}
+                >
+                  <MenuItem value="line">Line</MenuItem>
+                  <MenuItem value="field">Field</MenuItem>
+                </Select>
+              </Grid>
+              <Grid
+                container
+                alignItems="flex-end"
+                direction="row"
+                spacing={1}
+              />
+              <Grid item>
+                <InputLabel htmlFor="data">Data</InputLabel>
+                <TextField
+                  id="data"
+                  required
+                  multiline
+                  rowsMax={4}
+                  variant="outlined"
+                  defaultValue={this_item?.getItem?.data ?? data ?? ""}
+                  className={classes.formDataField}
+                  onChange={onChangeData}
+                />
+              </Grid>
+            </Grid>
+          </>
+        )}
         <Grid container alignItems="flex-end" direction="row" spacing={1}>
           <Grid item>
             <InputLabel htmlFor="description">Description</InputLabel>
             <TextField
               id="description"
               multiline
-              rowsMax={4}
+              rowsMax={2}
               variant="outlined"
               defaultValue={description ?? ""}
               className={classes.description}
@@ -114,7 +172,7 @@ export const ApparatusItem: FC<Props> = ({
             <TextField
               id="note"
               multiline
-              rowsMax={4}
+              rowsMax={2}
               variant="outlined"
               defaultValue={note ?? ""}
               className={classes.note}

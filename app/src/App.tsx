@@ -31,6 +31,11 @@ const cache = new InMemoryCache({
         getSet(name: string, { args }) {
           return Sets().find((set) => set?.id === args?.id);
         },
+        getItem(_, { args }) {
+          return Sets()
+            .find((set) => set?.id === args?.set_id)
+            ?.items.find((item) => item.id === args?.id);
+        },
       },
     },
   },
