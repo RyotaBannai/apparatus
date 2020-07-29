@@ -1,4 +1,11 @@
-import { Entity, Column, ManyToOne, OneToMany, JoinColumn } from "typeorm";
+import {
+  Entity,
+  Column,
+  OneToOne,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from "typeorm";
 import {
   Ctx,
   Field,
@@ -30,7 +37,7 @@ export class Item extends Base {
   type: ItemType; // should use graphql enum type
 
   @Field((type) => ItemMeta)
-  @OneToMany((type) => ItemList, (item_meta) => item_meta.item)
+  @OneToOne((type) => ItemMeta, (item_meta) => item_meta.item)
   @JoinColumn()
   item_meta: ItemMeta;
 

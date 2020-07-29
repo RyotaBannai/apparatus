@@ -23,6 +23,7 @@ import { Set } from "../../entity/Set";
 import { ItemSet } from "../../entity/ItemSet";
 import { List } from "../../entity/List";
 import { ItemList } from "../../entity/ItemList";
+import { ItemMeta } from "../../entity/ItemMeta";
 
 @Resolver((of) => Item)
 export class ItemResolver {
@@ -46,11 +47,7 @@ export class ItemResolver {
         let new_set: Set = Set.create({ name: name });
         await new_set.save();
         for (const item of items) {
-          let new_item: Item = Item.create({
-            data: item.data,
-            type: item.type,
-          });
-          await new_item.save();
+          let new_item: Item = await this.saveItem(item);
           let new_item_set: ItemSet = new ItemSet();
           new_item_set.item = new_item;
           new_item_set.set = new_set;
@@ -58,15 +55,27 @@ export class ItemResolver {
         }
       } else {
         for (const item of items) {
-          let new_item: Item = Item.create({
-            data: item.data,
-            type: item.type,
-          });
-          await new_item.save();
+          this.saveItem(item);
         }
       }
     }
     return { res: "Success" };
+  }
+
+  private async saveItem(item: any): Promise<Item> {
+    let new_item: Item = Item.create({
+      data: item.data,
+      type: item.type,
+    });
+    await new_item.save();
+
+    let new_item_meta: ItemMeta = new ItemMeta();
+    new_item_meta.item = new_item;
+    new_item_meta.description = item.description;
+    new_item_meta.note = item.note;
+    await getRepository(ItemMeta).save(new_item_meta);
+
+    return new_item;
   }
 
   @Mutation(() => Item)

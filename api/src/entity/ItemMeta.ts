@@ -9,29 +9,20 @@ import {
 } from "typeorm";
 import { Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Item } from "./Item";
+import { Base } from "./Base";
 
 @ObjectType()
 @Entity()
-export class ItemMeta {
-  @PrimaryColumn()
-  itemId: number;
-
-  @Field((type) => Item)
-  @OneToOne((type) => Item, (item) => item.item_meta, { primary: true })
-  @JoinColumn({ name: "itemId" })
-  item: Item;
-
+export class ItemMeta extends Base {
   @Field()
-  @Column("text")
+  @Column("text", { nullable: true })
   description: string;
 
   @Field()
-  @Column("text")
+  @Column("text", { nullable: true })
   note: string;
 
-  @UpdateDateColumn()
-  updated_at: string;
-
-  @CreateDateColumn()
-  created_at: string;
+  @Field((type) => Item)
+  @OneToOne((type) => Item, (item) => item.item_meta)
+  item: Item;
 }
