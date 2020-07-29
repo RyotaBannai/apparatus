@@ -101,7 +101,7 @@ export const ApparatusItem: FC<Props> = ({
                 <MenuItem value="field">Field</MenuItem>
               </Select>
             </Grid>
-            <Grid item>
+            <Grid item className={classes.gridItemLine}>
               <InputLabel htmlFor="data">Data</InputLabel>
               <OutlinedInput
                 id="data"
@@ -136,7 +136,7 @@ export const ApparatusItem: FC<Props> = ({
                 direction="row"
                 spacing={1}
               />
-              <Grid item>
+              <Grid item className={classes.gridItem}>
                 <InputLabel htmlFor="data">Data</InputLabel>
                 <TextField
                   id="data"
@@ -153,7 +153,7 @@ export const ApparatusItem: FC<Props> = ({
           </>
         )}
         <Grid container alignItems="flex-end" direction="row" spacing={1}>
-          <Grid item>
+          <Grid item className={classes.gridItem}>
             <InputLabel htmlFor="description">Description</InputLabel>
             <TextField
               id="description"
@@ -167,7 +167,7 @@ export const ApparatusItem: FC<Props> = ({
           </Grid>
         </Grid>
         <Grid container alignItems="flex-end" direction="row" spacing={1}>
-          <Grid item>
+          <Grid item className={classes.gridItem}>
             <InputLabel htmlFor="note">Note</InputLabel>
             <TextField
               id="note"

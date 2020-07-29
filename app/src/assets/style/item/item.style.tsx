@@ -13,6 +13,7 @@ export const useStyles = makeStyles((theme: Theme) =>
       margin: theme.spacing(1),
       borderRadius: 5,
       border: `2px solid ${grey[200]}`,
+      alignSelf: "self-start",
     },
     formType: {
       minWidth: 80,
@@ -21,25 +22,25 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
     },
     formDataLine: {
-      minWidth: 260,
+      width: "100%",
       "& input": {
         padding: theme.spacing(1),
       },
     },
     formDataField: {
-      minWidth: 350,
+      width: "100%",
       "& textarea": {
         minHeight: 125,
       },
     },
     description: {
-      minWidth: 350,
+      width: "100%",
       "& textarea": {
         minHeight: 100,
       },
     },
     note: {
-      minWidth: 350,
+      width: "100%",
       "& textarea": {
         minHeight: 50,
       },
@@ -57,6 +58,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       "&:focus": {
         color: cyan[800],
       },
+    },
+    gridItemLine: {
+      width: "70%",
+    },
+    gridItem: {
+      width: "90%",
     },
   })
 );

@@ -40,6 +40,12 @@ export const useStyles = makeStyles((theme: Theme) =>
       borderRadius: 5,
       border: `2px solid ${grey[200]}`,
     },
+    itemBox: {
+      display: "grid",
+      "grid-template-columns": " repeat(2, 1fr)",
+      "grid-column-gap": 10,
+      "grid-row-gap": 10,
+    },
     addItemHugeButton: {
       paddingTop: `${theme.spacing(3)}px !important`,
     },

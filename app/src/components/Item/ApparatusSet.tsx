@@ -105,7 +105,7 @@ export const ApparatusSet: FC<Props> = ({ id, name, items }) => {
         ) : (
           <></>
         )}
-        {children.map((child) => child)}
+        <div className={classes.itemBox}>{children.map((child) => child)}</div>
         <Grid container alignItems="center" direction="row" spacing={1}>
           {is_set() ? (
             <Grid item className={classes.addItemHugeButton}>
