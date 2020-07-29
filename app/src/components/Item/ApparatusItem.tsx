@@ -1,5 +1,6 @@
 import React, { useState, useEffect, FC } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
+import { L_GET_ITEM, L_GET_SET_STATUS } from "../../modules/item/queries";
 import { useSet } from "../../modules/set/actions";
 import {
   Grid,
@@ -12,15 +13,6 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import { useStyles } from "../../assets/style/item/item.style";
-
-const L_GET_ITEM = gql`
-  query GET_ITEM($set_id: Float!, $id: Float!) {
-    getItem(set_id: $set_id, id: $id) @client {
-      type
-      data
-    }
-  }
-`;
 
 interface Props {
   set_id: number;
@@ -50,6 +42,11 @@ export const ApparatusItem: FC<Props> = ({
       id,
     },
   });
+  const { data: this_set } = useQuery(L_GET_SET_STATUS, {
+    variables: {
+      id: set_id,
+    },
+  });
 
   const onChangeType = (e: any) => handleEvent(e, "type");
   const onChangeData = (e: any) => handleEvent(e, "data");
@@ -70,12 +67,14 @@ export const ApparatusItem: FC<Props> = ({
       item,
     });
   };
+
   const onDeleteItem = (e: any) => {
     e.preventDefault();
     setShow(!show);
     let left_items: number = deleteItem(set_id, id);
     if (left_items === 0) hideSet(false);
   };
+
   useEffect(() => {
     if (type === undefined && data === undefined) setChange("type", "line");
   }, []);
@@ -83,6 +82,7 @@ export const ApparatusItem: FC<Props> = ({
   if (!show) return <></>;
   else
     return (
+      // <div className={this_set?.getSetStatus?.is_set ? classes.item : ""}>
       <div className={classes.item}>
         {this_item?.getItem?.type === "line" ? (
           <Grid container alignItems="flex-end" direction="row" spacing={1}>

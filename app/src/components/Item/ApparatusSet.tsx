@@ -1,6 +1,7 @@
 import React, { useState, useEffect, FC } from "react";
-import { gql, useQuery, useMutation } from "@apollo/client";
+import { useQuery, useMutation } from "@apollo/client";
 import { useSet } from "../../modules/set/actions";
+import { L_GET_SET } from "../../modules/item/queries";
 import {
   Button,
   Box,
@@ -17,16 +18,6 @@ import * as _ from "lodash";
 import { from } from "rxjs";
 import { tap, map } from "rxjs/operators";
 
-const L_GET_SET = gql`
-  query GET_SET($id: Float!) {
-    getSet(id: $id) @client {
-      id
-      name
-      items
-    }
-  }
-`;
-
 interface Props {
   id: number;
   name?: string;
@@ -37,18 +28,29 @@ export const ApparatusSet: FC<Props> = ({ id, name, items }) => {
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
   const [children, setChild] = useState<Array<any>>([]);
-  const { takeIdForItem, updateName } = useSet();
+  const { takeIdForItem, updateName, updateSetStatus } = useSet();
 
   const callSetChild = (_children: Array<any> | null) => {
     let newChildren;
+    let item_id = takeIdForItem();
     if (_children instanceof Array) {
       newChildren = [
         ..._children,
-        <ApparatusItem set_id={id} id={takeIdForItem()} hideSet={setShow} />,
+        <ApparatusItem
+          key={item_id}
+          set_id={id}
+          id={item_id}
+          hideSet={setShow}
+        />,
       ];
     } else {
       newChildren = [
-        <ApparatusItem set_id={id} id={takeIdForItem()} hideSet={setShow} />,
+        <ApparatusItem
+          key={item_id}
+          set_id={id}
+          id={item_id}
+          hideSet={setShow}
+        />,
       ];
     }
     setChild(newChildren);
@@ -64,6 +66,8 @@ export const ApparatusSet: FC<Props> = ({ id, name, items }) => {
       id,
     },
   });
+  const is_set = () => data?.getSet.items.length > 1;
+  updateSetStatus(id, is_set());
 
   useEffect(() => {
     if (items !== undefined) {
@@ -81,12 +85,10 @@ export const ApparatusSet: FC<Props> = ({ id, name, items }) => {
     }
   }, []);
 
-  const is_set = () => data?.getSet.items.length > 1;
   if (!show) return <></>;
   else
     return (
       <Box className={is_set() ? classes.set : classes.item}>
-        {JSON.stringify(data?.getSet)}
         {is_set() ? (
           <Grid container alignItems="flex-end" direction="row" spacing={1}>
             <Grid item>

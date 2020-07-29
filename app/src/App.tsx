@@ -8,7 +8,7 @@ import {
   InMemoryCache,
   concat,
 } from "@apollo/client";
-import { Sets } from "./modules/set/actions";
+import { Sets, setStatus } from "./modules/set/actions";
 import possibleTypes from "./introspection/possibleTypes.json";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
@@ -30,6 +30,12 @@ const cache = new InMemoryCache({
         },
         getSet(name: string, { args }) {
           return Sets().find((set) => set?.id === args?.id);
+        },
+        getSetStatus(name: string, { args }) {
+          return setStatus().find((status) => status.id === args?.id);
+        },
+        getSetStatuses(name: string, { args }) {
+          return setStatus();
         },
         getItem(_, { args }) {
           return Sets()

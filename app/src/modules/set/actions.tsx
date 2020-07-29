@@ -17,6 +17,12 @@ interface addItem {
 
 export type Sets = Array<Set | undefined>;
 
+interface Status {
+  id: number;
+  is_set: boolean;
+}
+
+export const setStatus = makeVar<Array<Status>>([]);
 export const Sets = makeVar<Sets>([]);
 export const setCount = makeVar<number>(0);
 export const itemCount = makeVar<number>(0);
@@ -142,6 +148,33 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     return JSON.stringify(set);
   };
   const cleanSet = () => Sets([]);
+
+  const updateSetStatus = (id: number, set_or_not: boolean) => {
+    let new_statuses: Status[] = [];
+    let this_status = _.find(setStatus(), { id: id });
+    if (this_status !== undefined) {
+      new_statuses = setStatus().map((status: Status) => {
+        if (status.id === id) {
+          return {
+            id,
+            is_set: set_or_not,
+          } as Status;
+        } else {
+          return status;
+        }
+      });
+    } else {
+      new_statuses = [
+        ...setStatus(),
+        {
+          id,
+          is_set: set_or_not,
+        },
+      ] as Status[];
+    }
+    setStatus(new_statuses);
+  };
+
   const takeId = () => setCount(setCount() + 1) && setCount();
   const takeIdForItem = () => itemCount(itemCount() + 1) && itemCount();
 
@@ -152,6 +185,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     updateName,
     filterSet,
     cleanSet,
+    updateSetStatus,
     takeId,
     takeIdForItem,
   };

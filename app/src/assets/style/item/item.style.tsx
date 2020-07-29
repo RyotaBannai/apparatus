@@ -7,7 +7,12 @@ import cyan from "@material-ui/core/colors/cyan";
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     item: {
-      margin: `${theme.spacing(2)}px 0px`,
+      // margin: `${theme.spacing(2)}px 0px`,
+      backgroundColor: grey[100],
+      padding: theme.spacing(1),
+      margin: theme.spacing(1),
+      borderRadius: 5,
+      border: `2px solid ${grey[200]}`,
     },
     formType: {
       minWidth: 80,

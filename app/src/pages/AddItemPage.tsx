@@ -1,6 +1,7 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
-import { gql, useQuery, useMutation, ApolloError } from "@apollo/client";
+import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { useSet } from "../modules/set/actions";
+import { L_GET_SETS, S_ADD_ITEMS } from "../modules/item/queries";
 import { Button, Grid, Icon, Snackbar } from "@material-ui/core";
 import { ApparatusSet } from "../components/Item/ApparatusSet";
 import { useStyles } from "../assets/style/item/page.style";
@@ -8,24 +9,6 @@ import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import * as _ from "lodash";
 import { from } from "rxjs";
 import { tap, map } from "rxjs/operators";
-
-const S_ADD_ITEMS = gql`
-  mutation ADD_ITEMS($data: String!) {
-    createItems(data: { data: $data }) {
-      res
-    }
-  }
-`;
-
-const L_GET_SET = gql`
-  {
-    sets @client {
-      id
-      name
-      items
-    }
-  }
-`;
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -47,15 +30,16 @@ export const AddItemPage: FC<Props> = () => {
 
   const callSetChild = (_children: Array<any> | null) => {
     let newChildren;
+    let id = takeId();
     if (_children instanceof Array) {
-      newChildren = [..._children, <ApparatusSet id={takeId()} />];
+      newChildren = [..._children, <ApparatusSet key={id} id={id} />];
     } else {
       setChild([]);
-      newChildren = [<ApparatusSet id={takeId()} />];
+      newChildren = [<ApparatusSet key={id} id={id} />];
     }
     setChild(newChildren);
   };
-  const { data } = useQuery(L_GET_SET);
+  const { data } = useQuery(L_GET_SETS);
   const [
     s_addItems,
     { loading: sa_loading, error: sa_error, called: sa_called },
