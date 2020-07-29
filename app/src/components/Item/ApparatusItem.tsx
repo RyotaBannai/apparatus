@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { useSet } from "../../modules/set/actions";
 import {
   Grid,
@@ -22,7 +22,7 @@ interface Props {
   hideSet: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const ApparatusItem: React.FC<Props> = ({
+export const ApparatusItem: FC<Props> = ({
   set_id,
   id,
   type,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, FC } from "react";
 import { gql, useQuery, useMutation } from "@apollo/client";
 import { useSet } from "../../modules/set/actions";
 import {
@@ -10,63 +10,12 @@ import {
   OutlinedInput,
   Tooltip,
 } from "@material-ui/core";
-import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { ApparatusItem } from "./ApparatusItem";
-import cyan from "@material-ui/core/colors/cyan";
-import indigo from "@material-ui/core/colors/indigo";
-import grey from "@material-ui/core/colors/grey";
+import { useStyles } from "../../assets/style/item/set.style";
+
 import * as _ from "lodash";
 import { from } from "rxjs";
 import { tap, map } from "rxjs/operators";
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    addButton: {
-      color: "#fff",
-      backgroundColor: cyan[700],
-      "&:hover": {
-        backgroundColor: cyan[800],
-      },
-      "&:focus": {
-        outlineColor: cyan[800],
-      },
-    },
-    toSet: {
-      cursor: "pointer",
-      color: cyan[700],
-      "&:hover": {
-        color: cyan[800],
-      },
-      "&:focus": {
-        color: cyan[800],
-      },
-    },
-    set: {
-      backgroundColor: indigo[50],
-      padding: theme.spacing(1),
-      margin: theme.spacing(1),
-      borderRadius: 5,
-      border: `2px solid ${indigo[100]}`,
-    },
-    item: {
-      backgroundColor: grey[100],
-      padding: theme.spacing(1),
-      margin: theme.spacing(1),
-      borderRadius: 5,
-      border: `2px solid ${grey[200]}`,
-    },
-    addItemHugeButton: {
-      paddingTop: `${theme.spacing(3)}px !important`,
-    },
-    formData: {
-      minWidth: 120,
-      "& input": {
-        padding: theme.spacing(1),
-      },
-    },
-  })
-);
 
 const L_GET_SET = gql`
   query GET_SET($id: Float!) {
@@ -84,7 +33,7 @@ interface Props {
   items?: Array<any>;
 }
 
-export const ApparatusSet: React.FC<Props> = ({ id, name, items }) => {
+export const ApparatusSet: FC<Props> = ({ id, name, items }) => {
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
   const [children, setChild] = useState<Array<any>>([]);
