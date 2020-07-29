@@ -23,6 +23,7 @@ import { ItemMeta } from "./ItemMeta";
 import { ItemList } from "./ItemList";
 import { ItemSet } from "./ItemSet";
 import { List } from "./List";
+import { ItemWorkspace } from "./ItemWorkspace";
 type ItemType = "line" | "field" | "quiz";
 
 @ObjectType()
@@ -50,6 +51,11 @@ export class Item extends Base {
   @OneToMany((type) => ItemSet, (item_set) => item_set.item)
   @JoinColumn()
   setConnector: ItemSet[];
+
+  @Field((type) => [ItemWorkspace])
+  @OneToMany((type) => ItemWorkspace, (item_ws) => item_ws.item)
+  @JoinColumn()
+  wsConnector: ItemWorkspace[];
 
   @ManyToOne((type) => UserMeta, (user_meta) => user_meta.item)
   user_meta: UserMeta;

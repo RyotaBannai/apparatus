@@ -8,28 +8,28 @@ import {
 } from "typeorm";
 import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Item } from "./Item";
-import { List } from "./List";
+import { Workspace } from "./Workspace";
 
 @ObjectType()
 @Entity()
-export class ItemList {
+export class ItemWorkspace {
   @Field()
   @PrimaryColumn()
   itemId: number;
 
   @Field()
   @PrimaryColumn()
-  listId: number;
+  wsId: number;
 
   @Field((type) => Item)
-  @ManyToOne((type) => Item, (item) => item.listConnector)
+  @ManyToOne((type) => Item, (item) => item.wsConnector)
   @JoinColumn({ name: "itemId" })
   item: Item;
 
-  @Field((type) => List)
-  @ManyToOne((type) => List, (list) => list.itemConnector)
-  @JoinColumn({ name: "listId" })
-  list: List;
+  @Field((type) => Workspace)
+  @ManyToOne((type) => Workspace, (ws) => ws.itemConnector)
+  @JoinColumn({ name: "wsId" })
+  ws: Workspace;
 
   @Field()
   @UpdateDateColumn()
