@@ -1,5 +1,12 @@
-import { Entity, Column, OneToMany, JoinColumn, ManyToMany } from "typeorm";
-import { Field, ObjectType, ArgsType } from "type-graphql";
+import {
+  Entity,
+  Column,
+  OneToOne,
+  OneToMany,
+  JoinColumn,
+  ManyToMany,
+} from "typeorm";
+import { ID, Field, ObjectType, ArgsType, InputType } from "type-graphql";
 import { Base } from "./Base";
 import { Item } from "./Item";
 import { ItemWorkspace } from "./ItemWorkspace";
@@ -15,12 +22,25 @@ export class Workspace extends Base {
   @Column()
   description: string;
 
-  @Field()
+  @Field((type) => ID)
   @Column()
-  ownerId: string;
+  ownerId: number;
 
   @Field((type) => [ItemWorkspace])
   @OneToMany((type) => ItemWorkspace, (item_ws) => item_ws.ws)
   @JoinColumn()
   itemConnector: ItemWorkspace[];
+}
+
+@InputType({ description: "New items data" })
+export class createWSInput implements Partial<Workspace> {
+  @Field((type) => String, { nullable: false })
+  name: string;
+  @Field((type) => String, { nullable: false })
+  description: string;
+}
+
+export class getWSArgs implements Partial<Workspace> {
+  @Field((type) => ID, { nullable: false })
+  ownerId: number;
 }

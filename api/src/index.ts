@@ -3,6 +3,7 @@ import { createConnection, getConnectionOptions } from "typeorm";
 import { buildSchema } from "type-graphql";
 import { ItemResolver } from "./modules/item/ItemResolver";
 import { UserResolver } from "./modules/user/UserResolver";
+import { WorkspaceResolver } from "./modules/workspace/WorkspaceResolver";
 import { jwtMiddleware } from "./entity/User";
 import { customAuthChecker } from "./entity/User";
 import { ApolloServer } from "apollo-server-express";
@@ -18,7 +19,7 @@ const main = async () => {
     .catch((err) => console.log("Typeorm Error: ", err));
 
   const schema = await buildSchema({
-    resolvers: [ItemResolver, UserResolver],
+    resolvers: [ItemResolver, UserResolver, WorkspaceResolver],
     authChecker: customAuthChecker,
   });
 
