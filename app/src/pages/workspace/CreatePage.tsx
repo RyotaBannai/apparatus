@@ -3,9 +3,9 @@ import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import {
   L_GET_WORKSPACE,
   S_CREATE_WORKSPACE,
-} from "../modules/workspace/queries";
-import { useWorkspace } from "../modules/workspace/actions";
-import { useStyles } from "../assets/style/workspace/page.style";
+} from "../../modules/workspace/queries";
+import { useWorkspace } from "../../modules/workspace/actions";
+import { useStyles } from "../../assets/style/workspace/page.style";
 import {
   Button,
   Grid,
@@ -16,7 +16,7 @@ import {
 } from "@material-ui/core";
 
 interface Props {}
-export const CreateWorkspacePage: FC<Props> = () => {
+export const CreatePage: FC<Props> = () => {
   const { addateWS } = useWorkspace();
   const classes = useStyles();
 

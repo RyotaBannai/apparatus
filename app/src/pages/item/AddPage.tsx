@@ -1,10 +1,10 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
-import { useSet } from "../modules/set/actions";
-import { L_GET_SETS, S_ADD_ITEMS } from "../modules/item/queries";
+import { useSet } from "../../modules/set/actions";
+import { L_GET_SETS, S_ADD_ITEMS } from "../../modules/item/queries";
 import { Button, Grid, Icon, Snackbar } from "@material-ui/core";
-import { ApparatusSet } from "../components/Item/ApparatusSet";
-import { useStyles } from "../assets/style/item/page.style";
+import { ApparatusSet } from "../../components/Item/ApparatusSet";
+import { useStyles } from "../../assets/style/item/page.style";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import * as _ from "lodash";
 import { from } from "rxjs";
@@ -16,7 +16,7 @@ function Alert(props: AlertProps) {
 
 interface Props {}
 
-export const AddItemPage: FC<Props> = () => {
+export const AddPage: FC<Props> = () => {
   const classes = useStyles();
   const { takeId, filterSet, cleanSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
