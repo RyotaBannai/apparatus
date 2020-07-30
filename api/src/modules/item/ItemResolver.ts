@@ -20,11 +20,13 @@ import {
   GetItemArgs,
 } from "../../entity/Item";
 import { Context } from "vm";
+import { User } from "../../entity/User";
 import { Set } from "../../entity/Set";
 import { ItemSet } from "../../entity/ItemSet";
 import { List } from "../../entity/List";
 import { ItemList } from "../../entity/ItemList";
 import { ItemMeta } from "../../entity/ItemMeta";
+import { UserMeta } from "../../entity/UserMeta";
 
 @Resolver((of) => Item)
 export class ItemResolver {
@@ -45,13 +47,18 @@ export class ItemResolver {
     @Ctx() ctx: Context
   ): Promise<Object> {
     let sets = JSON.parse(newItemData.data);
-    console.log(ctx);
+    let request_user: User = await User.findOneOrFail(ctx.user.id, {
+      relations: ["user_meta"],
+    });
     for (const { name, items } of sets) {
       if (items.length > 1) {
         let new_set: Set = Set.create({ name: name });
         await new_set.save();
         for (const item of items) {
-          let new_item: Item = await this.saveItem(item);
+          let new_item: Item = await this.saveItem(
+            item,
+            request_user.user_meta
+          );
           let new_item_set: ItemSet = new ItemSet();
           new_item_set.item = new_item;
           new_item_set.set = new_set;
@@ -59,17 +66,18 @@ export class ItemResolver {
         }
       } else {
         for (const item of items) {
-          this.saveItem(item);
+          this.saveItem(item, request_user.user_meta);
         }
       }
     }
     return { res: "Success" };
   }
 
-  private async saveItem(item: any): Promise<Item> {
+  private async saveItem(item: any, user_meta: UserMeta): Promise<Item> {
     let new_item: Item = Item.create({
       data: item.data,
       type: item.type,
+      user_meta: user_meta,
     });
     await new_item.save();
 

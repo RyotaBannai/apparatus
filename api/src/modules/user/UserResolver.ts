@@ -13,7 +13,7 @@ import {
   Root,
   createParamDecorator,
 } from "type-graphql";
-import { Context } from "vm";
+import { getRepository } from "typeorm";
 import {
   User,
   createUserInput,
@@ -24,7 +24,7 @@ import {
   LoginOutputUnion,
 } from "../../entity/User";
 import * as bcrypt from "bcrypt";
-import { userInfo } from "os";
+import { UserMeta } from "../../entity/UserMeta";
 
 @Resolver((of) => User)
 export class UserResolver {
@@ -35,6 +35,11 @@ export class UserResolver {
     const new_user = User.create(newUserData);
     new_user.passwordHash = await this.getHash(newUserData.password);
     await new_user.save();
+
+    const meta = new UserMeta();
+    meta.user = new_user;
+    await getRepository(UserMeta).save(meta);
+
     return await createToken(new_user.id);
   }
 

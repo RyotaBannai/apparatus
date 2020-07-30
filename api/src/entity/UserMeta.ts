@@ -23,14 +23,14 @@ export class UserMeta {
   @JoinColumn({ name: "userId" })
   user: User;
 
-  @Column()
+  @Column({ nullable: true })
   firstName: string;
 
-  @Column()
+  @Column({ nullable: true })
   lastName: string;
 
-  @Column()
-  age: number;
+  @Column({ nullable: true })
+  birthday: Date;
 
   @OneToMany((type) => Item, (item) => item.user_meta)
   item: Item[];
