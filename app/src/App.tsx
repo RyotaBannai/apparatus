@@ -9,11 +9,13 @@ import {
   concat,
 } from "@apollo/client";
 import { Sets, setStatus } from "./modules/set/actions";
+import { workspace } from "./modules/workspace/actions";
 import possibleTypes from "./introspection/possibleTypes.json";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 import "./App.css";
 import { Layout } from "./pages/layouts/Layout";
+import { CreateWorkspacePage } from "./pages/CreateWorkspacePage";
 import { AddItemPage } from "./pages/AddItemPage";
 import { Sub } from "./pages/Sub";
 import { Pagination } from "./pages/DemoPagination";
@@ -42,10 +44,14 @@ const cache = new InMemoryCache({
             .find((set) => set?.id === args?.set_id)
             ?.items.find((item) => item.id === args?.id);
         },
+        getWorkspace(_, { args }) {
+          return workspace();
+        },
       },
     },
   },
 });
+
 const uri = "http://localhost:4000/graphql";
 const httpLink = new HttpLink({ uri });
 const authMiddleware = new ApolloLink((operation, forward) => {
@@ -72,6 +78,11 @@ export default function App() {
       <div className="App">
         <Router>
           <Layout>
+            <Route
+              exact
+              path="/create_workspace"
+              component={CreateWorkspacePage}
+            />
             <Route exact path="/item" component={AddItemPage} />
             <Route exact path="/sub" component={Sub} />
             <Route exact path="/pagination" component={Pagination} />

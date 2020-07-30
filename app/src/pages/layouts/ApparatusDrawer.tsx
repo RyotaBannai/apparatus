@@ -40,6 +40,7 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
       <div className={classes.drawerContainer}>
         <List>
           {[
+            { text: "Workspace", link: "/create_workspace" },
             { text: "Item", link: "/item" },
             { text: "Set", link: "#" },
             { text: "List", link: "#" },
