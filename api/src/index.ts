@@ -25,7 +25,12 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res }) => {
-      jwtMiddleware(req, res);
+      const context = {
+        req,
+        res,
+        user: req.user,
+      };
+      return context;
     },
   });
 
@@ -37,6 +42,7 @@ const main = async () => {
       origin: "http://localhost:3000",
     })
   );
+  app.use("/graphql", jwtMiddleware);
 
   apolloServer.applyMiddleware({ app });
 

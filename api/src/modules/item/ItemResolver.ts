@@ -9,6 +9,7 @@ import {
   FieldResolver,
   Root,
   createParamDecorator,
+  Authorized,
 } from "type-graphql";
 import { getRepository } from "typeorm";
 import {
@@ -34,14 +35,17 @@ export class ItemResolver {
     @Arg("data") newItemData: addItemInput, // client should use data as key and value of object to same as addItemInput type
     @Ctx() ctx: Context
   ): Promise<Item> {
-    console.log(ctx); // { _extensionStack: GraphQLExtensionStack { extensions: [] } }
     const new_item = Item.create(newItemData);
     return await new_item.save();
   }
 
   @Mutation(() => Response)
-  async createItems(@Arg("data") newItemData: addItemInputs): Promise<Object> {
+  async createItems(
+    @Arg("data") newItemData: addItemInputs,
+    @Ctx() ctx: Context
+  ): Promise<Object> {
     let sets = JSON.parse(newItemData.data);
+    console.log(ctx);
     for (const { name, items } of sets) {
       if (items.length > 1) {
         let new_set: Set = Set.create({ name: name });

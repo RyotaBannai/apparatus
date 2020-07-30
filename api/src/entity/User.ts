@@ -9,7 +9,7 @@ import {
   createUnionType,
 } from "type-graphql";
 import { Context } from "vm";
-import express from "express";
+import { Request, Response, NextFunction } from "express";
 import * as jwt from "jsonwebtoken";
 import { Base } from "./Base";
 import { UserMeta } from "./UserMeta";
@@ -110,8 +110,7 @@ export const customAuthChecker: AuthChecker<Context> = (
   { root, args, context, info },
   roles
 ) => {
-  console.log(context.req.user);
-
+  // console.log(context);
   // here you can read user from context
   // and check his permission in db against `roles` argument
   // that comes from `@Authorized`, eg. ["ADMIN", "MODERATOR"]
@@ -141,10 +140,19 @@ passport.use(
   )
 );
 
-export const jwtMiddleware = (req: express.Request, res: express.Response) =>
+export const jwtMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) =>
   passport.authenticate("jwt", { session: false }, (err, user, info) => {
-    if (["CREATE", "LOGIN"].includes(req.body.operationName)) {
-      return true;
+    if (
+      "operation-name" in req.headers &&
+      req.headers["operation-name"] !== undefined &&
+      typeof req.headers["operation-name"] === "string" &&
+      ["SIGNIN", "LOGIN"].includes(req.headers["operation-name"])
+    ) {
+      return next();
     }
     if (err) {
       return res.status(401).end();
@@ -155,5 +163,7 @@ export const jwtMiddleware = (req: express.Request, res: express.Response) =>
         .json({ errors: { message: info || "user unknown" } })
         .end();
     }
+
     req.user = user;
-  })(req, res);
+    return next();
+  })(req, res, next);
