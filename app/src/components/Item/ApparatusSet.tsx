@@ -73,7 +73,6 @@ export const ApparatusSet: FC<Props> = ({ id, name, items }) => {
     if (items !== undefined) {
       let old_items: any[] = [];
       for (const item of items) {
-        console.log(item);
         old_items = [
           ...old_items,
           <ApparatusItem {...item} set_id={id} hideSet={setShow} />,

@@ -29,6 +29,12 @@ export const Login: React.FC<Props> = () => {
   let email: any = "";
   let password: any = "";
   const [login, { called, loading, data }] = useLazyQuery(LOGIN, {
+    pollInterval: 0,
+    context: {
+      headers: {
+        "operation-name": "LOGIN",
+      },
+    },
     onCompleted({ login }) {
       if (login.length > 1) {
         console.log("Return value has an unexpected length.");

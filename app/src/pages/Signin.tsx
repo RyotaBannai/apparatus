@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuery, useMutation, useApolloClient } from "@apollo/react-hooks";
+import { useQuery, useMutation, useApolloClient } from "@apollo/client";
 import { ApolloClient, ApolloError } from "apollo-client";
 import gql from "graphql-tag";
 import {
@@ -26,11 +26,14 @@ export const Signin: React.FC<Props> = () => {
   let name: any = "";
   let email: any = "";
   let password: any = "";
-  const client: ApolloClient<any> = useApolloClient();
   const [addUser, { data, loading, called }] = useMutation(ADD_USER, {
+    context: {
+      headers: {
+        "operation-name": "SIGNIN",
+      },
+    },
     onCompleted({ createUser: { token } }) {
       localStorage.setItem("token", token as string);
-      client.writeData({ data: { isLoggedIn: true } });
     },
     onError(error: ApolloError) {
       console.log(error);
@@ -83,7 +86,6 @@ export const Signin: React.FC<Props> = () => {
               color="primary"
               endIcon={<Icon>arrow_right</Icon>}
               onClick={(e: any) => {
-                console.log("clicked");
                 e.preventDefault();
                 let variables: any = {
                   name: name.value,
