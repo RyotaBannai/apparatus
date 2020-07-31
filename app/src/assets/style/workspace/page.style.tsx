@@ -6,6 +6,11 @@ import cyan from "@material-ui/core/colors/cyan";
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
+    root: {
+      "& > *": {
+        borderBottom: "unset",
+      },
+    },
     name: {
       width: "50%",
       "& input": {

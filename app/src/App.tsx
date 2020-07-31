@@ -16,6 +16,7 @@ import "bootstrap/dist/js/bootstrap.js";
 import "./App.css";
 import { Layout } from "./pages/layouts/Layout";
 import { CreatePage as CreateWorkspacePage } from "./pages/workspace/CreatePage";
+import { ListPage as ListWorkspacePage } from "./pages/workspace/ListPage";
 import { AddPage as AddItemPage } from "./pages/item/AddPage";
 import { Sub } from "./pages/Sub";
 import { Pagination } from "./pages/DemoPagination";
@@ -83,6 +84,7 @@ export default function App() {
               path="/create_workspace"
               component={CreateWorkspacePage}
             />
+            <Route exact path="/list_workspace" component={ListWorkspacePage} />
             <Route exact path="/item" component={AddItemPage} />
             <Route exact path="/sub" component={Sub} />
             <Route exact path="/pagination" component={Pagination} />

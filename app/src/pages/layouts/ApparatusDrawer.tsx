@@ -69,7 +69,7 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
               {[
                 {
                   text: "List",
-                  link: "#",
+                  link: "/list_workspace",
                   icon: <NotesOutlinedIcon />,
                 },
                 {
@@ -105,13 +105,7 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
             // { text: "Pagination", link: "#" },
           ].map((data, index) => (
             <NavLink exact to={data.link}>
-              <ListItem
-                button
-                key={index}
-                // TODO: selected にするための state を管理 selected={true}
-                disableRipple
-                disableTouchRipple
-              >
+              <ListItem button key={index} disableRipple disableTouchRipple>
                 <ListItemText primary={data.text} />
               </ListItem>
             </NavLink>

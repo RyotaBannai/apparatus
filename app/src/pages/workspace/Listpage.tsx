@@ -3,39 +3,87 @@ import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { S_GET_WORKSPACES } from "../../modules/workspace/queries";
 import { useWorkspace } from "../../modules/workspace/actions";
 import { useStyles } from "../../assets/style/workspace/page.style";
+import { Items } from "../../modules/item/actions";
+import { Workspaces } from "../../modules/workspace/actions";
 import {
-  Button,
-  Grid,
-  Icon,
-  InputLabel,
-  OutlinedInput,
-  TextField,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@material-ui/core";
 
+function createData(
+  name: string,
+  description: string
+  // items: Items
+) {
+  //   let item_amount: number = 1;
+  return {
+    name,
+    description,
+    // item_amount,
+  };
+}
+
+function Row(props: { row: ReturnType<typeof createData> }) {
+  const { row } = props;
+  const classes = useStyles();
+  // TODO: onClick でコンポネントを入れ替えて、Go to this workspace みたいにして切替をできるようにする
+  // TODO: current Workspace にはハイライトをいれる
+  return (
+    <>
+      <TableRow hover className={classes.root}>
+        <TableCell>{row.name}</TableCell>
+        <TableCell>{row.description}</TableCell>
+        <TableCell> - </TableCell>
+      </TableRow>
+    </>
+  );
+}
+
 interface Props {}
-export const CreatePage: FC<Props> = () => {
+
+export const ListPage: FC<Props> = () => {
   const { addateWS } = useWorkspace();
   const classes = useStyles();
+  const { data } = useQuery(S_GET_WORKSPACES);
 
-  //   const { data } = useQuery(S_GET_WORKSPACES);
+  const returnData = (workspaces: Workspaces) => {
+    let rows: ReturnType<typeof createData>[] = [];
+    for (const { name, description } of workspaces) {
+      rows = [...rows, createData(name, description)];
+    }
+    return rows;
+  };
 
-  //   const [
-  //     s_createWorkspace,
-  //     { loading: sa_loading, error: sa_error, called: sa_called },
-  //   ] = useMutation(S_CREATE_WORKSPACE, {
-  //     onCompleted({ res }) {
-  //       console.log("workspace was successfully created!");
-  //     },
-  //     onError(error: ApolloError) {
-  //       console.log(error);
-  //     },
-  //   });
-
-  //   if (sa_loading) return <p>Loading...</p>;
-  //   if (sa_error) return <p>Error :(</p>;
   return (
-    <div>
-      <h2>Workspace List</h2>
-    </div>
+    <>
+      {data?.getWorkspaces.length > 0 ? (
+        <div>
+          <h2>Workspace List</h2>
+          <TableContainer component={Paper}>
+            <Table aria-label="collapsible table">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Description</TableCell>
+                  <TableCell>Item Count</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {returnData(data.getWorkspaces).map((row) => (
+                  <Row key={row.name} row={row} />
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
+      ) : (
+        <div>No workspace</div>
+      )}
+    </>
   );
 };
