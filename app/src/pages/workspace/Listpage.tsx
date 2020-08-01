@@ -58,6 +58,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   const [goToWS, setGoToWS] = useState<boolean>();
   const { data } = useQuery(L_GET_CURRENT_WORKSPACE);
   const isCurrent = (): boolean => data?.currentWS.id === row.id;
+
   return (
     <>
       {!goToWS ? (
@@ -107,7 +108,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 interface Props {}
 
 export const ListPage: FC<Props> = () => {
-  const { data } = useQuery(S_GET_WORKSPACES);
+  const { data, refetch } = useQuery(S_GET_WORKSPACES);
   const returnData = (workspaces: Array<Workspace & { id: string }>) => {
     let rows: ReturnType<typeof createData>[] = [];
     for (const { id, name, description } of workspaces) {
@@ -115,6 +116,8 @@ export const ListPage: FC<Props> = () => {
     }
     return rows;
   };
+
+  useEffect(() => {refetch();}, []);
 
   return (
     <>

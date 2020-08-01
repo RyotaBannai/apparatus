@@ -68,11 +68,6 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
             <List component="div" disablePadding>
               {[
                 {
-                  text: "Create",
-                  link: "/create_workspace",
-                  icon: <GrainOutlinedIcon />,
-                },
-                {
                   text: "List",
                   link: "/list_workspace",
                   icon: <NotesOutlinedIcon />,
@@ -81,6 +76,11 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
                   text: "Edit",
                   link: "/edit_workspace",
                   icon: <CallMissedOutgoingOutlinedIcon />,
+                },
+                {
+                  text: "Create",
+                  link: "/create_workspace",
+                  icon: <GrainOutlinedIcon />,
                 },
               ].map((data, index) => (
                 <NavLink exact to={data.link}>

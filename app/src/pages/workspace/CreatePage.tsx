@@ -6,6 +6,7 @@ import {
 } from "../../modules/workspace/queries";
 import { useWorkspace } from "../../modules/workspace/actions";
 import { useStyles } from "../../assets/style/workspace/page.style";
+import { SnakbarAlert } from "../../components/parts/SnakbarAlert";
 import {
   Button,
   Grid,
@@ -19,6 +20,7 @@ interface Props {}
 export const CreatePage: FC<Props> = () => {
   const { addateWS } = useWorkspace();
   const classes = useStyles();
+  const [saveSnackBarOpen, setOpen] = useState(false);
 
   const onChangeName = (e: any) => handleEvent(e, "name");
   const onChangeDescription = (e: any) => handleEvent(e, "description");
@@ -40,7 +42,7 @@ export const CreatePage: FC<Props> = () => {
     { loading: sa_loading, error: sa_error, called: sa_called },
   ] = useMutation(S_CREATE_WORKSPACE, {
     onCompleted({ res }) {
-      console.log("workspace was successfully created!");
+      setOpen(!saveSnackBarOpen);
     },
     onError(error: ApolloError) {
       console.log(error);
@@ -98,6 +100,7 @@ export const CreatePage: FC<Props> = () => {
           </Button>
         </Grid>
       </Grid>
+      <SnakbarAlert isOpen={saveSnackBarOpen} />
     </div>
   );
 };

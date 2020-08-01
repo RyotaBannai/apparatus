@@ -4,6 +4,7 @@ import { useSet } from "../../modules/set/actions";
 import { L_GET_SETS, S_ADD_ITEMS } from "../../modules/item/queries";
 import { Button, Grid, Icon, Snackbar } from "@material-ui/core";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
+import { SnakbarAlert } from "../../components/parts/SnakbarAlert";
 import { useStyles } from "../../assets/style/item/page.style";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import * as _ from "lodash";
@@ -21,12 +22,6 @@ export const AddPage: FC<Props> = () => {
   const { takeId, filterSet, cleanSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
-  const handleClose = (event?: SyntheticEvent, reason?: string) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpen(false);
-  };
 
   const callSetChild = (_children: Array<any> | null) => {
     let newChildren;
@@ -48,7 +43,7 @@ export const AddPage: FC<Props> = () => {
       if (res === "Success") {
         cleanSet();
         callSetChild(null);
-        setOpen(true);
+        setOpen(!saveSnackBarOpen);
       } else {
         console.log(
           "Apollo mutation createItems response's status is unexpected."
@@ -116,15 +111,7 @@ export const AddPage: FC<Props> = () => {
           >
             Save Item
           </Button>
-          <Snackbar
-            open={saveSnackBarOpen}
-            autoHideDuration={3000}
-            onClose={handleClose}
-          >
-            <Alert onClose={handleClose} severity="success">
-              Successfully saved!
-            </Alert>
-          </Snackbar>
+          <SnakbarAlert isOpen={saveSnackBarOpen} />
         </Grid>
       </Grid>
     </div>
