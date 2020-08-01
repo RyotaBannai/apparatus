@@ -26,15 +26,14 @@ import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 function createData(
   id: string,
   name: string,
-  description: string
-  // items: Items
+  description: string,
+  items: Items
 ) {
-  //   let item_amount: number = 1;
   return {
     id,
     name,
     description,
-    // item_amount,
+    item_count: items.length,
   };
 }
 interface WrapProps {
@@ -72,7 +71,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
               {isCurrent() ? <KeyboardArrowRightIcon /> : ""} {row.name}
             </TableCell>
             <TableCell>{row.description}</TableCell>
-            <TableCell> - </TableCell>
+            <TableCell>{row.item_count}</TableCell>
           </TableRow>
         </WrapWithToolTip>
       ) : (
@@ -109,15 +108,19 @@ interface Props {}
 
 export const ListPage: FC<Props> = () => {
   const { data, refetch } = useQuery(S_GET_WORKSPACES);
-  const returnData = (workspaces: Array<Workspace & { id: string }>) => {
+  const returnData = (
+    workspaces: Array<Workspace & { id: string; items: Items }>
+  ) => {
     let rows: ReturnType<typeof createData>[] = [];
-    for (const { id, name, description } of workspaces) {
-      rows = [...rows, createData(id, name, description)];
+    for (const { id, name, description, items } of workspaces) {
+      rows = [...rows, createData(id, name, description, items)];
     }
     return rows;
   };
 
-  useEffect(() => {refetch();}, []);
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <>

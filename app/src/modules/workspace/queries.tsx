@@ -33,6 +33,11 @@ export const S_GET_WORKSPACES = gql`
       id
       name
       description
+      items {
+        id
+        data
+        type
+      }
     }
   }
 `;

@@ -1,5 +1,6 @@
 import { makeVar, ReactiveVar } from "@apollo/client";
 import { Item, Items, itemOrUndefined } from "../item/actions";
+import { getCurrentWS } from "../../modules/workspace/actions";
 import * as _ from "lodash";
 
 export interface Set {
@@ -132,18 +133,22 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     });
     Sets(sets);
   };
+  const addWSId = (set: Partial<Set>) => ({
+    ...set,
+    ws_id: getCurrentWS().id,
+  });
   const filterSet = (): string => {
     let set = allSets()
       .filter((set: setOrUndefined) => set)
       .map((set: setOrUndefined) => {
-        return {
+        return addWSId({
           ...set,
           items: set?.items.filter((item: itemOrUndefined) => {
             if (item instanceof Object && "data" in item && item["data"] !== "")
               return true;
             else return false;
           }),
-        };
+        });
       });
     return JSON.stringify(set);
   };
