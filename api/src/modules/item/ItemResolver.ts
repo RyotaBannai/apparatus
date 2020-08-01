@@ -25,6 +25,8 @@ import { Set } from "../../entity/Set";
 import { ItemSet } from "../../entity/ItemSet";
 import { List } from "../../entity/List";
 import { ItemList } from "../../entity/ItemList";
+import { ItemWorkspace } from "../../entity/ItemWorkspace";
+import { Workspace } from "../../entity/Workspace";
 import { ItemMeta } from "../../entity/ItemMeta";
 import { UserMeta } from "../../entity/UserMeta";
 
@@ -50,14 +52,16 @@ export class ItemResolver {
     let request_user: User = await User.findOneOrFail(ctx.user.id, {
       relations: ["user_meta"],
     });
-    for (const { name, items } of sets) {
+    for (const { name, items, ws_id } of sets) {
+      const this_workspace: Workspace = await Workspace.findOneOrFail(ws_id);
       if (items.length > 1) {
         let new_set: Set = Set.create({ name: name });
         await new_set.save();
         for (const item of items) {
           let new_item: Item = await this.saveItem(
             item,
-            request_user.user_meta
+            request_user.user_meta,
+            this_workspace
           );
           let new_item_set: ItemSet = new ItemSet();
           new_item_set.item = new_item;
@@ -66,14 +70,18 @@ export class ItemResolver {
         }
       } else {
         for (const item of items) {
-          this.saveItem(item, request_user.user_meta);
+          this.saveItem(item, request_user.user_meta, this_workspace);
         }
       }
     }
     return { res: "Success" };
   }
 
-  private async saveItem(item: any, user_meta: UserMeta): Promise<Item> {
+  private async saveItem(
+    item: any,
+    user_meta: UserMeta,
+    workspace: Workspace
+  ): Promise<Item> {
     let new_item: Item = Item.create({
       data: item.data,
       type: item.type,
@@ -86,6 +94,11 @@ export class ItemResolver {
     new_item_meta.description = item.description;
     new_item_meta.note = item.note;
     await getRepository(ItemMeta).save(new_item_meta);
+
+    let new_item_ws: ItemWorkspace = new ItemWorkspace();
+    new_item_ws.item = new_item;
+    new_item_ws.ws = workspace;
+    await getRepository(ItemWorkspace).save(new_item_ws);
 
     return new_item;
   }
