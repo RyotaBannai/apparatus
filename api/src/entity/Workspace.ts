@@ -26,6 +26,9 @@ export class Workspace extends Base {
   @Column()
   ownerId: number;
 
+  @Field((type) => [Item])
+  items: Item[];
+
   @Field((type) => [ItemWorkspace])
   @OneToMany((type) => ItemWorkspace, (item_ws) => item_ws.ws)
   @JoinColumn()

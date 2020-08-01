@@ -1,4 +1,14 @@
-import { Arg, Args, Int, Mutation, Query, Resolver, Ctx } from "type-graphql";
+import {
+  Arg,
+  Args,
+  Ctx,
+  FieldResolver,
+  Int,
+  Mutation,
+  Resolver,
+  Root,
+  Query,
+} from "type-graphql";
 import { getRepository } from "typeorm";
 import { Context } from "vm";
 import {
@@ -8,6 +18,7 @@ import {
   getWSArgs,
   getWSbyIDArgs,
 } from "../../entity/Workspace";
+import { Item } from "../../entity/Item";
 
 @Resolver((of) => Workspace)
 export class WorkspaceResolver {
@@ -58,5 +69,20 @@ export class WorkspaceResolver {
     return await Workspace.find({
       where: { ownerId: ctx.user.id },
     });
+  }
+
+  @FieldResolver()
+  async items(@Root() workspace: Workspace) {
+    const this_workspace: Workspace = await Workspace.findOneOrFail(
+      workspace.id,
+      {
+        relations: ["itemConnector", "itemConnector.item"],
+      }
+    );
+    const this_items: Item[] = [];
+    for (const { item } of this_workspace.itemConnector) {
+      this_items.push(item);
+    }
+    return this_items;
   }
 }
