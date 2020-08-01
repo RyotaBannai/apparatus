@@ -32,7 +32,7 @@ export class Workspace extends Base {
   itemConnector: ItemWorkspace[];
 }
 
-@InputType({ description: "New items data" })
+@InputType({ description: "New WS data" })
 export class createWSInput implements Partial<Workspace> {
   @Field((type) => String, { nullable: false })
   name: string;
@@ -40,6 +40,19 @@ export class createWSInput implements Partial<Workspace> {
   description: string;
 }
 
+@InputType({ description: "Edit WS" })
+export class editWSInput extends createWSInput {
+  @Field((type) => String)
+  id: string;
+}
+
+@ArgsType()
+export class getWSbyIDArgs {
+  @Field((type) => String)
+  id: string;
+}
+
+@ArgsType()
 export class getWSArgs implements Partial<Workspace> {
   @Field((type) => ID, { nullable: false })
   ownerId: number;
