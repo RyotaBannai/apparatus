@@ -9,7 +9,7 @@ import {
   concat,
 } from "@apollo/client";
 import { Sets, setStatus } from "./modules/set/actions";
-import { workspace } from "./modules/workspace/actions";
+import { workspace, getCurrentWS } from "./modules/workspace/actions";
 import possibleTypes from "./introspection/possibleTypes.json";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
@@ -47,6 +47,9 @@ const cache = new InMemoryCache({
         },
         getWorkspace(_, { args }) {
           return workspace();
+        },
+        currentWS(_, { args }) {
+          return getCurrentWS();
         },
       },
     },

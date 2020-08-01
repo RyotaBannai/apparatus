@@ -11,6 +11,15 @@ export const useStyles = makeStyles((theme: Theme) =>
         borderBottom: "unset",
       },
     },
+    currentWS: {
+      backgroundColor: indigo[50],
+      transition: theme.transitions.create(["background-color", "color"], {
+        duration: theme.transitions.duration.complex,
+      }),
+      "&:hover": {
+        backgroundColor: `${indigo[100]} !important`,
+      },
+    },
     name: {
       width: "50%",
       "& input": {

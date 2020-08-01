@@ -1,6 +1,7 @@
 import React from "react";
 import { gql, useLazyQuery } from "@apollo/client";
 import { ApolloError } from "apollo-client";
+import { getCurrentWS, setCurrentWS } from "../modules/workspace/actions";
 import {
   Button,
   InputLabel,
@@ -41,6 +42,7 @@ export const Login: React.FC<Props> = () => {
         return;
       }
       localStorage.setItem("token", login[0].token as string);
+      if (getCurrentWS() === null) setCurrentWS("1");
     },
     onError(error: ApolloError) {
       console.log(error);

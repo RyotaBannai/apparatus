@@ -1,11 +1,17 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
-import { S_GET_WORKSPACES } from "../../modules/workspace/queries";
+import {
+  S_GET_WORKSPACES,
+  L_GET_CURRENT_WORKSPACE,
+} from "../../modules/workspace/queries";
 import { useWorkspace } from "../../modules/workspace/actions";
+import { getCurrentWS, setCurrentWS } from "../../modules/workspace/actions";
 import { useStyles } from "../../assets/style/workspace/page.style";
 import { Items } from "../../modules/item/actions";
-import { Workspaces } from "../../modules/workspace/actions";
+import { Workspace } from "../../modules/workspace/actions";
 import {
+  Button,
+  Icon,
   Paper,
   Table,
   TableBody,
@@ -13,33 +19,87 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Tooltip,
 } from "@material-ui/core";
+import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
 
 function createData(
+  id: string,
   name: string,
   description: string
   // items: Items
 ) {
   //   let item_amount: number = 1;
   return {
+    id,
     name,
     description,
     // item_amount,
   };
 }
+interface WrapProps {
+  isCurrent: boolean;
+  children: React.ReactElement<any, any>;
+}
+
+const WrapWithToolTip: FC<WrapProps> = (props) => {
+  if (props.isCurrent) {
+    return (
+      <Tooltip title="Current Workspace" placement="left">
+        {props.children}
+      </Tooltip>
+    );
+  } else return props.children;
+};
 
 function Row(props: { row: ReturnType<typeof createData> }) {
   const { row } = props;
   const classes = useStyles();
-  // TODO: onClick でコンポネントを入れ替えて、Go to this workspace みたいにして切替をできるようにする
-  // TODO: current Workspace にはハイライトをいれる
+  const [goToWS, setGoToWS] = useState<boolean>();
+  const { data } = useQuery(L_GET_CURRENT_WORKSPACE);
+  const isCurrent = (): boolean => data?.currentWS.id === row.id;
   return (
     <>
-      <TableRow hover className={classes.root}>
-        <TableCell>{row.name}</TableCell>
-        <TableCell>{row.description}</TableCell>
-        <TableCell> - </TableCell>
-      </TableRow>
+      {!goToWS ? (
+        <WrapWithToolTip isCurrent={isCurrent()}>
+          <TableRow
+            hover
+            className={(classes.root, isCurrent() ? classes.currentWS : "")}
+            onClick={(e: SyntheticEvent) => !isCurrent() && setGoToWS(!goToWS)}
+          >
+            <TableCell>
+              {isCurrent() ? <KeyboardArrowRightIcon /> : ""} {row.name}
+            </TableCell>
+            <TableCell>{row.description}</TableCell>
+            <TableCell> - </TableCell>
+          </TableRow>
+        </WrapWithToolTip>
+      ) : (
+        <TableRow hover className={classes.root}>
+          <TableCell>
+            <Tooltip title="Cancel" placement="top">
+              <Icon onClick={(e: SyntheticEvent) => setGoToWS(!goToWS)}>
+                close
+              </Icon>
+            </Tooltip>
+          </TableCell>
+          <TableCell colSpan={2}>
+            <Button
+              variant="contained"
+              color="primary"
+              endIcon={<Icon>arrow_right</Icon>}
+              disableRipple
+              disableTouchRipple
+              onClick={(): void => {
+                setCurrentWS(row.id);
+                window.location.reload();
+              }}
+            >
+              Go to this workspace
+            </Button>
+          </TableCell>
+        </TableRow>
+      )}
     </>
   );
 }
@@ -47,14 +107,11 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 interface Props {}
 
 export const ListPage: FC<Props> = () => {
-  const { addateWS } = useWorkspace();
-  const classes = useStyles();
   const { data } = useQuery(S_GET_WORKSPACES);
-
-  const returnData = (workspaces: Workspaces) => {
+  const returnData = (workspaces: Array<Workspace & { id: string }>) => {
     let rows: ReturnType<typeof createData>[] = [];
-    for (const { name, description } of workspaces) {
-      rows = [...rows, createData(name, description)];
+    for (const { id, name, description } of workspaces) {
+      rows = [...rows, createData(id, name, description)];
     }
     return rows;
   };

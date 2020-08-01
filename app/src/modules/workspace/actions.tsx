@@ -12,6 +12,12 @@ export const workspace = makeVar<Workspace>({
   description: "Describe this workspace. (ex: Chinese)",
 });
 
+export const getCurrentWS = (): { id: string | null } => ({
+  id: localStorage.getItem("currentWS") ?? null,
+});
+export const setCurrentWS = (id: string) =>
+  localStorage.setItem("currentWS", id);
+
 export function useWorkspace(sets: ReactiveVar<Workspace> = workspace) {
   const addateWS = (new_data: Partial<Workspace> & { type: string }) => {
     let new_WS: any = {};

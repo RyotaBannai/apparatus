@@ -9,6 +9,14 @@ export const L_GET_WORKSPACE = gql`
   }
 `;
 
+export const L_GET_CURRENT_WORKSPACE = gql`
+  {
+    currentWS @client {
+      id
+    }
+  }
+`;
+
 export const S_GET_WORKSPACES = gql`
   {
     getWorkspaces {
