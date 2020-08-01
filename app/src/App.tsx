@@ -17,6 +17,7 @@ import "./App.css";
 import { Layout } from "./pages/layouts/Layout";
 import { CreatePage as CreateWorkspacePage } from "./pages/workspace/CreatePage";
 import { ListPage as ListWorkspacePage } from "./pages/workspace/ListPage";
+import { EditPage as EditWorkspacePage } from "./pages/workspace/EditPage";
 import { AddPage as AddItemPage } from "./pages/item/AddPage";
 import { Sub } from "./pages/Sub";
 import { Pagination } from "./pages/DemoPagination";
@@ -45,7 +46,7 @@ const cache = new InMemoryCache({
             .find((set) => set?.id === args?.set_id)
             ?.items.find((item) => item.id === args?.id);
         },
-        getWorkspace(_, { args }) {
+        l_getWorkspace(_, { args }) {
           return workspace();
         },
         currentWS(_, { args }) {
@@ -88,6 +89,7 @@ export default function App() {
               component={CreateWorkspacePage}
             />
             <Route exact path="/list_workspace" component={ListWorkspacePage} />
+            <Route exact path="/edit_workspace" component={EditWorkspacePage} />
             <Route exact path="/item" component={AddItemPage} />
             <Route exact path="/sub" component={Sub} />
             <Route exact path="/pagination" component={Pagination} />

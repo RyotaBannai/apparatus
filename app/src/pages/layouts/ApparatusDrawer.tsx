@@ -68,25 +68,25 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
             <List component="div" disablePadding>
               {[
                 {
-                  text: "List",
-                  link: "/list_workspace",
-                  icon: <NotesOutlinedIcon />,
-                },
-                {
                   text: "Create",
                   link: "/create_workspace",
                   icon: <GrainOutlinedIcon />,
                 },
                 {
+                  text: "List",
+                  link: "/list_workspace",
+                  icon: <NotesOutlinedIcon />,
+                },
+                {
                   text: "Edit",
-                  link: "#",
+                  link: "/edit_workspace",
                   icon: <CallMissedOutgoingOutlinedIcon />,
                 },
               ].map((data, index) => (
                 <NavLink exact to={data.link}>
                   <ListItem
                     button
-                    key={index}
+                    key={data.text}
                     className={classes.nested}
                     disableRipple
                     disableTouchRipple
@@ -105,7 +105,7 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
             // { text: "Pagination", link: "#" },
           ].map((data, index) => (
             <NavLink exact to={data.link}>
-              <ListItem button key={index} disableRipple disableTouchRipple>
+              <ListItem button key={data.text} disableRipple disableTouchRipple>
                 <ListItemText primary={data.text} />
               </ListItem>
             </NavLink>
@@ -120,7 +120,7 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
             <NavLink exact to={data.link}>
               <ListItem
                 button
-                key={index}
+                key={data.text}
                 // TODO: selected にするための state を管理 selected={true}
                 disableRipple
                 disableTouchRipple

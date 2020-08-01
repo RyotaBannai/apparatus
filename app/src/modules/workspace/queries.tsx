@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const L_GET_WORKSPACE = gql`
   {
-    getWorkspace @client {
+    l_getWorkspace @client {
       name
       description
     }
@@ -13,6 +13,16 @@ export const L_GET_CURRENT_WORKSPACE = gql`
   {
     currentWS @client {
       id
+    }
+  }
+`;
+
+export const S_GET_WORKSPACE = gql`
+  query GET_WORKSPACE($id: String!) {
+    getWorkspace(id: $id) {
+      id
+      name
+      description
     }
   }
 `;
@@ -32,6 +42,16 @@ export const S_CREATE_WORKSPACE = gql`
     createWorkspace(data: { name: $name, description: $description }) {
       id
       name
+    }
+  }
+`;
+
+export const S_EDIT_WORKSPACE = gql`
+  mutation EDIT_WORKSPACE($id: String!, $name: String!, $description: String!) {
+    editWorkspace(data: { id: $id, name: $name, description: $description }) {
+      id
+      name
+      description
     }
   }
 `;

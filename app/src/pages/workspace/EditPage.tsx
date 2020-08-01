@@ -2,9 +2,10 @@ import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import {
   L_GET_WORKSPACE,
-  S_CREATE_WORKSPACE,
+  S_GET_WORKSPACE,
+  S_EDIT_WORKSPACE,
 } from "../../modules/workspace/queries";
-import { useWorkspace } from "../../modules/workspace/actions";
+import { useWorkspace, getCurrentWS } from "../../modules/workspace/actions";
 import { useStyles } from "../../assets/style/workspace/page.style";
 import {
   Button,
@@ -16,7 +17,7 @@ import {
 } from "@material-ui/core";
 
 interface Props {}
-export const CreatePage: FC<Props> = () => {
+export const EditPage: FC<Props> = () => {
   const { addateWS } = useWorkspace();
   const classes = useStyles();
 
@@ -33,33 +34,42 @@ export const CreatePage: FC<Props> = () => {
     });
   };
 
-  const { data } = useQuery(L_GET_WORKSPACE);
+  const { loading: sg_loading, error: sg_error, data } = useQuery(
+    S_GET_WORKSPACE,
+    {
+      variables: {
+        id: getCurrentWS().id,
+      },
+    }
+  );
+  const { data: l_data } = useQuery(L_GET_WORKSPACE);
 
   const [
-    s_createWorkspace,
+    s_editWorkspace,
     { loading: sa_loading, error: sa_error, called: sa_called },
-  ] = useMutation(S_CREATE_WORKSPACE, {
+  ] = useMutation(S_EDIT_WORKSPACE, {
     onCompleted({ res }) {
-      console.log("workspace was successfully created!");
+      console.log("workspace was successfully editted!");
     },
     onError(error: ApolloError) {
       console.log(error);
     },
   });
 
-  if (sa_loading) return <p>Loading...</p>;
-  if (sa_error) return <p>Error :(</p>;
+  if (sg_loading) return <p>Loading...</p>;
+  if (sg_error) return <p>Error :(</p>;
   return (
     <div>
-      <h2>Create New Workspace</h2>
-      {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
+      <h2>Edit Current Workspace</h2>
+      {/* <pre>{JSON.stringify(data, null, 1)}</pre>
+      <pre>{JSON.stringify(l_data, null, 1)}</pre> */}
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item className={classes.gridName}>
           <InputLabel htmlFor="name">Name</InputLabel>
           <OutlinedInput
             id="name"
             required
-            defaultValue={"Workspace"}
+            defaultValue={data?.getWorkspace.name ?? "Workspace"}
             className={classes.name}
             onChange={onChangeName}
           />
@@ -74,7 +84,9 @@ export const CreatePage: FC<Props> = () => {
             multiline
             rowsMax={4}
             variant="outlined"
-            defaultValue={"Describe this workspace. (ex: Chinese course)"}
+            defaultValue={
+              data?.getWorkspace.description ?? "Describe your workspace"
+            }
             className={classes.description}
             onChange={onChangeDescription}
           />
@@ -89,12 +101,12 @@ export const CreatePage: FC<Props> = () => {
             disableTouchRipple
             onClick={(e: SyntheticEvent) => {
               e.preventDefault();
-              s_createWorkspace({
-                variables: data.l_getWorkspace,
+              s_editWorkspace({
+                variables: { ...l_data.l_getWorkspace, id: getCurrentWS().id },
               });
             }}
           >
-            Create Workspace
+            Edit Workspace
           </Button>
         </Grid>
       </Grid>
