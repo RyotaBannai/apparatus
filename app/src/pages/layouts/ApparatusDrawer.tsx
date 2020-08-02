@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, FC } from "react";
 import { NavLink } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,6 +18,10 @@ import LayersOutlinedIcon from "@material-ui/icons/LayersOutlined";
 import NotesOutlinedIcon from "@material-ui/icons/NotesOutlined";
 import GrainOutlinedIcon from "@material-ui/icons/GrainOutlined";
 import CallMissedOutgoingOutlinedIcon from "@material-ui/icons/CallMissedOutgoingOutlined";
+import ScatterPlotIcon from "@material-ui/icons/ScatterPlot";
+import SpaceBarIcon from "@material-ui/icons/SpaceBar";
+import ViewHeadlineIcon from "@material-ui/icons/ViewHeadline";
+import ViewColumnIcon from "@material-ui/icons/ViewColumn";
 
 const drawerWidth = 240;
 
@@ -39,13 +43,14 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {}
 
-export const ApparatusDrawer: React.FC<Props> = (props) => {
+export const ApparatusDrawer: FC<Props> = (props) => {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [openWS, setOpenWS] = useState(false);
+  const [openItem, setOpenItem] = useState(true);
+  const [openSet, setOpenSet] = useState(true);
+  const [openList, setOpenList] = useState(false);
+  const [openFolder, setOpenFolder] = useState(false);
 
-  const handleClick = () => {
-    setOpen(!open);
-  };
   return (
     <Drawer
       className={classes.drawer}
@@ -57,14 +62,19 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
       <Toolbar />
       <div className={classes.drawerContainer}>
         <List>
-          <ListItem button onClick={handleClick}>
+          <ListItem
+            button
+            onClick={() => setOpenWS(!openWS)}
+            disableRipple
+            disableTouchRipple
+          >
             <ListItemIcon>
               <LayersOutlinedIcon />
             </ListItemIcon>
             <ListItemText primary="Workspace" />
-            {open ? <ExpandLess /> : <ExpandMore />}
+            {openWS ? <ExpandLess /> : <ExpandMore />}
           </ListItem>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={openWS} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {[
                 {
@@ -98,18 +108,170 @@ export const ApparatusDrawer: React.FC<Props> = (props) => {
               ))}
             </List>
           </Collapse>
-          {[
-            { text: "Item", link: "/item" },
-            { text: "Set", link: "#" },
-            { text: "List", link: "#" },
-            // { text: "Pagination", link: "#" },
-          ].map((data, index) => (
-            <NavLink exact to={data.link}>
-              <ListItem button key={data.text} disableRipple disableTouchRipple>
-                <ListItemText primary={data.text} />
-              </ListItem>
-            </NavLink>
-          ))}
+          <ListItem
+            button
+            onClick={() => setOpenItem(!openItem)}
+            disableRipple
+            disableTouchRipple
+          >
+            <ListItemIcon>
+              <ScatterPlotIcon />
+            </ListItemIcon>
+            <ListItemText primary="Item" />
+            {openItem ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={openItem} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {[
+                {
+                  text: "List",
+                  link: "/item_list",
+                  icon: <NotesOutlinedIcon />,
+                },
+                {
+                  text: "Create",
+                  link: "/item",
+                  icon: <GrainOutlinedIcon />,
+                },
+              ].map((data, index) => (
+                <NavLink exact to={data.link}>
+                  <ListItem
+                    button
+                    key={data.text}
+                    className={classes.nested}
+                    disableRipple
+                    disableTouchRipple
+                  >
+                    <ListItemIcon>{data.icon}</ListItemIcon>
+                    <ListItemText primary={data.text} />
+                  </ListItem>
+                </NavLink>
+              ))}
+            </List>
+          </Collapse>
+          <ListItem
+            button
+            onClick={() => setOpenSet(!openSet)}
+            disableRipple
+            disableTouchRipple
+          >
+            <ListItemIcon>
+              <SpaceBarIcon />
+            </ListItemIcon>
+            <ListItemText primary="Set" />
+            {openSet ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={openSet} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {[
+                {
+                  text: "List",
+                  link: "/set_list",
+                  icon: <NotesOutlinedIcon />,
+                },
+                {
+                  text: "Create",
+                  link: "/set_create",
+                  icon: <GrainOutlinedIcon />,
+                },
+              ].map((data, index) => (
+                <NavLink exact to={data.link}>
+                  <ListItem
+                    button
+                    key={data.text}
+                    className={classes.nested}
+                    disableRipple
+                    disableTouchRipple
+                  >
+                    <ListItemIcon>{data.icon}</ListItemIcon>
+                    <ListItemText primary={data.text} />
+                  </ListItem>
+                </NavLink>
+              ))}
+            </List>
+          </Collapse>
+          <ListItem
+            button
+            onClick={() => setOpenList(!openList)}
+            disableRipple
+            disableTouchRipple
+          >
+            <ListItemIcon>
+              <ViewHeadlineIcon />
+            </ListItemIcon>
+            <ListItemText primary="List" />
+            {openList ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={openList} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {[
+                {
+                  text: "List",
+                  link: "/list_list",
+                  icon: <NotesOutlinedIcon />,
+                },
+                {
+                  text: "Create",
+                  link: "/list_create",
+                  icon: <GrainOutlinedIcon />,
+                },
+              ].map((data, index) => (
+                <NavLink exact to={data.link}>
+                  <ListItem
+                    button
+                    key={data.text}
+                    className={classes.nested}
+                    disableRipple
+                    disableTouchRipple
+                  >
+                    <ListItemIcon>{data.icon}</ListItemIcon>
+                    <ListItemText primary={data.text} />
+                  </ListItem>
+                </NavLink>
+              ))}
+            </List>
+          </Collapse>
+          <ListItem
+            button
+            onClick={() => setOpenFolder(!openFolder)}
+            disableRipple
+            disableTouchRipple
+          >
+            <ListItemIcon>
+              <ViewColumnIcon />
+            </ListItemIcon>
+            <ListItemText primary="Folder" />
+            {openFolder ? <ExpandLess /> : <ExpandMore />}
+          </ListItem>
+          <Collapse in={openFolder} timeout="auto" unmountOnExit>
+            <List component="div" disablePadding>
+              {[
+                {
+                  text: "List",
+                  link: "/folder_list",
+                  icon: <NotesOutlinedIcon />,
+                },
+                {
+                  text: "Create",
+                  link: "/folder_create",
+                  icon: <GrainOutlinedIcon />,
+                },
+              ].map((data, index) => (
+                <NavLink exact to={data.link}>
+                  <ListItem
+                    button
+                    key={data.text}
+                    className={classes.nested}
+                    disableRipple
+                    disableTouchRipple
+                  >
+                    <ListItemIcon>{data.icon}</ListItemIcon>
+                    <ListItemText primary={data.text} />
+                  </ListItem>
+                </NavLink>
+              ))}
+            </List>
+          </Collapse>
         </List>
         <Divider />
         <List>
