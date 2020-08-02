@@ -11,13 +11,9 @@ import * as _ from "lodash";
 import { from } from "rxjs";
 import { tap, map } from "rxjs/operators";
 
-function Alert(props: AlertProps) {
-  return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
-
 interface Props {}
 
-export const AddPage: FC<Props> = () => {
+export const CreatePage: FC<Props> = () => {
   const classes = useStyles();
   const { takeId, filterSet, cleanSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
@@ -81,7 +77,7 @@ export const AddPage: FC<Props> = () => {
   if (sa_error) return <p>Error :(</p>;
   return (
     <div>
-      <h2>Add New Item</h2>
+      <h2>Create New Item</h2>
       {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
       {children.map((child) => child)}
       <Grid container alignItems="center" direction="row" spacing={1}>

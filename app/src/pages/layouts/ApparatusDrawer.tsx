@@ -41,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// TODO: open unOpen の状態を localStorage で管理する
 interface Props {}
 
 export const ApparatusDrawer: FC<Props> = (props) => {
@@ -130,7 +131,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
                 },
                 {
                   text: "Create",
-                  link: "/item",
+                  link: "/item_create",
                   icon: <GrainOutlinedIcon />,
                 },
               ].map((data, index) => (
