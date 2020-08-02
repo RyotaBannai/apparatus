@@ -17,7 +17,7 @@ import {
 } from "@material-ui/core";
 
 interface Props {}
-export const CreatePage: FC<Props> = () => {
+const CreatePage: FC<Props> = () => {
   const { addateWS } = useWorkspace();
   const classes = useStyles();
   const [saveSnackBarOpen, setOpen] = useState(false);
@@ -104,3 +104,5 @@ export const CreatePage: FC<Props> = () => {
     </div>
   );
 };
+
+export { CreatePage as default };

@@ -106,7 +106,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 
 interface Props {}
 
-export const ListPage: FC<Props> = () => {
+const ListPage: FC<Props> = () => {
   const { data, refetch } = useQuery(S_GET_WORKSPACES);
   const returnData = (
     workspaces: Array<Workspace & { id: string; items: Items }>
@@ -150,3 +150,5 @@ export const ListPage: FC<Props> = () => {
     </>
   );
 };
+
+export { ListPage as default };

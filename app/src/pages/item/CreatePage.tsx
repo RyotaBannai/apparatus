@@ -13,7 +13,7 @@ import { tap, map } from "rxjs/operators";
 
 interface Props {}
 
-export const CreatePage: FC<Props> = () => {
+const CreatePage: FC<Props> = () => {
   const classes = useStyles();
   const { takeId, filterSet, cleanSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
@@ -113,3 +113,5 @@ export const CreatePage: FC<Props> = () => {
     </div>
   );
 };
+
+export { CreatePage as default };

@@ -3,12 +3,15 @@ import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { S_GET_SETS } from "../../modules/set/queries";
 import { useWorkspace } from "../../modules/workspace/actions";
 import { getCurrentWS, setCurrentWS } from "../../modules/workspace/actions";
-import { useStyles } from "../../assets/style/workspace/page.style";
+import { useStyles } from "../../assets/style/set/page.style";
 import { Items } from "../../modules/item/actions";
 import { Set } from "../../modules/set/actions";
 import { Workspace } from "../../modules/workspace/actions";
 import {
   Button,
+  Box,
+  Collapse,
+  Grid,
   Icon,
   Paper,
   Table,
@@ -18,12 +21,14 @@ import {
   TableHead,
   TableRow,
   Tooltip,
+  Typography,
 } from "@material-ui/core";
 
 function createData(id: number, name: string, items: Items) {
   return {
     id,
     name,
+    items,
     item_count: items.length,
   };
 }
@@ -39,37 +44,74 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 
   return (
     <>
-      {!goToWS ? (
-        <TableRow
-          hover
-          className={classes.root}
-          onClick={(e: SyntheticEvent) => setGoToWS(!goToWS)}
-        >
-          <TableCell>{row.name}</TableCell>
-          <TableCell>{row.item_count}</TableCell>
+      <TableRow hover className={classes.root}>
+        <TableCell onClick={(e: SyntheticEvent) => setGoToWS(!goToWS)}>
+          {row.name}
+        </TableCell>
+        <TableCell onClick={(e: SyntheticEvent) => setGoToWS(!goToWS)}>
+          {row.item_count}
+        </TableCell>
+      </TableRow>
+      {goToWS ? (
+        <TableRow className={classes.root}>
+          <TableCell className={classes.itemTable} colSpan={2}>
+            <Collapse
+              in={goToWS}
+              timeout="auto"
+              unmountOnExit
+            >
+              <Box margin={1}>
+                <Grid
+                  container
+                  className={classes.itemListTop}
+                  alignItems="center"
+                  direction="row"
+                  spacing={1}
+                >
+                  <Grid item>
+                    <Typography variant="h6" gutterBottom component="div">
+                      Items
+                    </Typography>
+                  </Grid>
+                  <Grid item>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      endIcon={<Icon>arrow_right</Icon>}
+                      disableRipple
+                      disableTouchRipple
+                      onClick={(): void => {}}
+                    >
+                      Edit this set
+                    </Button>
+                  </Grid>
+                </Grid>
+                <Table size="small" aria-label="items">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Id</TableCell>
+                      <TableCell>Type</TableCell>
+                      <TableCell>Data</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {row.items.map((item) => (
+                      <TableRow key={item.id}>
+                        <TableCell>{item.id}</TableCell>
+                        <TableCell component="th" scope="row">
+                          {item.type}
+                        </TableCell>
+                        <TableCell>{item.data}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Box>
+            </Collapse>
+          </TableCell>
         </TableRow>
       ) : (
-        <TableRow hover className={classes.root}>
-          <TableCell>
-            <Tooltip title="Cancel" placement="top">
-              <Icon onClick={(e: SyntheticEvent) => setGoToWS(!goToWS)}>
-                close
-              </Icon>
-            </Tooltip>
-          </TableCell>
-          <TableCell colSpan={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              endIcon={<Icon>arrow_right</Icon>}
-              disableRipple
-              disableTouchRipple
-              onClick={(): void => {}}
-            >
-              Go to this workspace
-            </Button>
-          </TableCell>
-        </TableRow>
+        <></>
       )}
     </>
   );
@@ -77,7 +119,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 
 interface Props {}
 
-export const ListPage: FC<Props> = () => {
+const ListPage: FC<Props> = () => {
   const { loading: sg_loading, error: sg_error, data, refetch } = useQuery(
     S_GET_SETS
   );
@@ -99,7 +141,7 @@ export const ListPage: FC<Props> = () => {
     <>
       {data?.getSets.length > 0 ? (
         <div>
-          <h2>Workspace List</h2>
+          <h2>Set List</h2>
           <TableContainer component={Paper}>
             <Table aria-label="collapsible table">
               <TableHead>
@@ -122,3 +164,5 @@ export const ListPage: FC<Props> = () => {
     </>
   );
 };
+
+export { ListPage as default };

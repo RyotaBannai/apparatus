@@ -18,7 +18,7 @@ import {
 } from "@material-ui/core";
 
 interface Props {}
-export const EditPage: FC<Props> = () => {
+const EditPage: FC<Props> = () => {
   const { addateWS } = useWorkspace();
   const classes = useStyles();
   const [saveSnackBarOpen, setOpen] = useState(false);
@@ -116,3 +116,5 @@ export const EditPage: FC<Props> = () => {
     </div>
   );
 };
+
+export { EditPage as default };

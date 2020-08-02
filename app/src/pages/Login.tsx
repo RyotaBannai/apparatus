@@ -26,7 +26,7 @@ const LOGIN = gql`
 
 interface Props {}
 
-export const Login: React.FC<Props> = () => {
+const Login: React.FC<Props> = () => {
   let email: any = "";
   let password: any = "";
   const [login, { called, loading, data }] = useLazyQuery(LOGIN, {
@@ -105,3 +105,5 @@ export const Login: React.FC<Props> = () => {
     </div>
   );
 };
+
+export { Login as default };

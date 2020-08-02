@@ -22,7 +22,7 @@ const ADD_USER = gql`
 
 interface Props {}
 
-export const Signin: React.FC<Props> = () => {
+const Signin: React.FC<Props> = () => {
   let name: any = "";
   let email: any = "";
   let password: any = "";
@@ -109,3 +109,4 @@ export const Signin: React.FC<Props> = () => {
     </div>
   );
 };
+export { Signin as default };
