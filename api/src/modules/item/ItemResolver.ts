@@ -26,6 +26,7 @@ import { ItemSet } from "../../entity/ItemSet";
 import { List } from "../../entity/List";
 import { ItemList } from "../../entity/ItemList";
 import { ItemWorkspace } from "../../entity/ItemWorkspace";
+import { SetWorkspace } from "../../entity/SetWorkspace";
 import { Workspace } from "../../entity/Workspace";
 import { ItemMeta } from "../../entity/ItemMeta";
 import { UserMeta } from "../../entity/UserMeta";
@@ -57,6 +58,12 @@ export class ItemResolver {
       if (items.length > 1) {
         let new_set: Set = Set.create({ name: name, ownerId: ctx.user.id });
         await new_set.save();
+
+        let new_set_ws: SetWorkspace = new SetWorkspace();
+        new_set_ws.set = new_set;
+        new_set_ws.ws = this_workspace;
+        await getRepository(SetWorkspace).save(new_set_ws);
+
         for (const item of items) {
           let new_item: Item = await this.saveItem(
             item,

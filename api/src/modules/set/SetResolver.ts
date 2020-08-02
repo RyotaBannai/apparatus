@@ -13,7 +13,9 @@ import { getRepository } from "typeorm";
 import { Context } from "vm";
 import { Item } from "../../entity/Item";
 import { Set } from "../../entity/Set";
-import { getSetbyIDArgs } from "./TypeDefs";
+import { Workspace } from "../../entity/Workspace";
+import { SetWorkspace } from "../../entity/SetWorkspace";
+import { getSetArgs, getSetbyIDArgs } from "./TypeDefs";
 
 @Resolver((of) => Set)
 export class SetResolver {
@@ -26,12 +28,27 @@ export class SetResolver {
   }
 
   @Query((returns) => [Set])
-  async getSets(@Ctx() ctx: Context): Promise<Set[] | undefined> {
-    return await Set.find({
+  async getSets(
+    @Args() { wsId }: getSetArgs,
+    @Ctx() ctx: Context
+  ): Promise<Set[] | undefined> {
+    let sets: Set[] = await Set.find({
       where: {
         ownerId: ctx.user.id,
       },
+      relations: ["wsConnector", "wsConnector.ws"],
     });
+    let sets_in_this_ws: Set[] = [];
+    for (const set of sets) {
+      let set_wses: SetWorkspace[] = set.wsConnector;
+      for (const set_ws of set_wses) {
+        if (set_ws.ws.id === wsId) {
+          sets_in_this_ws.push(set);
+          break;
+        }
+      }
+    }
+    return sets_in_this_ws;
   }
 
   @FieldResolver()

@@ -3,6 +3,7 @@ import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Base } from "./Base";
 import { Item } from "./Item";
 import { ItemSet } from "./ItemSet";
+import { SetWorkspace } from "./SetWorkspace";
 
 @ObjectType()
 @Entity()
@@ -20,4 +21,8 @@ export class Set extends Base {
 
   @OneToMany((type) => ItemSet, (item_set) => item_set.set)
   itemConnector: ItemSet[];
+
+  @OneToMany((type) => SetWorkspace, (set_ws) => set_ws.set)
+  @JoinColumn()
+  wsConnector: SetWorkspace[];
 }
