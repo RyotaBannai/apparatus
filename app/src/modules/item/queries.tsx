@@ -13,6 +13,7 @@ export const L_GET_SET = gql`
   query GET_SET($id: Float!) {
     getSet(id: $id) @client {
       id
+      set_id_on_server
       name
       items
     }

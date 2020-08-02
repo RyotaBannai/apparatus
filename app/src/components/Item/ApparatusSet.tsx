@@ -20,15 +20,17 @@ import { tap, map } from "rxjs/operators";
 
 interface Props {
   id: number;
+  set_id_on_server?: number | undefined;
   name?: string;
   items?: Array<any>;
+  edit_mode?: boolean;
 }
 
-export const ApparatusSet: FC<Props> = ({ id, name, items }) => {
+export const ApparatusSet: FC<Props> = ({ id, set_id_on_server, name, items, edit_mode }) => {
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
   const [children, setChild] = useState<Array<any>>([]);
-  const { takeIdForItem, updateName, updateSetStatus } = useSet();
+  const { addateItem, takeIdForItem, updateName, updateSetStatus } = useSet();
 
   const callSetChild = (_children: Array<any> | null) => {
     let newChildren;
@@ -73,10 +75,25 @@ export const ApparatusSet: FC<Props> = ({ id, name, items }) => {
     if (items !== undefined) {
       let old_items: any[] = [];
       for (const item of items) {
-        old_items = [
-          ...old_items,
-          <ApparatusItem {...item} set_id={id} hideSet={setShow} />,
-        ];
+        if(edit_mode){
+          let fetched_item = {
+            ...item,
+            id: takeIdForItem(),
+            id_on_server: item.id,
+          };
+          addateItem({
+            id,
+            name,
+            set_id_on_server,
+            item:fetched_item
+          });
+          old_items = [...old_items, <ApparatusItem {...fetched_item} set_id={id} hideSet={setShow} />];
+        } else{
+          old_items = [
+            ...old_items,
+            <ApparatusItem {...item} set_id={id} hideSet={setShow} />,
+          ];
+        }
       }
       setChild(old_items);
     } else {
@@ -88,6 +105,7 @@ export const ApparatusSet: FC<Props> = ({ id, name, items }) => {
   else
     return (
       <Box className={is_set() ? classes.set : classes.item}>
+        {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
         {is_set() ? (
           <Grid container alignItems="flex-end" direction="row" spacing={1}>
             <Grid item>

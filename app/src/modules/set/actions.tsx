@@ -5,6 +5,7 @@ import * as _ from "lodash";
 
 export interface Set {
   id: number;
+  set_id_on_server?: number | null,
   name: string;
   items: Items;
 }
@@ -13,7 +14,9 @@ type setOrUndefined = Set | undefined;
 
 interface addItem {
   id: number;
-  item: Item & { update_data: string };
+  set_id_on_server?: number | null;
+  name?: string;
+  item: Item & { update_data?: string };
 }
 
 export type Sets = Array<Set | undefined>;
@@ -45,6 +48,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
           if (newItems.length !== 0)
             return {
               id,
+              set_id_on_server: set.set_id_on_server,
               name: set.name,
               items: newItems,
             };
@@ -56,12 +60,25 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     Sets(sets);
     return newItems.length;
   };
+
+  const deleteSetOnEditPage = (set_id_on_server:  string | undefined) => {
+    Sets(
+      Sets()
+      .filter((set: any) => set?.set_id_on_server !== set_id_on_server)
+      );
+  };
+
   const addateItem = (newItem: addItem) => {
     let item = newItem.item;
     let this_set: Set;
     let is_defined = if_set_defined(newItem.id);
     if (is_defined === undefined) {
-      this_set = { id: newItem.id, name: "Set", items: [] };
+      this_set = { 
+        id: newItem.id, 
+        set_id_on_server: newItem.set_id_on_server ?? null, 
+        name: newItem.name ?? "Set", 
+        items: [] 
+      };
       Sets([...Sets(), this_set]);
     } else {
       this_set = is_defined;
@@ -74,6 +91,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     if (this_item === undefined) {
       let newItem = {
         id: item.id,
+        id_on_server: item.id_on_server ?? undefined,
         type: item.type ?? "line", // null or undefined
         data: item.data ?? "",
         description: item.description ?? "",
@@ -107,6 +125,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     }
     let updated_set: Set = {
       id: this_set.id,
+      set_id_on_server: this_set?.set_id_on_server ?? null,
       name: this_set.name,
       items: newItems,
     };
@@ -124,6 +143,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
       if (set !== undefined && set.id == id) {
         return {
           id,
+          set_id_on_server: set.set_id_on_server,
           name,
           items: set.items,
         };
@@ -187,6 +207,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     allSets,
     addateItem,
     deleteItem,
+    deleteSetOnEditPage,
     updateName,
     filterSet,
     cleanSet,

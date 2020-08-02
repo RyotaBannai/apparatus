@@ -10,7 +10,7 @@ export const policy = {
     Query: {
       fields: {
         sets() {
-          return Sets();
+          return Sets().filter((set) => !set?.set_id_on_server);
         },
         getSet(name: string, { args }: argsType) {
           return Sets().find((set: any) => set?.id === args?.id);

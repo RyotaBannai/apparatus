@@ -1,40 +1,49 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { useSet } from "../../modules/set/actions";
-import { L_GET_SETS, S_ADD_ITEMS } from "../../modules/item/queries";
+import { useParams } from "react-router-dom";
+import { S_GET_SET } from "../../modules/set/queries";
+import { S_ADD_ITEMS } from "../../modules/item/queries";
 import { Button, Grid, Icon } from "@material-ui/core";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnakbarAlert } from "../../components/parts/SnakbarAlert";
-import { useStyles } from "../../assets/style/item/page.style";
+import * as _ from "lodash";
 
 interface Props {}
 
-const CreatePage: FC<Props> = () => {
-  const classes = useStyles();
-  const { takeId, filterSet, cleanSet } = useSet();
+const EditPage: FC<Props> = () => {
+  const { deleteSetOnEditPage, takeId, filterSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
+  let { set_id } = useParams<{ set_id?: string | undefined }>();
 
-  const callSetChild = (_children: Array<any> | null) => {
-    let newChildren;
-    let id = takeId();
-    if (_children instanceof Array) {
-      newChildren = [..._children, <ApparatusSet key={id} id={id} />];
-    } else {
-      setChild([]);
-      newChildren = [<ApparatusSet key={id} id={id} />];
-    }
-    setChild(newChildren);
-  };
-  const { data } = useQuery(L_GET_SETS);
+  const {
+    loading: sg_loading,
+    error: sg_error,
+    called: sg_called,
+    refetch,
+  } = useQuery(S_GET_SET, {
+    variables: {
+      id: Number(set_id),
+    },
+    onCompleted({ s_getSet }) {
+      let props = { ...s_getSet, id: takeId() };
+      setChild([
+        <ApparatusSet
+          {...props}
+          set_id_on_server={s_getSet.id}
+          edit_mode={true}
+        />,
+      ]);
+    },
+  });
+
   const [
     s_addItems,
     { loading: sa_loading, error: sa_error, called: sa_called },
   ] = useMutation(S_ADD_ITEMS, {
     onCompleted({ createItems: { res } }) {
       if (res === "Success") {
-        cleanSet();
-        callSetChild(null);
         setOpen(!saveSnackBarOpen);
       } else {
         console.log(
@@ -50,27 +59,20 @@ const CreatePage: FC<Props> = () => {
   const sendItems = (e: SyntheticEvent) => {
     e.preventDefault();
     let jsoned_set = filterSet();
-    s_addItems({
-      variables: { data: jsoned_set },
-    });
+    // TODO: change to s_editItems
+    // s_addItems({
+    //   variables: { data: jsoned_set },
+    // });
   };
 
   useEffect(() => {
-    if (data.sets.length > 0) {
-      let old_sets: any[] = [];
-      for (const set of data.sets) {
-        if (set instanceof Object && "id" in set) {
-          old_sets = [...old_sets, <ApparatusSet {...set} />];
-        }
-      }
-      setChild(old_sets);
-    } else {
-      callSetChild(null);
-    }
+    return () => {
+      deleteSetOnEditPage(set_id);
+    };
   }, []);
 
-  if (sa_loading) return <p>Loading...</p>;
-  if (sa_error) return <p>Error :(</p>;
+  if (sg_loading) return <p>Loading...</p>;
+  if (sg_error) return <p>Error :(</p>;
   return (
     <div>
       <h2>Create New Item</h2>
@@ -80,28 +82,13 @@ const CreatePage: FC<Props> = () => {
         <Grid item>
           <Button
             variant="contained"
-            className={classes.addButton}
-            startIcon={<Icon>add_circle</Icon>}
-            disableRipple
-            disableTouchRipple
-            onClick={(e: SyntheticEvent) => {
-              e.preventDefault();
-              callSetChild(children);
-            }}
-          >
-            Add Item
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
             color="primary"
             endIcon={<Icon>arrow_right</Icon>}
             disableRipple
             disableTouchRipple
             onClick={sendItems}
           >
-            Save Item
+            Save Edit
           </Button>
           <SnakbarAlert isOpen={saveSnackBarOpen} />
         </Grid>
@@ -110,4 +97,4 @@ const CreatePage: FC<Props> = () => {
   );
 };
 
-export { CreatePage as default };
+export { EditPage as default };

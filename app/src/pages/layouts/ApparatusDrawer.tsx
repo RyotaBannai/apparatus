@@ -1,6 +1,5 @@
 import React, { useState, FC } from "react";
 import { NavLink } from "react-router-dom";
-
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Collapse,
@@ -80,17 +79,17 @@ export const ApparatusDrawer: FC<Props> = (props) => {
               {[
                 {
                   text: "List",
-                  link: "/list_workspace",
+                  link: "/workspace_list",
                   icon: <NotesOutlinedIcon />,
                 },
                 {
                   text: "Edit",
-                  link: "/edit_workspace",
+                  link: "/workspace_edit",
                   icon: <CallMissedOutgoingOutlinedIcon />,
                 },
                 {
                   text: "Create",
-                  link: "/create_workspace",
+                  link: "/workspace_create",
                   icon: <GrainOutlinedIcon />,
                 },
               ].map((data, index) => (
@@ -169,11 +168,6 @@ export const ApparatusDrawer: FC<Props> = (props) => {
                   text: "List",
                   link: "/set_list",
                   icon: <NotesOutlinedIcon />,
-                },
-                {
-                  text: "Create",
-                  link: "/set_create",
-                  icon: <GrainOutlinedIcon />,
                 },
               ].map((data, index) => (
                 <NavLink exact to={data.link}>

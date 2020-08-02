@@ -8,6 +8,7 @@ const CreateWorkspacePage = lazy(() => import("./pages/workspace/CreatePage"));
 const ListWorkspacePage = lazy(() => import("./pages/workspace/ListPage"));
 const EditWorkspacePage = lazy(() => import("./pages/workspace/EditPage"));
 const CreateItemPage = lazy(() => import("./pages/item/CreatePage"));
+const EditItemPage = lazy(() => import("./pages/item/EditPage"));
 const ListSetPage = lazy(() => import("./pages/set/ListPage"));
 const Login = lazy(() => import("./pages/Login"));
 const Signin = lazy(() => import("./pages/Signin"));
@@ -20,12 +21,13 @@ export const ApparatusRouter: FC<Props> = () => {
         <Suspense fallback={<div>Loading...</div>}>
           <Route
             exact
-            path="/create_workspace"
+            path="/workspace_create"
             component={CreateWorkspacePage}
           />
-          <Route exact path="/list_workspace" component={ListWorkspacePage} />
-          <Route exact path="/edit_workspace" component={EditWorkspacePage} />
+          <Route exact path="/workspace_list" component={ListWorkspacePage} />
+          <Route exact path="/workspace_edit" component={EditWorkspacePage} />
           <Route exact path="/item_create" component={CreateItemPage} />
+          <Route exact path="/item_edit/:set_id" component={EditItemPage} />
           <Route exact path="/set_list" component={ListSetPage} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/signin" component={Signin} />

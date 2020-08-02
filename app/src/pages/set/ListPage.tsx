@@ -1,4 +1,5 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
+import { NavLink } from "react-router-dom";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { S_GET_SETS } from "../../modules/set/queries";
 import { useWorkspace } from "../../modules/workspace/actions";
@@ -74,16 +75,17 @@ function Row(props: { row: ReturnType<typeof createData> }) {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      endIcon={<Icon>arrow_right</Icon>}
-                      disableRipple
-                      disableTouchRipple
-                      onClick={(): void => {}}
-                    >
-                      Edit this set
-                    </Button>
+                    <NavLink exact to={`/item_edit/${row.id}`}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        endIcon={<Icon>arrow_right</Icon>}
+                        disableRipple
+                        disableTouchRipple
+                      >
+                        Edit this set
+                      </Button>
+                    </NavLink>
                   </Grid>
                 </Grid>
                 <Table size="small" aria-label="items">
@@ -121,7 +123,11 @@ interface Props {}
 
 const ListPage: FC<Props> = () => {
   const { loading: sg_loading, error: sg_error, data, refetch } = useQuery(
-    S_GET_SETS
+    S_GET_SETS, {
+      variables: {
+        wsId: Number(getCurrentWS().id)
+      }
+    }
   );
   const returnData = (sets: Set[]) => {
     let rows: ReturnType<typeof createData>[] = [];
