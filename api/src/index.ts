@@ -1,8 +1,9 @@
 import "reflect-metadata";
 import { createConnection, getConnectionOptions } from "typeorm";
 import { buildSchema } from "type-graphql";
-import { ItemResolver } from "./modules/item/ItemResolver";
 import { UserResolver } from "./modules/user/UserResolver";
+import { ItemResolver } from "./modules/item/ItemResolver";
+import { SetResolver } from "./modules/set/SetResolver";
 import { WorkspaceResolver } from "./modules/workspace/WorkspaceResolver";
 import { jwtMiddleware } from "./entity/User";
 import { customAuthChecker } from "./entity/User";
@@ -19,7 +20,7 @@ const main = async () => {
     .catch((err) => console.log("Typeorm Error: ", err));
 
   const schema = await buildSchema({
-    resolvers: [ItemResolver, UserResolver, WorkspaceResolver],
+    resolvers: [UserResolver, ItemResolver, SetResolver, WorkspaceResolver],
     authChecker: customAuthChecker,
   });
 

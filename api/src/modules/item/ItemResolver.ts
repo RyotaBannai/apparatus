@@ -55,7 +55,7 @@ export class ItemResolver {
     for (const { name, items, ws_id } of sets) {
       const this_workspace: Workspace = await Workspace.findOneOrFail(ws_id);
       if (items.length > 1) {
-        let new_set: Set = Set.create({ name: name });
+        let new_set: Set = Set.create({ name: name, ownerId: ctx.user.id });
         await new_set.save();
         for (const item of items) {
           let new_item: Item = await this.saveItem(
