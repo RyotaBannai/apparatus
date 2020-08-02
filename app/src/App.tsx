@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { ApparatusRouter as Router } from "./Router";
 import {
   ApolloProvider,
   ApolloClient,
@@ -8,53 +8,15 @@ import {
   InMemoryCache,
   concat,
 } from "@apollo/client";
-import { Sets, setStatus } from "./modules/set/actions";
-import { workspace, getCurrentWS } from "./modules/workspace/actions";
+import { policy } from "./Policies/TypePolicies";
 import possibleTypes from "./introspection/possibleTypes.json";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 import "./App.css";
-import { Layout } from "./pages/layouts/Layout";
-import { CreatePage as CreateWorkspacePage } from "./pages/workspace/CreatePage";
-import { ListPage as ListWorkspacePage } from "./pages/workspace/ListPage";
-import { EditPage as EditWorkspacePage } from "./pages/workspace/EditPage";
-import { AddPage as AddItemPage } from "./pages/item/AddPage";
-import { Sub } from "./pages/Sub";
-import { Pagination } from "./pages/DemoPagination";
-import { Login } from "./pages/Login";
-import { Signin } from "./pages/Signin";
 
 const cache = new InMemoryCache({
   possibleTypes,
-  typePolicies: {
-    Query: {
-      fields: {
-        sets() {
-          return Sets();
-        },
-        getSet(name: string, { args }) {
-          return Sets().find((set) => set?.id === args?.id);
-        },
-        getSetStatus(name: string, { args }) {
-          return setStatus().find((status) => status.id === args?.id);
-        },
-        getSetStatuses(name: string, { args }) {
-          return setStatus();
-        },
-        getItem(_, { args }) {
-          return Sets()
-            .find((set) => set?.id === args?.set_id)
-            ?.items.find((item) => item.id === args?.id);
-        },
-        l_getWorkspace(_, { args }) {
-          return workspace();
-        },
-        currentWS(_, { args }) {
-          return getCurrentWS();
-        },
-      },
-    },
-  },
+  typePolicies: policy.typePolicies,
 });
 
 const uri = "http://localhost:4000/graphql";
@@ -81,22 +43,7 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <div className="App">
-        <Router>
-          <Layout>
-            <Route
-              exact
-              path="/create_workspace"
-              component={CreateWorkspacePage}
-            />
-            <Route exact path="/list_workspace" component={ListWorkspacePage} />
-            <Route exact path="/edit_workspace" component={EditWorkspacePage} />
-            <Route exact path="/item" component={AddItemPage} />
-            <Route exact path="/sub" component={Sub} />
-            <Route exact path="/pagination" component={Pagination} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/signin" component={Signin} />
-          </Layout>
-        </Router>
+        <Router />
       </div>
     </ApolloProvider>
   );
