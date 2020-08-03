@@ -12,11 +12,12 @@ export interface Set {
 
 type setOrUndefined = Set | undefined;
 
-interface addItem {
-  id: number;
+interface NewItemInput {
+  set_id: number;
   set_id_on_server?: number | null;
   name?: string;
   item: Item & { update_data?: string };
+  edit_mode?: boolean | undefined;
 }
 
 export type Sets = Array<Set | undefined>;
@@ -33,23 +34,18 @@ export const itemCount = makeVar<number>(0);
 
 export function useSet(sets: ReactiveVar<Sets> = Sets) {
   const allSets = () => Sets();
+
   const if_set_defined = (id: number) => _.find(Sets(), { id: id });
-  const addSet = (newSet: Set) => {
-    if (if_set_defined(newSet.id) === undefined) {
-      Sets([...Sets(), newSet]);
-    }
-  };
-  const deleteItem = (id: number, item_id: number) => {
+
+  const deleteItem = (set_id: number, item_id: number) => {
     let newItems = [];
     let sets = Sets()
       .map((set: Set | undefined) => {
-        if (set !== undefined && set.id == id) {
+        if (set !== undefined && set.id == set_id) {
           newItems = set.items.filter((item: Item) => item.id !== item_id);
           if (newItems.length !== 0)
             return {
-              id,
-              set_id_on_server: set.set_id_on_server,
-              name: set.name,
+              ...set,
               items: newItems,
             };
         } else {
@@ -84,25 +80,24 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     return new_set;
   };
 
-  const addateItem = (newItem: addItem) => {
-    let item = newItem.item;
-    let this_set: Set | undefined = if_set_defined(newItem.id);
+  const addateItem = (new_item_input: NewItemInput) => {
+    let item = new_item_input.item;
+    let this_set: Set | undefined = if_set_defined(new_item_input.set_id);
     if (this_set === undefined) throw "There's not this set.";
 
     let this_item = _.find(this_set.items, {
       id: item.id,
     });
-    let newItems: Item[] | undefined;
+    let new_items: Item[];
+
     if (this_item === undefined) {
-      let newItem = {
+      let new_item = {
         id: item.id,
-        id_on_server: item.id_on_server ?? undefined,
         type: item.type ?? "line", // null or undefined
         data: item.data ?? "",
-        description: item.description ?? "",
-        note: item.note ?? "",
       };
-      newItems = [...this_set.items, newItem];
+
+      new_items = [...this_set.items, new_item];
     } else {
       let updated_item: Item;
       if (item.update_data === "type") {
@@ -120,41 +115,39 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
         console.log("error: addateItem receive an unexpected type of data.");
       }
 
-      newItems = this_set.items.map((_item: Item) => {
-        if (_item.id == item.id) {
+      new_items = this_set.items.map((item_in_set: Item) => {
+        if (item_in_set.id == item.id) {
           return updated_item;
         } else {
-          return _item;
+          return item_in_set;
         }
       });
     }
-    let updated_set: Set = {
-      id: this_set.id,
-      set_id_on_server: this_set?.set_id_on_server ?? null,
-      name: this_set.name,
-      items: newItems,
-    };
+
     let sets = Sets().map((set: setOrUndefined) => {
       if (
         set !== undefined &&
         this_set !== undefined &&
         set.id == this_set.id
       ) {
-        return updated_set;
+        return {
+          ...this_set,
+          items: new_items,
+        } as Set;
       } else {
         return set;
       }
     });
+
     Sets(sets);
   };
+
   const updateName = (id: number, name: string) => {
     let sets = Sets().map((set: setOrUndefined) => {
       if (set !== undefined && set.id == id) {
         return {
-          id,
-          set_id_on_server: set.set_id_on_server,
+          ...set,
           name,
-          items: set.items,
         };
       } else {
         return set;
@@ -162,10 +155,12 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     });
     Sets(sets);
   };
+
   const addWSId = (set: Partial<Set>) => ({
     ...set,
     ws_id: getCurrentWS().id,
   });
+
   const filterSet = (): string => {
     let set = allSets()
       .filter((set: setOrUndefined) => set)
@@ -181,6 +176,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
       });
     return JSON.stringify(set);
   };
+
   const cleanSet = () => Sets([]);
 
   const updateSetStatus = (id: number, set_or_not: boolean) => {
@@ -210,6 +206,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
   };
 
   const takeIdForSet = () => setCount(setCount() + 1) && setCount();
+
   const takeIdForItem = () => itemCount(itemCount() + 1) && itemCount();
 
   return {

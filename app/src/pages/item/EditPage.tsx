@@ -59,8 +59,6 @@ const EditPage: FC<Props> = () => {
   const sendItems = (e: SyntheticEvent) => {
     e.preventDefault();
     let jsoned_set = filterSet();
-    // TODO: create set before pass items
-    // TODO: separate logics. for instance, addate to add and update.
     // TODO: fetch description and note as well
     // TODO: separate sets by new or edit by using edit_mode props
     // TODO: change to s_editItems

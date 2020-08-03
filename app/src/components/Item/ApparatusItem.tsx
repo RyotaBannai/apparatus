@@ -63,7 +63,7 @@ export const ApparatusItem: FC<Props> = ({
       update_data: update_data,
     };
     addateItem({
-      id: set_id,
+      set_id,
       item,
     });
   };
