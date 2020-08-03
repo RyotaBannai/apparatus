@@ -11,13 +11,13 @@ interface Props {}
 
 const CreatePage: FC<Props> = () => {
   const classes = useStyles();
-  const { takeId, filterSet, cleanSet } = useSet();
+  const { takeIdForSet, filterSet, cleanSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
 
   const callSetChild = (_children: Array<any> | null) => {
     let newChildren;
-    let id = takeId();
+    let id = takeIdForSet();
     if (_children instanceof Array) {
       newChildren = [..._children, <ApparatusSet key={id} id={id} />];
     } else {

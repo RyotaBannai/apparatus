@@ -5,7 +5,7 @@ import * as _ from "lodash";
 
 export interface Set {
   id: number;
-  set_id_on_server?: number | null,
+  set_id_on_server?: number | null;
   name: string;
   items: Items;
 }
@@ -61,28 +61,33 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     return newItems.length;
   };
 
-  const deleteSetOnEditPage = (set_id_on_server:  string | undefined) => {
+  const deleteSetOnEditPage = (set_id_on_server: string | undefined) => {
     Sets(
-      Sets()
-      .filter((set: any) => set?.set_id_on_server !== set_id_on_server)
-      );
+      Sets().filter((set: any) => set?.set_id_on_server !== set_id_on_server)
+    );
+  };
+
+  const createSet = (set: Partial<Set> & { id: number }) => {
+    let new_set: Set;
+    let is_defined = if_set_defined(set.id);
+    if (is_defined === undefined) {
+      new_set = {
+        id: set.id,
+        set_id_on_server: set.set_id_on_server ?? null,
+        name: set.name ?? "Set",
+        items: set.items ?? [],
+      };
+      Sets([...Sets(), new_set]);
+    } else {
+      new_set = is_defined;
+    }
+    return new_set;
   };
 
   const addateItem = (newItem: addItem) => {
     let item = newItem.item;
-    let this_set: Set;
-    let is_defined = if_set_defined(newItem.id);
-    if (is_defined === undefined) {
-      this_set = { 
-        id: newItem.id, 
-        set_id_on_server: newItem.set_id_on_server ?? null, 
-        name: newItem.name ?? "Set", 
-        items: [] 
-      };
-      Sets([...Sets(), this_set]);
-    } else {
-      this_set = is_defined;
-    }
+    let this_set: Set | undefined = if_set_defined(newItem.id);
+    if (this_set === undefined) throw "There's not this set.";
 
     let this_item = _.find(this_set.items, {
       id: item.id,
@@ -130,7 +135,11 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
       items: newItems,
     };
     let sets = Sets().map((set: setOrUndefined) => {
-      if (set !== undefined && set.id == this_set.id) {
+      if (
+        set !== undefined &&
+        this_set !== undefined &&
+        set.id == this_set.id
+      ) {
         return updated_set;
       } else {
         return set;
@@ -200,7 +209,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     setStatus(new_statuses);
   };
 
-  const takeId = () => setCount(setCount() + 1) && setCount();
+  const takeIdForSet = () => setCount(setCount() + 1) && setCount();
   const takeIdForItem = () => itemCount(itemCount() + 1) && itemCount();
 
   return {
@@ -211,8 +220,9 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     updateName,
     filterSet,
     cleanSet,
+    createSet,
     updateSetStatus,
-    takeId,
+    takeIdForSet,
     takeIdForItem,
   };
 }

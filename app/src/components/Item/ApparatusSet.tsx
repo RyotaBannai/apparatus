@@ -26,13 +26,26 @@ interface Props {
   edit_mode?: boolean;
 }
 
-export const ApparatusSet: FC<Props> = ({ id, set_id_on_server, name, items, edit_mode }) => {
+export const ApparatusSet: FC<Props> = ({
+  id,
+  set_id_on_server,
+  name,
+  items,
+  edit_mode,
+}) => {
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
   const [children, setChild] = useState<Array<any>>([]);
-  const { addateItem, takeIdForItem, updateName, updateSetStatus } = useSet();
+  const {
+    createSet,
+    addateItem,
+    takeIdForSet,
+    takeIdForItem,
+    updateName,
+    updateSetStatus,
+  } = useSet();
 
-  const callSetChild = (_children: Array<any> | null) => {
+  const callAddChild = (_children: Array<any> | null) => {
     let newChildren;
     let item_id = takeIdForItem();
     if (_children instanceof Array) {
@@ -72,32 +85,56 @@ export const ApparatusSet: FC<Props> = ({ id, set_id_on_server, name, items, edi
   updateSetStatus(id, is_set());
 
   useEffect(() => {
-    if (items !== undefined) {
-      let old_items: any[] = [];
-      for (const item of items) {
-        if(edit_mode){
-          let fetched_item = {
-            ...item,
-            id: takeIdForItem(),
-            id_on_server: item.id,
-          };
-          addateItem({
-            id,
-            name,
-            set_id_on_server,
-            item:fetched_item
-          });
-          old_items = [...old_items, <ApparatusItem {...fetched_item} set_id={id} hideSet={setShow} />];
-        } else{
+    if (edit_mode) {
+      if (edit_mode && items !== undefined) {
+        let items_edit: any[] = [];
+        for (const item of items) {
+          items_edit = [
+            ...items_edit,
+            {
+              ...item,
+              id: takeIdForItem(),
+              id_on_server: item.id,
+            },
+          ];
+        }
+        createSet({
+          id,
+          name,
+          set_id_on_server,
+          items: items_edit,
+        });
+
+        let old_items: any[] = [];
+        for (const item_edit of items_edit) {
+          old_items = [
+            ...old_items,
+            <ApparatusItem {...item_edit} set_id={id} hideSet={setShow} />,
+          ];
+        }
+        setChild(old_items);
+      }
+    } else {
+      if (items !== undefined) {
+        createSet({
+          id,
+          name,
+          items,
+        });
+        let old_items: any[] = [];
+        for (const item of items) {
           old_items = [
             ...old_items,
             <ApparatusItem {...item} set_id={id} hideSet={setShow} />,
           ];
         }
+        setChild(old_items);
+      } else {
+        createSet({
+          id,
+        });
+        callAddChild(null);
       }
-      setChild(old_items);
-    } else {
-      callSetChild(null);
     }
   }, []);
 
@@ -105,7 +142,7 @@ export const ApparatusSet: FC<Props> = ({ id, set_id_on_server, name, items, edi
   else
     return (
       <Box className={is_set() ? classes.set : classes.item}>
-        {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
+        <pre>{JSON.stringify(data, null, 1)}</pre>
         {is_set() ? (
           <Grid container alignItems="flex-end" direction="row" spacing={1}>
             <Grid item>
@@ -134,7 +171,7 @@ export const ApparatusSet: FC<Props> = ({ id, set_id_on_server, name, items, edi
                 disableTouchRipple
                 onClick={(e) => {
                   e.preventDefault();
-                  callSetChild(children);
+                  callAddChild(children);
                 }}
               >
                 Add Item To Set
@@ -147,7 +184,7 @@ export const ApparatusSet: FC<Props> = ({ id, set_id_on_server, name, items, edi
                   className={classes.toSet}
                   onClick={(e) => {
                     e.preventDefault();
-                    callSetChild(children);
+                    callAddChild(children);
                   }}
                 >
                   add_box

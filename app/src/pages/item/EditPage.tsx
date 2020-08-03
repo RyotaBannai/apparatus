@@ -12,7 +12,7 @@ import * as _ from "lodash";
 interface Props {}
 
 const EditPage: FC<Props> = () => {
-  const { deleteSetOnEditPage, takeId, filterSet } = useSet();
+  const { deleteSetOnEditPage, takeIdForSet, filterSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
   let { set_id } = useParams<{ set_id?: string | undefined }>();
@@ -27,7 +27,7 @@ const EditPage: FC<Props> = () => {
       id: Number(set_id),
     },
     onCompleted({ s_getSet }) {
-      let props = { ...s_getSet, id: takeId() };
+      let props = { ...s_getSet, id: takeIdForSet() };
       setChild([
         <ApparatusSet
           {...props}
@@ -59,6 +59,10 @@ const EditPage: FC<Props> = () => {
   const sendItems = (e: SyntheticEvent) => {
     e.preventDefault();
     let jsoned_set = filterSet();
+    // TODO: create set before pass items
+    // TODO: separate logics. for instance, addate to add and update.
+    // TODO: fetch description and note as well
+    // TODO: separate sets by new or edit by using edit_mode props
     // TODO: change to s_editItems
     // s_addItems({
     //   variables: { data: jsoned_set },
