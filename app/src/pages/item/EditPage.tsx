@@ -59,8 +59,8 @@ const EditPage: FC<Props> = () => {
   const sendItems = (e: SyntheticEvent) => {
     e.preventDefault();
     let jsoned_set = filterSet();
+    // TODO: pickOnlyNewItems を作って edit mode と区別、cleanSet も edit mode 以外の items を削除。edit mode では unmount 時に -removeOtherSetOnEditMode- をして、更新用の function には別の submit 関数を使用。submit したら自分を削除する（removeSelfOnEditMode）。いや、全て持っといていい。lazyquery に変えて、ローカルにデータがあればそれを使って、なければ fetch.
     // TODO: fetch description and note as well
-    // TODO: separate sets by new or edit by using edit_mode props
     // TODO: change to s_editItems
     // s_addItems({
     //   variables: { data: jsoned_set },
@@ -77,7 +77,7 @@ const EditPage: FC<Props> = () => {
   if (sg_error) return <p>Error :(</p>;
   return (
     <div>
-      <h2>Create New Item</h2>
+      <h2>Edit Set</h2>
       {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
       {children.map((child) => child)}
       <Grid container alignItems="center" direction="row" spacing={1}>

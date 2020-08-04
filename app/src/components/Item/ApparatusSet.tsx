@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { useSet } from "../../modules/set/actions";
 import { L_GET_SET } from "../../modules/item/queries";
 import {
@@ -13,10 +13,7 @@ import {
 } from "@material-ui/core";
 import { ApparatusItem } from "./ApparatusItem";
 import { useStyles } from "../../assets/style/item/set.style";
-
 import * as _ from "lodash";
-import { from } from "rxjs";
-import { tap, map } from "rxjs/operators";
 
 interface Props {
   id: number;
@@ -36,14 +33,7 @@ export const ApparatusSet: FC<Props> = ({
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
   const [children, setChild] = useState<Array<any>>([]);
-  const {
-    createSet,
-    addateItem,
-    takeIdForSet,
-    takeIdForItem,
-    updateName,
-    updateSetStatus,
-  } = useSet();
+  const { createSet, takeIdForItem, updateName, updateSetStatus } = useSet();
 
   const callAddChild = (_children: Array<any> | null) => {
     let newChildren;
@@ -81,7 +71,9 @@ export const ApparatusSet: FC<Props> = ({
       id,
     },
   });
+
   const is_set = () => data?.getSet.items.length > 1;
+
   updateSetStatus(id, is_set());
 
   useEffect(() => {

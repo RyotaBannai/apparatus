@@ -33,28 +33,21 @@ export const setCount = makeVar<number>(0);
 export const itemCount = makeVar<number>(0);
 
 export function useSet(sets: ReactiveVar<Sets> = Sets) {
-  const allSets = () => Sets();
-
   const if_set_defined = (id: number) => _.find(Sets(), { id: id });
 
   const deleteItem = (set_id: number, item_id: number) => {
-    let newItems = [];
-    let sets = Sets()
-      .map((set: Set | undefined) => {
-        if (set !== undefined && set.id == set_id) {
-          newItems = set.items.filter((item: Item) => item.id !== item_id);
-          if (newItems.length !== 0)
-            return {
-              ...set,
-              items: newItems,
-            };
-        } else {
-          return set;
-        }
-      })
-      .filter((set: any) => set);
-    Sets(sets);
-    return newItems.length;
+    let closure = (set: Set) =>
+      set.items.filter((item: Item) => item.id !== item_id);
+    Sets(
+      whereUpdateHash<setOrUndefined, typeof closure, string>(
+        Sets(),
+        closure,
+        "items",
+        "id",
+        String(set_id)
+      ).filter((set: any) => set)
+    );
+    return _.find(Sets(), { id: set_id })?.items.length ?? 0;
   };
 
   const deleteSetOnEditPage = (set_id_on_server: string | undefined) => {
@@ -99,7 +92,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
 
       new_items = [...this_set.items, new_item];
     } else {
-      let updated_item: Item;
+      let updated_item: any;
       if (item.update_data === "type") {
         updated_item = { ...this_item, type: item.type };
       } else if (item.update_data === "data") {
@@ -115,45 +108,35 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
         console.log("error: addateItem receive an unexpected type of data.");
       }
 
-      new_items = this_set.items.map((item_in_set: Item) => {
-        if (item_in_set.id == item.id) {
-          return updated_item;
-        } else {
-          return item_in_set;
-        }
-      });
+      new_items = whereUpdateArray<Item, string>(
+        this_set.items,
+        updated_item,
+        "id",
+        String(item.id)
+      );
     }
 
-    let sets = Sets().map((set: setOrUndefined) => {
-      if (
-        set !== undefined &&
-        this_set !== undefined &&
-        set.id == this_set.id
-      ) {
-        return {
-          ...this_set,
-          items: new_items,
-        } as Set;
-      } else {
-        return set;
-      }
-    });
-
-    Sets(sets);
+    Sets(
+      whereUpdateHash<setOrUndefined, Item[], string>(
+        Sets(),
+        new_items,
+        "items",
+        "id",
+        String(this_set.id)
+      )
+    );
   };
 
   const updateName = (id: number, name: string) => {
-    let sets = Sets().map((set: setOrUndefined) => {
-      if (set !== undefined && set.id == id) {
-        return {
-          ...set,
-          name,
-        };
-      } else {
-        return set;
-      }
-    });
-    Sets(sets);
+    Sets(
+      whereUpdateHash<setOrUndefined, string, string>(
+        Sets(),
+        name,
+        "name",
+        "id",
+        String(id)
+      )
+    );
   };
 
   const addWSId = (set: Partial<Set>) => ({
@@ -162,7 +145,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
   });
 
   const filterSet = (): string => {
-    let set = allSets()
+    let set = Sets()
       .filter((set: setOrUndefined) => set)
       .map((set: setOrUndefined) => {
         return addWSId({
@@ -180,19 +163,16 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
   const cleanSet = () => Sets([]);
 
   const updateSetStatus = (id: number, set_or_not: boolean) => {
-    let new_statuses: Status[] = [];
+    let new_statuses: Status[];
     let this_status = _.find(setStatus(), { id: id });
     if (this_status !== undefined) {
-      new_statuses = setStatus().map((status: Status) => {
-        if (status.id === id) {
-          return {
-            id,
-            is_set: set_or_not,
-          } as Status;
-        } else {
-          return status;
-        }
-      });
+      new_statuses = whereUpdateHash<Status, boolean, string>(
+        setStatus(),
+        set_or_not,
+        "is_set",
+        "id",
+        String(id)
+      );
     } else {
       new_statuses = [
         ...setStatus(),
@@ -200,7 +180,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
           id,
           is_set: set_or_not,
         },
-      ] as Status[];
+      ];
     }
     setStatus(new_statuses);
   };
@@ -210,7 +190,6 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
   const takeIdForItem = () => itemCount(itemCount() + 1) && itemCount();
 
   return {
-    allSets,
     addateItem,
     deleteItem,
     deleteSetOnEditPage,
@@ -222,4 +201,39 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     takeIdForSet,
     takeIdForItem,
   };
+}
+
+function whereUpdateArray<T, S extends string>(
+  array: T[],
+  value: T,
+  key: S,
+  identifier: S
+): T[] {
+  return array.map((item: T) => {
+    if (_.get(item, key) == identifier) {
+      return value;
+    } else {
+      return item;
+    }
+  });
+}
+
+function whereUpdateHash<T, V, S extends string>(
+  array: T[],
+  value: V,
+  value_key: S,
+  key: S,
+  identifier: S
+): T[] {
+  return array.map((item: T) => {
+    if (_.get(item, key) == identifier) {
+      if (typeof value == "function") {
+        return { ...item, [value_key]: value(item) };
+      } else {
+        return { ...item, [value_key]: value };
+      }
+    } else {
+      return item;
+    }
+  });
 }

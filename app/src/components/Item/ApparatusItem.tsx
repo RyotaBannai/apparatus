@@ -1,5 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import { useQuery, useMutation } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { L_GET_ITEM, L_GET_SET_STATUS } from "../../modules/item/queries";
 import { useSet } from "../../modules/set/actions";
 import {
