@@ -1,3 +1,8 @@
+declare namespace Global {
+  type RootState = import("./app/store").RootState;
+  type AppDispatch = import("./app/store").AppDispatch;
+}
+
 declare namespace Item {
   interface Item {
     id: number;

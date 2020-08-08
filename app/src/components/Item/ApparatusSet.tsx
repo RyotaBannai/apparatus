@@ -1,7 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
-import { useQuery } from "@apollo/client";
 import { useSet } from "../../modules/set/actions";
-import { L_GET_SET } from "../../modules/item/queries";
 import {
   Button,
   Box,
@@ -13,6 +11,9 @@ import {
 } from "@material-ui/core";
 import { ApparatusItem } from "./ApparatusItem";
 import { useStyles } from "../../assets/style/item/set.style";
+import { useDispatch, useSelector } from "react-redux";
+import { useSetActions } from "../../features/set/setFeatureSlice";
+import { useSetHelpers } from "../../features/set/setHelpers";
 import * as _ from "lodash";
 
 interface Props {
@@ -33,7 +34,12 @@ export const ApparatusSet: FC<Props> = ({
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
   const [children, setChild] = useState<Array<any>>([]);
-  const { createSet, takeIdForItem, updateName, updateSetStatus } = useSet();
+  const { createSet, updateSetStatus } = useSet();
+  const { createSet: createSetAction, updateName } = useSetActions();
+  const { getNewSets, getSetById, isSet, takeIdForItem } = useSetHelpers;
+  const dispatch = useDispatch();
+  const data = getSetById(useSelector(getNewSets), id);
+  const is_set = isSet(data);
 
   const callAddChild = (_children: Array<any> | null) => {
     let newChildren;
@@ -63,18 +69,8 @@ export const ApparatusSet: FC<Props> = ({
 
   const updateSetName = (e: any) => {
     e.preventDefault();
-    updateName(id, e.target.value);
+    dispatch(updateName({ id, name: e.target.value }));
   };
-
-  const { data } = useQuery(L_GET_SET, {
-    variables: {
-      id,
-    },
-  });
-
-  const is_set = () => data?.getSet.items.length > 1;
-
-  updateSetStatus(id, is_set());
 
   useEffect(() => {
     if (edit_mode) {
@@ -96,6 +92,14 @@ export const ApparatusSet: FC<Props> = ({
           set_id_on_server,
           items: items_edit,
         });
+        dispatch(
+          createSetAction({
+            id,
+            name,
+            set_id_on_server,
+            items: items_edit,
+          })
+        );
 
         let old_items: any[] = [];
         for (const item_edit of items_edit) {
@@ -113,6 +117,13 @@ export const ApparatusSet: FC<Props> = ({
           name,
           items,
         });
+        dispatch(
+          createSetAction({
+            id,
+            name,
+            items,
+          })
+        );
         let old_items: any[] = [];
         for (const item of items) {
           old_items = [
@@ -125,6 +136,11 @@ export const ApparatusSet: FC<Props> = ({
         createSet({
           id,
         });
+        dispatch(
+          createSetAction({
+            id,
+          })
+        );
         callAddChild(null);
       }
     }
@@ -133,9 +149,9 @@ export const ApparatusSet: FC<Props> = ({
   if (!show) return <></>;
   else
     return (
-      <Box className={is_set() ? classes.set : classes.item}>
+      <Box className={is_set ? classes.set : classes.item}>
         <pre>{JSON.stringify(data, null, 1)}</pre>
-        {is_set() ? (
+        {is_set ? (
           <Grid container alignItems="flex-end" direction="row" spacing={1}>
             <Grid item>
               <InputLabel htmlFor="data">Set Name</InputLabel>
@@ -153,7 +169,7 @@ export const ApparatusSet: FC<Props> = ({
         )}
         <div className={classes.itemBox}>{children.map((child) => child)}</div>
         <Grid container alignItems="center" direction="row" spacing={1}>
-          {is_set() ? (
+          {is_set ? (
             <Grid item className={classes.addItemHugeButton}>
               <Button
                 variant="contained"

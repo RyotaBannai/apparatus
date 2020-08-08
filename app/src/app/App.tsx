@@ -10,7 +10,7 @@ import {
 } from "@apollo/client";
 import { policy } from "../Policies/TypePolicies";
 import possibleTypes from "../introspection/possibleTypes.json";
-import { setupStore } from "./store";
+import { store } from "./store";
 import { Provider } from "react-redux";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
@@ -44,7 +44,7 @@ const client = new ApolloClient({
 export default function App() {
   return (
     <ApolloProvider client={client}>
-      <Provider store={setupStore()}>
+      <Provider store={store}>
         <div className="App">
           <Router />
         </div>

@@ -7,15 +7,18 @@ import logger from "redux-logger";
 import SetFeature from "../features/set/setFeatureSlice";
 
 const rootReducer = combineReducers({
-  counter: SetFeature,
+  set: SetFeature,
 });
 
-export const setupStore = () => {
-  const middlewares = [...getDefaultMiddleware(), logger];
+// export const setupStore = () => {
+const middlewares = [...getDefaultMiddleware(), logger];
 
-  const store = configureStore({
-    reducer: rootReducer,
-    middleware: middlewares,
-  });
-  return store;
-};
+export const store = configureStore({
+  reducer: rootReducer,
+  middleware: middlewares,
+});
+// return store;
+// };
+
+export type RootState = ReturnType<typeof rootReducer>;
+export type AppDispatch = typeof store.dispatch;

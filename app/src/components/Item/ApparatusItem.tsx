@@ -1,6 +1,6 @@
 import React, { useState, useEffect, FC } from "react";
 import { useQuery } from "@apollo/client";
-import { L_GET_ITEM, L_GET_SET_STATUS } from "../../modules/item/queries";
+import { L_GET_ITEM } from "../../modules/item/queries";
 import { useSet } from "../../modules/set/actions";
 import {
   Grid,
@@ -13,6 +13,8 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import { useStyles } from "../../assets/style/item/item.style";
+import { useDispatch, useSelector } from "react-redux";
+import { useSetActions } from "../../features/set/setFeatureSlice";
 
 interface Props {
   set_id: number;
@@ -42,11 +44,8 @@ export const ApparatusItem: FC<Props> = ({
       id,
     },
   });
-  const { data: this_set } = useQuery(L_GET_SET_STATUS, {
-    variables: {
-      id: set_id,
-    },
-  });
+  const { addateItem: addateItemAction } = useSetActions();
+  const dispatch = useDispatch();
 
   const onChangeType = (e: any) => handleEvent(e, "type");
   const onChangeData = (e: any) => handleEvent(e, "data");
@@ -66,6 +65,12 @@ export const ApparatusItem: FC<Props> = ({
       set_id,
       item,
     });
+    dispatch(
+      addateItemAction({
+        set_id,
+        item,
+      })
+    );
   };
 
   const onDeleteItem = (e: any) => {
@@ -82,7 +87,6 @@ export const ApparatusItem: FC<Props> = ({
   if (!show) return <></>;
   else
     return (
-      // <div className={this_set?.getSetStatus?.is_set ? classes.item : ""}>
       <div className={classes.item}>
         {this_item?.getItem?.type === "line" ? (
           <Grid container alignItems="flex-end" direction="row" spacing={1}>
