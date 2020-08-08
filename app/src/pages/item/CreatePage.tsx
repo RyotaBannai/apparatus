@@ -1,17 +1,24 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
-import { useQuery, useMutation, ApolloError } from "@apollo/client";
-import { useSet } from "../../modules/set/actions";
-import { L_GET_SETS, S_ADD_ITEMS } from "../../modules/item/queries";
+import { useMutation, ApolloError } from "@apollo/client";
+import { S_ADD_ITEMS } from "../../modules/item/queries";
 import { Button, Grid, Icon } from "@material-ui/core";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
-import { SnakbarAlert } from "../../components/parts/SnakbarAlert";
+import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
 import { useStyles } from "../../assets/style/item/page.style";
+import { useDispatch, useSelector } from "react-redux";
+import { useSetActions } from "../../features/set/setFeatureSlice";
+import { useSetHelpers } from "../../features/set/setHelpers";
 
 interface Props {}
 
 const CreatePage: FC<Props> = () => {
   const classes = useStyles();
-  const { takeIdForSet, filterSet, cleanSet } = useSet();
+  // const { takeIdForSet, filterSet, cleanSet } = useSet();
+  const dispatch = useDispatch();
+  const { cleanNewSets } = useSetActions();
+  const { takeIdForSet, filterSet, getNewSets } = useSetHelpers;
+  const sets = useSelector(getNewSets);
+
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
 
@@ -26,14 +33,14 @@ const CreatePage: FC<Props> = () => {
     }
     setChild(newChildren);
   };
-  const { data } = useQuery(L_GET_SETS);
+
   const [
     s_addItems,
     { loading: sa_loading, error: sa_error, called: sa_called },
   ] = useMutation(S_ADD_ITEMS, {
     onCompleted({ createItems: { res } }) {
       if (res === "Success") {
-        cleanSet();
+        dispatch(cleanNewSets(null));
         callSetChild(null);
         setOpen(!saveSnackBarOpen);
       } else {
@@ -49,16 +56,16 @@ const CreatePage: FC<Props> = () => {
 
   const sendItems = (e: SyntheticEvent) => {
     e.preventDefault();
-    let jsoned_set = filterSet();
+    let jsoned_set = filterSet(sets);
     s_addItems({
       variables: { data: jsoned_set },
     });
   };
 
   useEffect(() => {
-    if (data.sets.length > 0) {
+    if (sets.length > 0) {
       let old_sets: any[] = [];
-      for (const set of data.sets) {
+      for (const set of sets) {
         if (set instanceof Object && "id" in set) {
           old_sets = [...old_sets, <ApparatusSet {...set} />];
         }
@@ -103,7 +110,7 @@ const CreatePage: FC<Props> = () => {
           >
             Save Item
           </Button>
-          <SnakbarAlert isOpen={saveSnackBarOpen} />
+          <SnackbarAlert isOpen={saveSnackBarOpen} />
         </Grid>
       </Grid>
     </div>

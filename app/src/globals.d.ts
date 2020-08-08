@@ -22,6 +22,7 @@ declare namespace ApparatusSet {
     set_id_on_server?: number | null;
     name: string;
     items: Items;
+    show: boolean;
   }
 
   type SetOrUndefined = ApparatusSet | undefined;

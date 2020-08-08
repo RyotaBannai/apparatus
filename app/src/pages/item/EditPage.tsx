@@ -1,21 +1,26 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
-import { useSet } from "../../modules/set/actions";
 import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useSetActions } from "../../features/set/setFeatureSlice";
+import { useSetHelpers } from "../../features/set/setHelpers";
 import { S_GET_SET } from "../../modules/set/queries";
 import { S_ADD_ITEMS } from "../../modules/item/queries";
 import { Button, Grid, Icon } from "@material-ui/core";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
-import { SnakbarAlert } from "../../components/parts/SnakbarAlert";
+import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
 import * as _ from "lodash";
 
 interface Props {}
 
 const EditPage: FC<Props> = () => {
-  const { deleteSetOnEditPage, takeIdForSet, filterSet } = useSet();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
   let { set_id } = useParams<{ set_id?: string | undefined }>();
+  const dispatch = useDispatch();
+  const { cleanEditSets } = useSetActions(); // TODO: DeleteSetById
+  const { takeIdForSet, filterSet, getEditSets, getSetById } = useSetHelpers;
+  const sets = getSetById(useSelector(getEditSets), { id: Number(set_id) });
 
   const {
     loading: sg_loading,
@@ -58,7 +63,7 @@ const EditPage: FC<Props> = () => {
 
   const sendItems = (e: SyntheticEvent) => {
     e.preventDefault();
-    let jsoned_set = filterSet();
+    // let jsoned_set = filterSet();
     // TODO: pickOnlyNewItems を作って edit mode と区別、cleanSet も edit mode 以外の items を削除。edit mode では unmount 時に -removeOtherSetOnEditMode- をして、更新用の function には別の submit 関数を使用。submit したら自分を削除する（removeSelfOnEditMode）。いや、全て持っといていい。lazyquery に変えて、ローカルにデータがあればそれを使って、なければ fetch.
     // TODO: fetch description and note as well
     // TODO: change to s_editItems
@@ -69,7 +74,7 @@ const EditPage: FC<Props> = () => {
 
   useEffect(() => {
     return () => {
-      deleteSetOnEditPage(set_id);
+      // maybe do something.
     };
   }, []);
 
@@ -92,7 +97,7 @@ const EditPage: FC<Props> = () => {
           >
             Save Edit
           </Button>
-          <SnakbarAlert isOpen={saveSnackBarOpen} />
+          <SnackbarAlert isOpen={saveSnackBarOpen} />
         </Grid>
       </Grid>
     </div>

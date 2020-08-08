@@ -1,6 +1,15 @@
-import { createSlice, createAction, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createSlice,
+  createAction,
+  PayloadAction,
+  createAsyncThunk,
+} from "@reduxjs/toolkit";
 import { useSetHelpers } from "./setHelpers";
-import { whereUpdateArray, whereUpdateHash } from "../../modules/where";
+import {
+  whereUpdateArray,
+  whereUpdateHash,
+  whereUpdateHashes,
+} from "../../modules/where";
 import * as _ from "lodash";
 
 let initialSets: ApparatusSet.InitialSets = {
@@ -28,10 +37,12 @@ export const SetFeature = createSlice({
           set_id_on_server: set.set_id_on_server ?? null,
           name: set.name ?? "Set",
           items: set.items ?? [],
+          show: true,
         };
         state.new = [...state.new, new_set];
       }
     },
+
     addateItem: (
       state,
       action: {
@@ -43,6 +54,7 @@ export const SetFeature = createSlice({
       let this_set: ApparatusSet.SetOrUndefined = _.find(state.new, {
         id: action.payload.set_id,
       });
+      console.log("in");
       if (this_set === undefined) throw "There's not this set.";
 
       let this_item = _.find(this_set.items, {
@@ -90,6 +102,34 @@ export const SetFeature = createSlice({
       >(state.new, new_items, "items", "id", String(this_set.id));
     },
 
+    deleteItem: (
+      state,
+      action: {
+        type: string;
+        payload: { set_id: number; item_id: number };
+      }
+    ) => {
+      let setItemClosure = (set: ApparatusSet.Set) =>
+        set.items.filter(
+          (item: Item.Item) => item.id !== action.payload.item_id
+        );
+
+      let checkItemsLengthClosure = (set: ApparatusSet.Set) =>
+        set.items.length > 0 ? true : false;
+
+      let params = [
+        { key: "items", value: setItemClosure },
+        { key: "show", value: checkItemsLengthClosure },
+      ];
+
+      state.new = whereUpdateHashes<ApparatusSet.SetOrUndefined, string>(
+        state.new,
+        params,
+        "id",
+        String(action.payload.set_id)
+      );
+    },
+
     updateName: (
       state,
       action: {
@@ -105,14 +145,22 @@ export const SetFeature = createSlice({
         String(action.payload.id)
       );
     },
-    cleanSetNew: (state, action) => {
+    cleanNewSets: (state, action) => {
       state.new = initialSets.new;
     },
-    cleanSetEdit: (state, action) => {
+
+    cleanEditSets: (state, action) => {
       state.edit = initialSets.edit;
     },
   },
 });
+
+// const deleteItemAndReturnLeft = createAsyncThunk(
+//   "set/deleteItemAndReturnLeft",
+//   async (args, { getState, requestId, dispatch }) => {
+//     await dispatch(SetFeature.actions.deleteItem);
+//   }
+// );
 
 export const useSetActions = () => SetFeature.actions;
 export default SetFeature.reducer;

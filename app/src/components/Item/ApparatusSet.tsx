@@ -1,5 +1,4 @@
 import React, { useState, useEffect, FC } from "react";
-import { useSet } from "../../modules/set/actions";
 import {
   Button,
   Box,
@@ -18,7 +17,7 @@ import * as _ from "lodash";
 
 interface Props {
   id: number;
-  set_id_on_server?: number | undefined;
+  set_id_on_server?: number | undefined | null;
   name?: string;
   items?: Array<any>;
   edit_mode?: boolean;
@@ -32,14 +31,13 @@ export const ApparatusSet: FC<Props> = ({
   edit_mode,
 }) => {
   const classes = useStyles();
-  const [show, setShow] = useState<boolean>(true);
   const [children, setChild] = useState<Array<any>>([]);
-  const { createSet, updateSetStatus } = useSet();
-  const { createSet: createSetAction, updateName } = useSetActions();
+  const { createSet, updateName } = useSetActions();
   const { getNewSets, getSetById, isSet, takeIdForItem } = useSetHelpers;
   const dispatch = useDispatch();
-  const data = getSetById(useSelector(getNewSets), id);
+  const data = getSetById(useSelector(getNewSets), { id });
   const is_set = isSet(data);
+  const show = data?.show;
 
   const callAddChild = (_children: Array<any> | null) => {
     let newChildren;
@@ -47,22 +45,10 @@ export const ApparatusSet: FC<Props> = ({
     if (_children instanceof Array) {
       newChildren = [
         ..._children,
-        <ApparatusItem
-          key={item_id}
-          set_id={id}
-          id={item_id}
-          hideSet={setShow}
-        />,
+        <ApparatusItem key={item_id} set_id={id} id={item_id} />,
       ];
     } else {
-      newChildren = [
-        <ApparatusItem
-          key={item_id}
-          set_id={id}
-          id={item_id}
-          hideSet={setShow}
-        />,
-      ];
+      newChildren = [<ApparatusItem key={item_id} set_id={id} id={item_id} />];
     }
     setChild(newChildren);
   };
@@ -86,14 +72,8 @@ export const ApparatusSet: FC<Props> = ({
             },
           ];
         }
-        createSet({
-          id,
-          name,
-          set_id_on_server,
-          items: items_edit,
-        });
         dispatch(
-          createSetAction({
+          createSet({
             id,
             name,
             set_id_on_server,
@@ -105,20 +85,15 @@ export const ApparatusSet: FC<Props> = ({
         for (const item_edit of items_edit) {
           old_items = [
             ...old_items,
-            <ApparatusItem {...item_edit} set_id={id} hideSet={setShow} />,
+            <ApparatusItem {...item_edit} set_id={id} />,
           ];
         }
         setChild(old_items);
       }
     } else {
       if (items !== undefined) {
-        createSet({
-          id,
-          name,
-          items,
-        });
         dispatch(
-          createSetAction({
+          createSet({
             id,
             name,
             items,
@@ -126,18 +101,12 @@ export const ApparatusSet: FC<Props> = ({
         );
         let old_items: any[] = [];
         for (const item of items) {
-          old_items = [
-            ...old_items,
-            <ApparatusItem {...item} set_id={id} hideSet={setShow} />,
-          ];
+          old_items = [...old_items, <ApparatusItem {...item} set_id={id} />];
         }
         setChild(old_items);
       } else {
-        createSet({
-          id,
-        });
         dispatch(
-          createSetAction({
+          createSet({
             id,
           })
         );

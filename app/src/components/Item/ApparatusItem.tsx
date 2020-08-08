@@ -1,7 +1,6 @@
 import React, { useState, useEffect, FC } from "react";
 import { useQuery } from "@apollo/client";
 import { L_GET_ITEM } from "../../modules/item/queries";
-import { useSet } from "../../modules/set/actions";
 import {
   Grid,
   Icon,
@@ -23,7 +22,6 @@ interface Props {
   data?: string;
   description?: string;
   note?: string;
-  hideSet: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const ApparatusItem: FC<Props> = ({
@@ -33,10 +31,8 @@ export const ApparatusItem: FC<Props> = ({
   data,
   description,
   note,
-  hideSet,
 }) => {
   const classes = useStyles();
-  const { addateItem, deleteItem } = useSet();
   const [show, setShow] = useState<boolean>(true);
   const { data: this_item } = useQuery(L_GET_ITEM, {
     variables: {
@@ -44,7 +40,7 @@ export const ApparatusItem: FC<Props> = ({
       id,
     },
   });
-  const { addateItem: addateItemAction } = useSetActions();
+  const { addateItem, deleteItem } = useSetActions();
   const dispatch = useDispatch();
 
   const onChangeType = (e: any) => handleEvent(e, "type");
@@ -61,12 +57,8 @@ export const ApparatusItem: FC<Props> = ({
       [update_data]: value,
       update_data: update_data,
     };
-    addateItem({
-      set_id,
-      item,
-    });
     dispatch(
-      addateItemAction({
+      addateItem({
         set_id,
         item,
       })
@@ -76,8 +68,7 @@ export const ApparatusItem: FC<Props> = ({
   const onDeleteItem = (e: any) => {
     e.preventDefault();
     setShow(!show);
-    let left_items: number = deleteItem(set_id, id);
-    if (left_items === 0) hideSet(false);
+    dispatch(deleteItem({ set_id, item_id: id }));
   };
 
   useEffect(() => {

@@ -10,7 +10,7 @@ interface Props {
   isOpen: boolean;
 }
 
-export const SnakbarAlert: FC<Props> = ({ isOpen }) => {
+export const SnackbarAlert: FC<Props> = ({ isOpen }) => {
   const [saveSnackBarOpen, setOpen] = useState(false);
   const [prevSnackBarOpen, setPrevOpen] = useState(false);
   const handleClose = (event?: SyntheticEvent, reason?: string) => {

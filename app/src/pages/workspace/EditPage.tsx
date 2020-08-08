@@ -7,7 +7,7 @@ import {
 } from "../../modules/workspace/queries";
 import { useWorkspace, getCurrentWS } from "../../modules/workspace/actions";
 import { useStyles } from "../../assets/style/workspace/page.style";
-import { SnakbarAlert } from "../../components/parts/SnakbarAlert";
+import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
 import {
   Button,
   Grid,
@@ -112,7 +112,7 @@ const EditPage: FC<Props> = () => {
           </Button>
         </Grid>
       </Grid>
-      <SnakbarAlert isOpen={saveSnackBarOpen} />
+      <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>
   );
 };

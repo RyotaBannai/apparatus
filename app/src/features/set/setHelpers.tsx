@@ -13,7 +13,7 @@ export const useSetHelpers = {
     set?.items.length > 1 || false,
   getNewSets: (state: Global.RootState) => state.set.new,
   getEditSets: (state: Global.RootState) => state.set.edit,
-  getSetById: (sets: ApparatusSet.Sets, id: number) =>
+  getSetById: (sets: ApparatusSet.Sets, { id }: { id: number }) =>
     _.find(sets, {
       id: id,
     }),
