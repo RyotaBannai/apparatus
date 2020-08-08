@@ -31,6 +31,11 @@ declare namespace ApparatusSet {
 
   type Sets = Array<ApparatusSet.Set | undefined>;
 
+  interface InitialSets {
+    new: ApparatusSet.Sets;
+    edit: ApparatusSet.Sets;
+  }
+
   interface Status {
     id: number;
     is_set: boolean;

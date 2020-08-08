@@ -8,8 +8,10 @@ import {
   InMemoryCache,
   concat,
 } from "@apollo/client";
-import { policy } from "./Policies/TypePolicies";
-import possibleTypes from "./introspection/possibleTypes.json";
+import { policy } from "../Policies/TypePolicies";
+import possibleTypes from "../introspection/possibleTypes.json";
+import { setupStore } from "./store";
+import { Provider } from "react-redux";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
 import "./App.css";
@@ -42,9 +44,11 @@ const client = new ApolloClient({
 export default function App() {
   return (
     <ApolloProvider client={client}>
-      <div className="App">
-        <Router />
-      </div>
+      <Provider store={setupStore()}>
+        <div className="App">
+          <Router />
+        </div>
+      </Provider>
     </ApolloProvider>
   );
 }
