@@ -5,9 +5,6 @@ import { S_GET_SETS } from "../../modules/set/queries";
 import { useWorkspace } from "../../modules/workspace/actions";
 import { getCurrentWS, setCurrentWS } from "../../modules/workspace/actions";
 import { useStyles } from "../../assets/style/set/page.style";
-import { Items } from "../../modules/item/actions";
-import { Set } from "../../modules/set/actions";
-import { Workspace } from "../../modules/workspace/actions";
 import {
   Button,
   Box,
@@ -25,7 +22,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
-function createData(id: number, name: string, items: Items) {
+function createData(id: number, name: string, items: Item.Items) {
   return {
     id,
     name,
@@ -56,11 +53,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
       {goToWS ? (
         <TableRow className={classes.root}>
           <TableCell className={classes.itemTable} colSpan={2}>
-            <Collapse
-              in={goToWS}
-              timeout="auto"
-              unmountOnExit
-            >
+            <Collapse in={goToWS} timeout="auto" unmountOnExit>
               <Box margin={1}>
                 <Grid
                   container
@@ -123,13 +116,14 @@ interface Props {}
 
 const ListPage: FC<Props> = () => {
   const { loading: sg_loading, error: sg_error, data, refetch } = useQuery(
-    S_GET_SETS, {
+    S_GET_SETS,
+    {
       variables: {
-        wsId: Number(getCurrentWS().id)
-      }
+        wsId: Number(getCurrentWS().id),
+      },
     }
   );
-  const returnData = (sets: Set[]) => {
+  const returnData = (sets: ApparatusSet.Set[]) => {
     let rows: ReturnType<typeof createData>[] = [];
     for (const { id, name, items } of sets) {
       rows = [...rows, createData(id, name, items)];

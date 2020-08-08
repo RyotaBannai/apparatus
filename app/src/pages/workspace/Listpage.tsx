@@ -7,8 +7,6 @@ import {
 import { useWorkspace } from "../../modules/workspace/actions";
 import { getCurrentWS, setCurrentWS } from "../../modules/workspace/actions";
 import { useStyles } from "../../assets/style/workspace/page.style";
-import { Items } from "../../modules/item/actions";
-import { Workspace } from "../../modules/workspace/actions";
 import {
   Button,
   Icon,
@@ -27,7 +25,7 @@ function createData(
   id: string,
   name: string,
   description: string,
-  items: Items
+  items: Item.Items
 ) {
   return {
     id,
@@ -109,7 +107,7 @@ interface Props {}
 const ListPage: FC<Props> = () => {
   const { data, refetch } = useQuery(S_GET_WORKSPACES);
   const returnData = (
-    workspaces: Array<Workspace & { id: string; items: Items }>
+    workspaces: Array<Workspace.Workspace & { id: string; items: Item.Items }>
   ) => {
     let rows: ReturnType<typeof createData>[] = [];
     for (const { id, name, description, items } of workspaces) {

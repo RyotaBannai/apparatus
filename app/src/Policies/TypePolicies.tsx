@@ -24,7 +24,7 @@ export const policy = {
         getItem(_: string, { args }: argsType) {
           return Sets()
             .find((set) => set?.id === args?.set_id)
-            ?.items.find((item) => item.id === args?.id);
+            ?.items.find((item: Item.Item) => item.id === args?.id);
         },
         l_getWorkspace(_: string, { args }: argsType) {
           return workspace();

@@ -1,45 +1,20 @@
 import { makeVar, ReactiveVar } from "@apollo/client";
-import { Item, Items, itemOrUndefined } from "../item/actions";
-import { getCurrentWS } from "../../modules/workspace/actions";
+import { getCurrentWS } from "../workspace/actions";
 import * as _ from "lodash";
 
-export interface Set {
-  id: number;
-  set_id_on_server?: number | null;
-  name: string;
-  items: Items;
-}
-
-type setOrUndefined = Set | undefined;
-
-interface NewItemInput {
-  set_id: number;
-  set_id_on_server?: number | null;
-  name?: string;
-  item: Item & { update_data?: string };
-  edit_mode?: boolean | undefined;
-}
-
-export type Sets = Array<Set | undefined>;
-
-interface Status {
-  id: number;
-  is_set: boolean;
-}
-
-export const setStatus = makeVar<Array<Status>>([]);
-export const Sets = makeVar<Sets>([]);
+export const setStatus = makeVar<Array<ApparatusSet.Status>>([]);
+export const Sets = makeVar<ApparatusSet.Sets>([]);
 export const setCount = makeVar<number>(0);
 export const itemCount = makeVar<number>(0);
 
-export function useSet(sets: ReactiveVar<Sets> = Sets) {
+export function useSet(sets: ReactiveVar<ApparatusSet.Sets> = Sets) {
   const if_set_defined = (id: number) => _.find(Sets(), { id: id });
 
   const deleteItem = (set_id: number, item_id: number) => {
-    let closure = (set: Set) =>
-      set.items.filter((item: Item) => item.id !== item_id);
+    let closure = (set: ApparatusSet.Set) =>
+      set.items.filter((item: Item.Item) => item.id !== item_id);
     Sets(
-      whereUpdateHash<setOrUndefined, typeof closure, string>(
+      whereUpdateHash<ApparatusSet.SetOrUndefined, typeof closure, string>(
         Sets(),
         closure,
         "items",
@@ -56,8 +31,8 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     );
   };
 
-  const createSet = (set: Partial<Set> & { id: number }) => {
-    let new_set: Set;
+  const createSet = (set: Partial<ApparatusSet.Set> & { id: number }) => {
+    let new_set: ApparatusSet.Set;
     let is_defined = if_set_defined(set.id);
     if (is_defined === undefined) {
       new_set = {
@@ -73,15 +48,17 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     return new_set;
   };
 
-  const addateItem = (new_item_input: NewItemInput) => {
+  const addateItem = (new_item_input: ApparatusSet.NewItemInput) => {
     let item = new_item_input.item;
-    let this_set: Set | undefined = if_set_defined(new_item_input.set_id);
+    let this_set: ApparatusSet.SetOrUndefined = if_set_defined(
+      new_item_input.set_id
+    );
     if (this_set === undefined) throw "There's not this set.";
 
     let this_item = _.find(this_set.items, {
       id: item.id,
     });
-    let new_items: Item[];
+    let new_items: Item.Items;
 
     if (this_item === undefined) {
       let new_item = {
@@ -108,7 +85,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
         console.log("error: addateItem receive an unexpected type of data.");
       }
 
-      new_items = whereUpdateArray<Item, string>(
+      new_items = whereUpdateArray<Item.Item, string>(
         this_set.items,
         updated_item,
         "id",
@@ -117,7 +94,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     }
 
     Sets(
-      whereUpdateHash<setOrUndefined, Item[], string>(
+      whereUpdateHash<ApparatusSet.SetOrUndefined, Item.Items, string>(
         Sets(),
         new_items,
         "items",
@@ -129,7 +106,7 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
 
   const updateName = (id: number, name: string) => {
     Sets(
-      whereUpdateHash<setOrUndefined, string, string>(
+      whereUpdateHash<ApparatusSet.SetOrUndefined, string, string>(
         Sets(),
         name,
         "name",
@@ -139,18 +116,18 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
     );
   };
 
-  const addWSId = (set: Partial<Set>) => ({
+  const addWSId = (set: Partial<ApparatusSet.Set>) => ({
     ...set,
     ws_id: getCurrentWS().id,
   });
 
   const filterSet = (): string => {
     let set = Sets()
-      .filter((set: setOrUndefined) => set)
-      .map((set: setOrUndefined) => {
+      .filter((set: ApparatusSet.SetOrUndefined) => set)
+      .map((set: ApparatusSet.SetOrUndefined) => {
         return addWSId({
           ...set,
-          items: set?.items.filter((item: itemOrUndefined) => {
+          items: set?.items.filter((item: Item.ItemOrUndefined) => {
             if (item instanceof Object && "data" in item && item["data"] !== "")
               return true;
             else return false;
@@ -163,10 +140,10 @@ export function useSet(sets: ReactiveVar<Sets> = Sets) {
   const cleanSet = () => Sets([]);
 
   const updateSetStatus = (id: number, set_or_not: boolean) => {
-    let new_statuses: Status[];
+    let new_statuses: ApparatusSet.Status[];
     let this_status = _.find(setStatus(), { id: id });
     if (this_status !== undefined) {
-      new_statuses = whereUpdateHash<Status, boolean, string>(
+      new_statuses = whereUpdateHash<ApparatusSet.Status, boolean, string>(
         setStatus(),
         set_or_not,
         "is_set",
