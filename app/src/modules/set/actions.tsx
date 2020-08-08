@@ -211,7 +211,11 @@ function whereUpdateArray<T, S extends string>(
 ): T[] {
   return array.map((item: T) => {
     if (_.get(item, key) == identifier) {
-      return value;
+      if (typeof value == "function") {
+        return value(item);
+      } else {
+        return value;
+      }
     } else {
       return item;
     }
