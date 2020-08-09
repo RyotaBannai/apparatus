@@ -18,10 +18,10 @@ import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   id: number;
+  mode: Global.Mode;
   set_id_on_server?: number | undefined | null;
   name?: string;
   items?: Array<any>;
-  edit_mode?: boolean;
 }
 
 export const ApparatusSet: FC<Props> = ({
@@ -29,14 +29,23 @@ export const ApparatusSet: FC<Props> = ({
   set_id_on_server,
   name,
   items,
-  edit_mode,
+  mode,
 }) => {
   const classes = useStyles();
   const [children, setChild] = useState<Array<any>>([]);
   const { createSet, updateName } = useSetActions();
-  const { getNewSets, getSetById, isSet, takeIdForItem } = useSetHelpers;
+  const {
+    getNewSets,
+    getEditSets,
+    getSetByKey,
+    isSet,
+    takeIdForItem,
+  } = useSetHelpers;
   const dispatch = useDispatch();
-  const data = getSetById(useSelector(getNewSets), { id });
+  const data = getSetByKey(
+    useSelector(mode === "new" ? getNewSets : getEditSets),
+    { keyname: "id", key: id }
+  );
   const is_set = isSet(data);
   const show = data?.show;
 
@@ -46,29 +55,32 @@ export const ApparatusSet: FC<Props> = ({
     if (_children instanceof Array) {
       newChildren = [
         ..._children,
-        <ApparatusItem set_id={id} id={item_id} key={uuidv4()} />,
+        <ApparatusItem set_id={id} id={item_id} key={uuidv4()} mode={mode} />,
       ];
     } else {
-      newChildren = [<ApparatusItem set_id={id} id={item_id} key={uuidv4()} />];
+      newChildren = [
+        <ApparatusItem set_id={id} id={item_id} key={uuidv4()} mode={mode} />,
+      ];
     }
     setChild(newChildren);
   };
 
   const updateSetName = (e: any) => {
     e.preventDefault();
-    dispatch(updateName({ id, name: e.target.value }));
+    dispatch(updateName({ id, name: e.target.value, mode }));
   };
 
   const dispatchCreateSet = (
     payload: Partial<ApparatusSet.Set> & {
       id: number;
+      mode: Global.Mode;
     }
   ) => {
     dispatch(createSet(payload));
   };
 
   useEffect(() => {
-    if (edit_mode) {
+    if (mode === "edit") {
       if (items === undefined) return;
       let items_edit: any[] = [];
       for (const item of items) {
@@ -87,13 +99,19 @@ export const ApparatusSet: FC<Props> = ({
         name,
         set_id_on_server,
         items: items_edit,
+        mode,
       });
 
       let old_items: any[] = [];
       for (const item_edit of items_edit) {
         old_items = [
           ...old_items,
-          <ApparatusItem {...item_edit} set_id={id} key={uuidv4()} />,
+          <ApparatusItem
+            {...item_edit}
+            set_id={id}
+            key={uuidv4()}
+            mode={"edit"}
+          />,
         ];
       }
 
@@ -104,6 +122,7 @@ export const ApparatusSet: FC<Props> = ({
           id,
           name,
           items,
+          mode,
         });
 
         let old_items: any[] = [];
@@ -111,13 +130,14 @@ export const ApparatusSet: FC<Props> = ({
         for (const item of items) {
           old_items = [
             ...old_items,
-            <ApparatusItem {...item} set_id={id} key={uuidv4()} />,
+            <ApparatusItem {...item} set_id={id} key={uuidv4()} mode={"new"} />,
           ];
         }
         setChild(old_items);
       } else {
         dispatchCreateSet({
           id,
+          mode,
         });
 
         callAddChild(null);

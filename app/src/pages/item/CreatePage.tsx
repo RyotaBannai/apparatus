@@ -15,9 +15,10 @@ interface Props {}
 const CreatePage: FC<Props> = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { cleanNewSets, removeShowFalse } = useSetActions();
+  const { hiddenSets, removeShowFalse } = useSetActions();
   const { takeIdForSet, filterSet, getNewSets } = useSetHelpers;
   const sets = useSelector(getNewSets);
+  const mode = "new";
 
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
@@ -26,9 +27,12 @@ const CreatePage: FC<Props> = () => {
     let newChildren;
     let id = takeIdForSet();
     if (_children instanceof Array) {
-      newChildren = [..._children, <ApparatusSet key={uuidv4()} id={id} />];
+      newChildren = [
+        ..._children,
+        <ApparatusSet key={uuidv4()} id={id} mode={mode} />,
+      ];
     } else {
-      newChildren = [<ApparatusSet key={uuidv4()} id={id} />];
+      newChildren = [<ApparatusSet key={uuidv4()} id={id} mode={mode} />];
     }
     setChild(newChildren);
   };
@@ -39,7 +43,7 @@ const CreatePage: FC<Props> = () => {
   ] = useMutation(S_ADD_ITEMS, {
     onCompleted({ createItems: { res } }) {
       if (res === "Success") {
-        dispatch(cleanNewSets(null));
+        dispatch(hiddenSets({ mode }));
         callSetChild(null);
         setOpen(!saveSnackBarOpen);
       } else {
@@ -66,7 +70,10 @@ const CreatePage: FC<Props> = () => {
       let old_sets: any[] = [];
       for (const set of sets) {
         if (set instanceof Object && "id" in set) {
-          old_sets = [...old_sets, <ApparatusSet {...set} key={uuidv4()} />];
+          old_sets = [
+            ...old_sets,
+            <ApparatusSet {...set} key={uuidv4()} mode={mode} />,
+          ];
         }
       }
       setChild(old_sets);

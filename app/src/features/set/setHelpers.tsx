@@ -19,9 +19,12 @@ export const useSetHelpers = {
 
   getEditSets: (state: Global.RootState) => state.set.edit,
 
-  getSetById: (sets: ApparatusSet.Sets, { id }: { id: number }) =>
+  getSetByKey: (
+    sets: ApparatusSet.Sets,
+    { keyname, key }: { keyname: string; key: number | string }
+  ) =>
     _.find(sets, {
-      id: id,
+      [keyname]: key,
     }),
 
   addWSId: (set: Partial<ApparatusSet.Set>) => ({

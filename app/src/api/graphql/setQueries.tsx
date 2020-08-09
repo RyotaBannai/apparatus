@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 
 export const S_GET_SET = gql`
   query GET_SET($id: Float!) {
-    s_getSet(id: $id) {
+    getSet(id: $id) {
       id
       name
       items {

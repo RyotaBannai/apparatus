@@ -5,6 +5,7 @@ declare namespace Global {
     key: K;
     value: V;
   }
+  type Mode = "new" | "edit";
 }
 
 declare namespace Item {
@@ -36,7 +37,7 @@ declare namespace ApparatusSet {
     set_id_on_server?: number | null;
     name?: string;
     item: Item & { update_data?: string };
-    edit_mode?: boolean | undefined;
+    mode: Global.Mode;
   }
 
   type Sets = Array<ApparatusSet.Set | undefined>;

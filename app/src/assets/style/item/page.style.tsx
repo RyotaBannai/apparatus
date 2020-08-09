@@ -13,5 +13,8 @@ export const useStyles = makeStyles((theme: Theme) =>
         outlineColor: cyan[800],
       },
     },
+    alertDeleteSetOnEdit: {
+      marginBottom: 10,
+    },
   })
 );

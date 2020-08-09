@@ -27,7 +27,7 @@ export const ApparatusRouter: FC<Props> = () => {
           <Route exact path="/workspace_list" component={ListWorkspacePage} />
           <Route exact path="/workspace_edit" component={EditWorkspacePage} />
           <Route exact path="/item_create" component={CreateItemPage} />
-          {/* <Route exact path="/item_edit/:set_id" component={EditItemPage} /> */}
+          <Route exact path="/item_edit/:set_id" component={EditItemPage} />
           <Route exact path="/set_list" component={ListSetPage} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/signin" component={Signin} />

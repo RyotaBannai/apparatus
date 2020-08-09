@@ -17,6 +17,7 @@ import { useSetHelpers } from "../../features/set/setHelpers";
 interface Props {
   set_id: number;
   id: number;
+  mode: Global.Mode;
   type?: string;
   data?: string;
   description?: string;
@@ -30,6 +31,7 @@ export const ApparatusItem: FC<Props> = ({
   data,
   description,
   note,
+  mode,
 }) => {
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
@@ -59,6 +61,7 @@ export const ApparatusItem: FC<Props> = ({
       addateItem({
         set_id,
         item,
+        mode,
       })
     );
   };
@@ -66,7 +69,7 @@ export const ApparatusItem: FC<Props> = ({
   const onDeleteItem = (e: any) => {
     e.preventDefault();
     setShow(!show);
-    dispatch(deleteItem({ set_id, item_id: id }));
+    dispatch(deleteItem({ set_id, item_id: id, mode }));
   };
 
   useEffect(() => {

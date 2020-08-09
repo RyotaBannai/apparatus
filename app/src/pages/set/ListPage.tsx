@@ -20,6 +20,7 @@ import {
   Tooltip,
   Typography,
 } from "@material-ui/core";
+import { v4 as uuidv4 } from "uuid";
 
 function createData(id: number, name: string, items: Item.Items) {
   return {
@@ -152,7 +153,7 @@ const ListPage: FC<Props> = () => {
               </TableHead>
               <TableBody>
                 {returnData(data.getSets).map((row) => (
-                  <Row key={row.name} row={row} />
+                  <Row key={uuidv4()} row={row} />
                 ))}
               </TableBody>
             </Table>

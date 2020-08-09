@@ -25,21 +25,20 @@ export const SetFeature = createSlice({
       state,
       action: {
         type: string;
-        payload: Partial<ApparatusSet.Set> & { id: number };
+        payload: Partial<ApparatusSet.Set> & { id: number; mode: Global.Mode };
       }
     ) => {
       let set = action.payload;
-      let new_set: ApparatusSet.Set;
-      let is_defined = _.find(state.new, { id: set.id });
+      let is_defined = _.find(state[set.mode], { id: set.id });
       if (is_defined === undefined) {
-        new_set = {
+        let new_set: ApparatusSet.Set = {
           id: set.id,
           set_id_on_server: set.set_id_on_server ?? null,
           name: set.name ?? "Set",
           items: set.items ?? [],
           show: true,
         };
-        state.new = [...state.new, new_set];
+        state[set.mode] = [...state[set.mode], new_set];
       }
     },
 
@@ -50,8 +49,8 @@ export const SetFeature = createSlice({
         payload: ApparatusSet.NewItemInput;
       }
     ) => {
-      let item = action.payload.item;
-      let this_set: ApparatusSet.SetOrUndefined = _.find(state.new, {
+      const { item, mode } = action.payload;
+      let this_set: ApparatusSet.SetOrUndefined = _.find(state[mode], {
         id: action.payload.set_id,
       });
       if (this_set === undefined) throw "There's not this set.";
@@ -59,8 +58,8 @@ export const SetFeature = createSlice({
       let this_item = _.find(this_set.items, {
         id: item.id,
       });
-      let new_items: Item.Items;
 
+      let new_items: Item.Items;
       if (this_item === undefined) {
         let new_item = {
           id: item.id,
@@ -94,24 +93,23 @@ export const SetFeature = createSlice({
         );
       }
 
-      state.new = whereUpdateHash<
+      state[mode] = whereUpdateHash<
         ApparatusSet.SetOrUndefined,
         Item.Items,
         string
-      >(state.new, new_items, "items", "id", String(this_set.id));
+      >(state[mode], new_items, "items", "id", String(this_set.id));
     },
 
     deleteItem: (
       state,
       action: {
         type: string;
-        payload: { set_id: number; item_id: number };
+        payload: { set_id: number; item_id: number; mode: Global.Mode };
       }
     ) => {
+      const { set_id, item_id, mode } = action.payload;
       let setItemClosure = (set: ApparatusSet.Set) =>
-        set.items.filter(
-          (item: Item.Item) => item.id !== action.payload.item_id
-        );
+        set.items.filter((item: Item.Item) => item.id !== item_id);
 
       let checkItemsLengthClosure = (set: ApparatusSet.Set) =>
         set.items.length > 0 ? true : false;
@@ -121,11 +119,11 @@ export const SetFeature = createSlice({
         { key: "show", value: checkItemsLengthClosure },
       ];
 
-      state.new = whereUpdateHashes<ApparatusSet.SetOrUndefined, string>(
-        state.new,
+      state[mode] = whereUpdateHashes<ApparatusSet.SetOrUndefined, string>(
+        state[mode],
         params,
         "id",
-        String(action.payload.set_id)
+        String(set_id)
       );
     },
 
@@ -133,26 +131,26 @@ export const SetFeature = createSlice({
       state,
       action: {
         type: string;
-        payload: { id: number; name: string };
+        payload: { id: number; name: string; mode: Global.Mode };
       }
     ) => {
-      state.new = whereUpdateHash<ApparatusSet.SetOrUndefined, string, string>(
-        state.new,
-        action.payload.name,
-        "name",
-        "id",
-        String(action.payload.id)
-      );
+      const { id, name, mode } = action.payload;
+      state[mode] = whereUpdateHash<
+        ApparatusSet.SetOrUndefined,
+        string,
+        string
+      >(state[mode], name, "name", "id", String(id));
     },
 
-    cleanNewSets: (state, action) => {
-      state.new = state.new.map((set) => {
-        return { ...set, show: false };
-      }) as ApparatusSet.Sets;
-    },
-
-    cleanEditSets: (state, action) => {
-      state.edit = state.edit.map((set) => {
+    hiddenSets: (
+      state,
+      action: {
+        type: string;
+        payload: { mode: Global.Mode };
+      }
+    ) => {
+      const { mode } = action.payload;
+      state[mode] = state[mode].map((set) => {
         return { ...set, show: false };
       }) as ApparatusSet.Sets;
     },
