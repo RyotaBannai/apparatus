@@ -37,6 +37,11 @@ export const useSetHelpers = {
       });
     return JSON.stringify(set);
   },
+
+  getItemById: (
+    sets: ApparatusSet.Sets,
+    { set_id, item_id }: { set_id: number; item_id: number }
+  ) => _.find(_.find(sets, { id: set_id })?.items, { id: item_id }),
   takeIdForSet: () => setCount(setCount() + 1) && setCount(),
   takeIdForItem: () => itemCount(itemCount() + 1) && itemCount(),
   updateSetStatus: (id: number, set_or_not: boolean) => {

@@ -1,6 +1,10 @@
 declare namespace Global {
   type RootState = import("./app/store").RootState;
   type AppDispatch = import("./app/store").AppDispatch;
+  interface BasicKeyValueInput<K, V> {
+    key: K;
+    value: V;
+  }
 }
 
 declare namespace Item {

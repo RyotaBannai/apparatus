@@ -39,14 +39,9 @@ export function whereUpdateHash<T, V, S extends string>(
   });
 }
 
-interface WhereUpdateHashesInput<K, V> {
-  key: K;
-  value: V;
-}
-
 export function whereUpdateHashes<T, S extends string>(
   array: T[],
-  hashes: WhereUpdateHashesInput<S, string | number | Function>[],
+  hashes: Global.BasicKeyValueInput<S, string | number | Function>[],
   key: S,
   identifier: S
 ) {

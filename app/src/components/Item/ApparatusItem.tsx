@@ -1,6 +1,4 @@
 import React, { useState, useEffect, FC } from "react";
-import { useQuery } from "@apollo/client";
-import { L_GET_ITEM } from "../../modules/item/queries";
 import {
   Grid,
   Icon,
@@ -14,6 +12,7 @@ import {
 import { useStyles } from "../../assets/style/item/item.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useSetActions } from "../../features/set/setFeatureSlice";
+import { useSetHelpers } from "../../features/set/setHelpers";
 
 interface Props {
   set_id: number;
@@ -34,13 +33,12 @@ export const ApparatusItem: FC<Props> = ({
 }) => {
   const classes = useStyles();
   const [show, setShow] = useState<boolean>(true);
-  const { data: this_item } = useQuery(L_GET_ITEM, {
-    variables: {
-      set_id,
-      id,
-    },
-  });
   const { addateItem, deleteItem } = useSetActions();
+  const { getNewSets, getItemById } = useSetHelpers;
+  const this_item = getItemById(useSelector(getNewSets), {
+    set_id,
+    item_id: id,
+  });
   const dispatch = useDispatch();
 
   const onChangeType = (e: any) => handleEvent(e, "type");
@@ -79,7 +77,7 @@ export const ApparatusItem: FC<Props> = ({
   else
     return (
       <div className={classes.item}>
-        {this_item?.getItem?.type === "line" ? (
+        {this_item?.type === "line" ? (
           <Grid container alignItems="flex-end" direction="row" spacing={1}>
             <Grid item>
               <InputLabel htmlFor="type">Type</InputLabel>
@@ -88,7 +86,7 @@ export const ApparatusItem: FC<Props> = ({
                 required
                 variant="outlined"
                 autoWidth
-                defaultValue={this_item?.getItem?.type ?? type ?? "line"}
+                defaultValue={this_item?.type ?? type ?? "line"}
                 className={classes.formType}
                 onChange={onChangeType}
               >
@@ -101,7 +99,7 @@ export const ApparatusItem: FC<Props> = ({
               <OutlinedInput
                 id="data"
                 required
-                defaultValue={this_item?.getItem?.data ?? data ?? ""}
+                defaultValue={this_item?.data ?? data ?? ""}
                 className={classes.formDataLine}
                 onChange={onChangeData}
               />
@@ -117,7 +115,7 @@ export const ApparatusItem: FC<Props> = ({
                   required
                   variant="outlined"
                   autoWidth
-                  defaultValue={this_item?.getItem?.type ?? type ?? "line"}
+                  defaultValue={this_item?.type ?? type ?? "line"}
                   className={classes.formType}
                   onChange={onChangeType}
                 >
@@ -139,7 +137,7 @@ export const ApparatusItem: FC<Props> = ({
                   multiline
                   rowsMax={4}
                   variant="outlined"
-                  defaultValue={this_item?.getItem?.data ?? data ?? ""}
+                  defaultValue={this_item?.data ?? data ?? ""}
                   className={classes.formDataField}
                   onChange={onChangeData}
                 />
