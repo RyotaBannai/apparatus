@@ -8,6 +8,7 @@ import { useStyles } from "../../assets/style/item/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useSetActions } from "../../features/set/setFeatureSlice";
 import { useSetHelpers } from "../../features/set/setHelpers";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {}
 
@@ -26,10 +27,9 @@ const CreatePage: FC<Props> = () => {
     let newChildren;
     let id = takeIdForSet();
     if (_children instanceof Array) {
-      newChildren = [..._children, <ApparatusSet key={id} id={id} />];
+      newChildren = [..._children, <ApparatusSet key={uuidv4()} id={id} />];
     } else {
-      setChild([]);
-      newChildren = [<ApparatusSet key={id} id={id} />];
+      newChildren = [<ApparatusSet key={uuidv4()} id={id} />];
     }
     setChild(newChildren);
   };
@@ -67,7 +67,7 @@ const CreatePage: FC<Props> = () => {
       let old_sets: any[] = [];
       for (const set of sets) {
         if (set instanceof Object && "id" in set) {
-          old_sets = [...old_sets, <ApparatusSet {...set} />];
+          old_sets = [...old_sets, <ApparatusSet {...set} key={uuidv4()} />];
         }
       }
       setChild(old_sets);

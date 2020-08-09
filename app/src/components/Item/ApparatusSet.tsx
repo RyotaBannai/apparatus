@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSetActions } from "../../features/set/setFeatureSlice";
 import { useSetHelpers } from "../../features/set/setHelpers";
 import * as _ from "lodash";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   id: number;
@@ -45,10 +46,10 @@ export const ApparatusSet: FC<Props> = ({
     if (_children instanceof Array) {
       newChildren = [
         ..._children,
-        <ApparatusItem key={item_id} set_id={id} id={item_id} />,
+        <ApparatusItem set_id={id} id={item_id} key={uuidv4()} />,
       ];
     } else {
-      newChildren = [<ApparatusItem key={item_id} set_id={id} id={item_id} />];
+      newChildren = [<ApparatusItem set_id={id} id={item_id} key={uuidv4()} />];
     }
     setChild(newChildren);
   };
@@ -85,7 +86,7 @@ export const ApparatusSet: FC<Props> = ({
         for (const item_edit of items_edit) {
           old_items = [
             ...old_items,
-            <ApparatusItem {...item_edit} set_id={id} />,
+            <ApparatusItem {...item_edit} set_id={id} key={uuidv4()} />,
           ];
         }
         setChild(old_items);
@@ -101,7 +102,10 @@ export const ApparatusSet: FC<Props> = ({
         );
         let old_items: any[] = [];
         for (const item of items) {
-          old_items = [...old_items, <ApparatusItem {...item} set_id={id} />];
+          old_items = [
+            ...old_items,
+            <ApparatusItem {...item} set_id={id} key={uuidv4()} />,
+          ];
         }
         setChild(old_items);
       } else {

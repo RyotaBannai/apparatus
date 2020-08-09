@@ -5,7 +5,7 @@ import { Sub } from "../pages/Sub";
 import { Pagination } from "../pages/DemoPagination";
 
 const CreateWorkspacePage = lazy(() => import("../pages/workspace/CreatePage"));
-const ListWorkspacePage = lazy(() => import("../pages/workspace/ListPage"));
+const ListWorkspacePage = lazy(() => import("../pages/workspace/Listpage"));
 const EditWorkspacePage = lazy(() => import("../pages/workspace/EditPage"));
 const CreateItemPage = lazy(() => import("../pages/item/CreatePage"));
 const EditItemPage = lazy(() => import("../pages/item/EditPage"));
