@@ -17,6 +17,7 @@
     "@types/body-parser": "^1.19.0",
     "@types/helmet": "0.0.47",
     "@types/jsonwebtoken": "^8.5.0",
+    "@types/lodash": "^4.14.159",
     "@types/passport": "^1.0.3",
     "@types/passport-jwt": "^3.0.3",
     "apollo-server-express": "^2.3.1",
