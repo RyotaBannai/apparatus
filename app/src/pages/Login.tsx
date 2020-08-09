@@ -1,7 +1,7 @@
 import React from "react";
 import { gql, useLazyQuery } from "@apollo/client";
 import { ApolloError } from "apollo-client";
-import { getCurrentWS, setCurrentWS } from "../modules/workspace/actions";
+import { useWSHelpers } from "../features/workspace/wsHelpers";
 import {
   Button,
   InputLabel,
@@ -27,6 +27,7 @@ const LOGIN = gql`
 interface Props {}
 
 const Login: React.FC<Props> = () => {
+  const { getCurrentWS, setCurrentWS } = useWSHelpers;
   let email: any = "";
   let password: any = "";
   const [login, { called, loading, data }] = useLazyQuery(LOGIN, {

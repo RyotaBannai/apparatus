@@ -1,11 +1,10 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
-import { useQuery, useMutation, ApolloError } from "@apollo/client";
-import {
-  L_GET_WORKSPACE,
-  S_CREATE_WORKSPACE,
-} from "../../modules/workspace/queries";
-import { useWorkspace } from "../../modules/workspace/actions";
+import { useMutation, ApolloError } from "@apollo/client";
+import { S_CREATE_WORKSPACE } from "../../modules/workspace/queries";
 import { useStyles } from "../../assets/style/workspace/page.style";
+import { useDispatch, useSelector } from "react-redux";
+import { useWSActions } from "../../features/workspace/wsFeatureSlice";
+import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
 import {
   Button,
@@ -18,7 +17,10 @@ import {
 
 interface Props {}
 const CreatePage: FC<Props> = () => {
-  const { addateWS } = useWorkspace();
+  const dispatch = useDispatch();
+  const { addateWS } = useWSActions();
+  const { getWorkspace } = useWSHelpers;
+  const data = useSelector(getWorkspace);
   const classes = useStyles();
   const [saveSnackBarOpen, setOpen] = useState(false);
 
@@ -29,13 +31,13 @@ const CreatePage: FC<Props> = () => {
     setChange(e.target.value, form_name);
   };
   const setChange = (value: string, update_data: string) => {
-    addateWS({
-      [update_data]: value,
-      type: update_data,
-    });
+    dispatch(
+      addateWS({
+        [update_data]: value,
+        type: update_data,
+      })
+    );
   };
-
-  const { data } = useQuery(L_GET_WORKSPACE);
 
   const [
     s_createWorkspace,
@@ -92,7 +94,7 @@ const CreatePage: FC<Props> = () => {
             onClick={(e: SyntheticEvent) => {
               e.preventDefault();
               s_createWorkspace({
-                variables: data.l_getWorkspace,
+                variables: data,
               });
             }}
           >

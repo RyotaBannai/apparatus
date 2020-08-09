@@ -1,12 +1,13 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import {
-  L_GET_WORKSPACE,
   S_GET_WORKSPACE,
   S_EDIT_WORKSPACE,
 } from "../../modules/workspace/queries";
-import { useWorkspace, getCurrentWS } from "../../modules/workspace/actions";
 import { useStyles } from "../../assets/style/workspace/page.style";
+import { useDispatch, useSelector } from "react-redux";
+import { useWSActions } from "../../features/workspace/wsFeatureSlice";
+import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
 import {
   Button,
@@ -19,9 +20,12 @@ import {
 
 interface Props {}
 const EditPage: FC<Props> = () => {
-  const { addateWS } = useWorkspace();
   const classes = useStyles();
   const [saveSnackBarOpen, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const { addateWS } = useWSActions();
+  const { getWorkspace, getCurrentWS } = useWSHelpers;
+  const l_data = useSelector(getWorkspace);
 
   const onChangeName = (e: any) => handleEvent(e, "name");
   const onChangeDescription = (e: any) => handleEvent(e, "description");
@@ -30,10 +34,12 @@ const EditPage: FC<Props> = () => {
     setChange(e.target.value, form_name);
   };
   const setChange = (value: string, update_data: string) => {
-    addateWS({
-      [update_data]: value,
-      type: update_data,
-    });
+    dispatch(
+      addateWS({
+        [update_data]: value,
+        type: update_data,
+      })
+    );
   };
 
   const { loading: sg_loading, error: sg_error, data } = useQuery(
@@ -44,7 +50,6 @@ const EditPage: FC<Props> = () => {
       },
     }
   );
-  const { data: l_data } = useQuery(L_GET_WORKSPACE);
 
   const [
     s_editWorkspace,
@@ -104,7 +109,7 @@ const EditPage: FC<Props> = () => {
             onClick={(e: SyntheticEvent) => {
               e.preventDefault();
               s_editWorkspace({
-                variables: { ...l_data.l_getWorkspace, id: getCurrentWS().id },
+                variables: { ...l_data, id: getCurrentWS().id },
               });
             }}
           >

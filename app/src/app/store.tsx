@@ -5,9 +5,11 @@ import {
 } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 import SetFeature from "../features/set/setFeatureSlice";
+import WSFeature from "../features/workspace/wsFeatureSlice";
 
 const rootReducer = combineReducers({
   set: SetFeature,
+  workspace: WSFeature,
 });
 
 // export const setupStore = () => {

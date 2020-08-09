@@ -1,11 +1,7 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
-import {
-  S_GET_WORKSPACES,
-  L_GET_CURRENT_WORKSPACE,
-} from "../../modules/workspace/queries";
-import { useWorkspace } from "../../modules/workspace/actions";
-import { getCurrentWS, setCurrentWS } from "../../modules/workspace/actions";
+import { S_GET_WORKSPACES } from "../../modules/workspace/queries";
+import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { useStyles } from "../../assets/style/workspace/page.style";
 import {
   Button,
@@ -25,13 +21,15 @@ function createData(
   id: string,
   name: string,
   description: string,
-  items: Item.Items
+  items: Item.Items,
+  current_ws_id: string
 ) {
   return {
     id,
     name,
     description,
     item_count: items.length,
+    current_ws_id,
   };
 }
 interface WrapProps {
@@ -53,8 +51,8 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   const { row } = props;
   const classes = useStyles();
   const [goToWS, setGoToWS] = useState<boolean>();
-  const { data } = useQuery(L_GET_CURRENT_WORKSPACE);
-  const isCurrent = (): boolean => data?.currentWS.id === row.id;
+  const { setCurrentWS } = useWSHelpers;
+  const isCurrent = (): boolean => row.current_ws_id === row.id;
 
   return (
     <>
@@ -106,12 +104,14 @@ interface Props {}
 
 const ListPage: FC<Props> = () => {
   const { data, refetch } = useQuery(S_GET_WORKSPACES);
+  const { getCurrentWS } = useWSHelpers;
+  const current_ws_id = getCurrentWS().id as string;
   const returnData = (
     workspaces: Array<Workspace.Workspace & { id: string; items: Item.Items }>
   ) => {
     let rows: ReturnType<typeof createData>[] = [];
     for (const { id, name, description, items } of workspaces) {
-      rows = [...rows, createData(id, name, description, items)];
+      rows = [...rows, createData(id, name, description, items, current_ws_id)];
     }
     return rows;
   };

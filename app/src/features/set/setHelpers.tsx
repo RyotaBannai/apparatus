@@ -9,18 +9,24 @@ export const setStatus = makeVar<Array<ApparatusSet.Status>>([]);
 
 export const useSetHelpers = {
   if_set_defined: (state: Global.RootState): boolean => true,
+
   isSet: (set: ApparatusSet.Set | undefined): boolean =>
     set?.items.length > 1 || false,
+
   getNewSets: (state: Global.RootState) => state.set.new,
+
   getEditSets: (state: Global.RootState) => state.set.edit,
+
   getSetById: (sets: ApparatusSet.Sets, { id }: { id: number }) =>
     _.find(sets, {
       id: id,
     }),
+
   addWSId: (set: Partial<ApparatusSet.Set>) => ({
     ...set,
     ws_id: getCurrentWS().id,
   }),
+
   filterSet: (sets: ApparatusSet.Sets | undefined): string => {
     if (sets === undefined) return "";
     let set = sets
@@ -42,8 +48,11 @@ export const useSetHelpers = {
     sets: ApparatusSet.Sets,
     { set_id, item_id }: { set_id: number; item_id: number }
   ) => _.find(_.find(sets, { id: set_id })?.items, { id: item_id }),
+
   takeIdForSet: () => setCount(setCount() + 1) && setCount(),
+
   takeIdForItem: () => itemCount(itemCount() + 1) && itemCount(),
+
   updateSetStatus: (id: number, set_or_not: boolean) => {
     let new_statuses: ApparatusSet.Status[];
     let this_status = _.find(setStatus(), { id: id });
@@ -64,6 +73,7 @@ export const useSetHelpers = {
         },
       ];
     }
+
     setStatus(new_statuses);
   },
 };

@@ -8,9 +8,6 @@ export const policy = {
   typePolicies: {
     Query: {
       fields: {
-        l_getWorkspace(_: string, { args }: argsType) {
-          return workspace();
-        },
         currentWS(_: string, { args }: argsType) {
           return getCurrentWS();
         },

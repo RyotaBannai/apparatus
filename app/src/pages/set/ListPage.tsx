@@ -2,8 +2,7 @@ import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { NavLink } from "react-router-dom";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { S_GET_SETS } from "../../modules/set/queries";
-import { useWorkspace } from "../../modules/workspace/actions";
-import { getCurrentWS, setCurrentWS } from "../../modules/workspace/actions";
+import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { useStyles } from "../../assets/style/set/page.style";
 import {
   Button,
@@ -115,6 +114,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 interface Props {}
 
 const ListPage: FC<Props> = () => {
+  const { getCurrentWS } = useWSHelpers;
   const { loading: sg_loading, error: sg_error, data, refetch } = useQuery(
     S_GET_SETS,
     {

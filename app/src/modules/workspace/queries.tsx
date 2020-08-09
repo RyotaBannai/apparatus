@@ -1,22 +1,5 @@
 import { gql } from "@apollo/client";
 
-export const L_GET_WORKSPACE = gql`
-  {
-    l_getWorkspace @client {
-      name
-      description
-    }
-  }
-`;
-
-export const L_GET_CURRENT_WORKSPACE = gql`
-  {
-    currentWS @client {
-      id
-    }
-  }
-`;
-
 export const S_GET_WORKSPACE = gql`
   query GET_WORKSPACE($id: String!) {
     getWorkspace(id: $id) {
