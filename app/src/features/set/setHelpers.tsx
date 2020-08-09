@@ -1,4 +1,4 @@
-import { getCurrentWS } from "../../modules/workspace/actions";
+import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { makeVar, ReactiveVar } from "@apollo/client";
 import { whereUpdateArray, whereUpdateHash } from "../../modules/where";
 import * as _ from "lodash";
@@ -6,6 +6,8 @@ import * as _ from "lodash";
 export const setCount = makeVar<number>(0);
 export const itemCount = makeVar<number>(0);
 export const setStatus = makeVar<Array<ApparatusSet.Status>>([]);
+
+const { getCurrentWS } = useWSHelpers;
 
 export const useSetHelpers = {
   if_set_defined: (state: Global.RootState): boolean => true,

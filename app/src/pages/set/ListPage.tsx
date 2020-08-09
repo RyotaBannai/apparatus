@@ -1,7 +1,7 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { NavLink } from "react-router-dom";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
-import { S_GET_SETS } from "../../modules/set/queries";
+import { S_GET_SETS } from "../../api/graphql/setQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { useStyles } from "../../assets/style/set/page.style";
 import {

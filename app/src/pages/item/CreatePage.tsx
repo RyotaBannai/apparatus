@@ -1,6 +1,6 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useMutation, ApolloError } from "@apollo/client";
-import { S_ADD_ITEMS } from "../../modules/item/queries";
+import { S_ADD_ITEMS } from "../../api/graphql/itemQueries";
 import { Button, Grid, Icon } from "@material-ui/core";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useMutation, ApolloError } from "@apollo/client";
-import { S_CREATE_WORKSPACE } from "../../modules/workspace/queries";
+import { S_CREATE_WORKSPACE } from "../../api/graphql/workspaceQueries";
 import { useStyles } from "../../assets/style/workspace/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useWSActions } from "../../features/workspace/wsFeatureSlice";

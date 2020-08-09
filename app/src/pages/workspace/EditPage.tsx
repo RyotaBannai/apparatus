@@ -3,7 +3,7 @@ import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import {
   S_GET_WORKSPACE,
   S_EDIT_WORKSPACE,
-} from "../../modules/workspace/queries";
+} from "../../api/graphql/workspaceQueries";
 import { useStyles } from "../../assets/style/workspace/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useWSActions } from "../../features/workspace/wsFeatureSlice";
