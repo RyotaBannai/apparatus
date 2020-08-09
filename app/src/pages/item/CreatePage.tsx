@@ -14,9 +14,8 @@ interface Props {}
 
 const CreatePage: FC<Props> = () => {
   const classes = useStyles();
-  // const { takeIdForSet, filterSet, cleanSet } = useSet();
   const dispatch = useDispatch();
-  const { cleanNewSets } = useSetActions();
+  const { cleanNewSets, removeShowFalse } = useSetActions();
   const { takeIdForSet, filterSet, getNewSets } = useSetHelpers;
   const sets = useSelector(getNewSets);
 
@@ -74,6 +73,10 @@ const CreatePage: FC<Props> = () => {
     } else {
       callSetChild(null);
     }
+
+    return () => {
+      dispatch(removeShowFalse());
+    };
   }, []);
 
   if (sa_loading) return <p>Loading...</p>;

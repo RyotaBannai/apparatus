@@ -59,48 +59,55 @@ export const ApparatusSet: FC<Props> = ({
     dispatch(updateName({ id, name: e.target.value }));
   };
 
+  const dispatchCreateSet = (
+    payload: Partial<ApparatusSet.Set> & {
+      id: number;
+    }
+  ) => {
+    dispatch(createSet(payload));
+  };
+
   useEffect(() => {
     if (edit_mode) {
-      if (edit_mode && items !== undefined) {
-        let items_edit: any[] = [];
-        for (const item of items) {
-          items_edit = [
-            ...items_edit,
-            {
-              ...item,
-              id: takeIdForItem(),
-              id_on_server: item.id,
-            },
-          ];
-        }
-        dispatch(
-          createSet({
-            id,
-            name,
-            set_id_on_server,
-            items: items_edit,
-          })
-        );
-
-        let old_items: any[] = [];
-        for (const item_edit of items_edit) {
-          old_items = [
-            ...old_items,
-            <ApparatusItem {...item_edit} set_id={id} key={uuidv4()} />,
-          ];
-        }
-        setChild(old_items);
+      if (items === undefined) return;
+      let items_edit: any[] = [];
+      for (const item of items) {
+        items_edit = [
+          ...items_edit,
+          {
+            ...item,
+            id: takeIdForItem(),
+            id_on_server: item.id,
+          },
+        ];
       }
+
+      dispatchCreateSet({
+        id,
+        name,
+        set_id_on_server,
+        items: items_edit,
+      });
+
+      let old_items: any[] = [];
+      for (const item_edit of items_edit) {
+        old_items = [
+          ...old_items,
+          <ApparatusItem {...item_edit} set_id={id} key={uuidv4()} />,
+        ];
+      }
+
+      setChild(old_items);
     } else {
       if (items !== undefined) {
-        dispatch(
-          createSet({
-            id,
-            name,
-            items,
-          })
-        );
+        dispatchCreateSet({
+          id,
+          name,
+          items,
+        });
+
         let old_items: any[] = [];
+
         for (const item of items) {
           old_items = [
             ...old_items,
@@ -109,11 +116,10 @@ export const ApparatusSet: FC<Props> = ({
         }
         setChild(old_items);
       } else {
-        dispatch(
-          createSet({
-            id,
-          })
-        );
+        dispatchCreateSet({
+          id,
+        });
+
         callAddChild(null);
       }
     }

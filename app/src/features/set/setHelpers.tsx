@@ -32,7 +32,7 @@ export const useSetHelpers = {
   filterSet: (sets: ApparatusSet.Sets | undefined): string => {
     if (sets === undefined) return "";
     let set = sets
-      .filter((set: ApparatusSet.SetOrUndefined) => set)
+      .filter((set: ApparatusSet.SetOrUndefined) => set && set.show === true)
       .map((set: ApparatusSet.SetOrUndefined) => {
         return useSetHelpers.addWSId({
           ...set,

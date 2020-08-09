@@ -54,7 +54,6 @@ export const SetFeature = createSlice({
       let this_set: ApparatusSet.SetOrUndefined = _.find(state.new, {
         id: action.payload.set_id,
       });
-      console.log("in");
       if (this_set === undefined) throw "There's not this set.";
 
       let this_item = _.find(this_set.items, {
@@ -145,12 +144,23 @@ export const SetFeature = createSlice({
         String(action.payload.id)
       );
     },
+
     cleanNewSets: (state, action) => {
-      state.new = initialSets.new;
+      state.new = state.new.map((set) => {
+        return { ...set, show: false };
+      }) as ApparatusSet.Sets;
     },
 
     cleanEditSets: (state, action) => {
-      state.edit = initialSets.edit;
+      state.edit = state.edit.map((set) => {
+        return { ...set, show: false };
+      }) as ApparatusSet.Sets;
+    },
+
+    removeShowFalse: (state) => {
+      state.new = state.new.filter((set) => {
+        return set?.show === true;
+      }) as ApparatusSet.Sets;
     },
   },
 });
