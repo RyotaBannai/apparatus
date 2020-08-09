@@ -24,7 +24,12 @@ export class SetResolver {
     @Args() { id }: getSetbyIDArgs,
     @Ctx() ctx: Context
   ): Promise<Set> {
-    return await Set.findOneOrFail(id);
+    return await Set.findOneOrFail({
+      where: {
+        id: id,
+        ownerId: ctx.user.id,
+      },
+    });
   }
 
   @Query((returns) => [Set])

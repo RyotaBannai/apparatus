@@ -12,13 +12,14 @@ import {
   Authorized,
 } from "type-graphql";
 import { getRepository } from "typeorm";
+import { Item } from "../../entity/Item";
 import {
-  Item,
   Response,
   addItemInput,
   addItemInputs,
+  updateItemInputs,
   GetItemArgs,
-} from "../../entity/Item";
+} from "./TypeDefs";
 import { Context } from "vm";
 import { User } from "../../entity/User";
 import { Set } from "../../entity/Set";
@@ -30,6 +31,7 @@ import { SetWorkspace } from "../../entity/SetWorkspace";
 import { Workspace } from "../../entity/Workspace";
 import { ItemMeta } from "../../entity/ItemMeta";
 import { UserMeta } from "../../entity/UserMeta";
+import * as _ from "lodash";
 
 @Resolver((of) => Item)
 export class ItemResolver {
@@ -108,6 +110,66 @@ export class ItemResolver {
     await getRepository(ItemWorkspace).save(new_item_ws);
 
     return new_item;
+  }
+
+  @Mutation(() => Response)
+  async updateItems(
+    @Arg("data") newItemData: updateItemInputs,
+    @Ctx() ctx: Context
+  ): Promise<Object> {
+    let set = JSON.parse(newItemData.data)[0];
+    let request_items = set.items;
+
+    let target_set: Set = await Set.findOneOrFail(set.set_id_on_server, {
+      relations: [
+        "itemConnector",
+        "itemConnector.item",
+        "wsConnector",
+        "wsConnector.ws",
+      ],
+    });
+    for (const item_set of target_set.itemConnector) {
+      let this_id: string = String(item_set.item.id);
+      let update_data = _.find(request_items, { id_on_server: this_id });
+      if (update_data === undefined) {
+        // remove from set
+      } else {
+        let item: Item = await Item.findOneOrFail(this_id);
+        item.type = update_data.type;
+        item.data = update_data.data;
+        // add also description and note
+        item.save();
+      }
+    }
+    console.log(request_items);
+
+    let new_items = request_items.filter(
+      (item: Partial<Item> & { id_on_server: string }) =>
+        !item?.id_on_server || item?.id_on_server === undefined
+    );
+
+    console.log(new_items);
+    if (new_items.length === 0) return { res: "Success" };
+
+    let request_user: User = await User.findOneOrFail(ctx.user.id, {
+      relations: ["user_meta"],
+    });
+    const this_workspace: Workspace = await Workspace.findOneOrFail(
+      target_set.wsConnector[0].ws.id
+    );
+    for (const item of new_items) {
+      let new_item: Item = await this.saveItem(
+        item,
+        request_user.user_meta,
+        this_workspace
+      );
+      let new_item_set: ItemSet = new ItemSet();
+      new_item_set.item = new_item;
+      new_item_set.set = target_set;
+      await getRepository(ItemSet).save(new_item_set);
+    }
+
+    return { res: "Success" };
   }
 
   @Mutation(() => Item)
