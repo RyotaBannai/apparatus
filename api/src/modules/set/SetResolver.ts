@@ -16,6 +16,8 @@ import { Set } from "../../entity/Set";
 import { Workspace } from "../../entity/Workspace";
 import { SetWorkspace } from "../../entity/SetWorkspace";
 import { getSetArgs, getSetbyIDArgs } from "./TypeDefs";
+import { ItemMeta } from "../../entity/ItemMeta";
+import { ItemData } from "../item/TypeDefs";
 
 @Resolver((of) => Set)
 export class SetResolver {
@@ -59,11 +61,21 @@ export class SetResolver {
   @FieldResolver()
   async items(@Root() set: Set) {
     const this_set: Set = await Set.findOneOrFail(set.id, {
-      relations: ["itemConnector", "itemConnector.item"],
+      relations: [
+        "itemConnector",
+        "itemConnector.item",
+        "itemConnector.item.item_meta",
+      ],
     });
-    const this_items: Item[] = [];
+    const this_items: ItemData[] = [];
     for (const { item } of this_set.itemConnector) {
-      this_items.push(item);
+      this_items.push({
+        id: item.id,
+        type: item.type,
+        data: item.data,
+        description: item.item_meta.description,
+        note: item.item_meta.note,
+      });
     }
     return this_items;
   }

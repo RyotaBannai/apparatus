@@ -60,6 +60,24 @@ export class GetItemArgs {
 }
 
 @ObjectType()
+export class ItemData {
+  @Field((type) => Float, { nullable: true })
+  id?: number;
+
+  @Field((type) => String, { nullable: true })
+  data: string;
+
+  @Field((type) => String, { nullable: true })
+  type: ItemType;
+
+  @Field()
+  description: string;
+
+  @Field()
+  note: string;
+}
+
+@ObjectType()
 export class Response {
   @Field((type) => String)
   res: string;
