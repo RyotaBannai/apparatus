@@ -44,7 +44,6 @@ const EditPage: FC<Props> = () => {
 
   const sendItems = (e: SyntheticEvent) => {
     e.preventDefault();
-    // TODO: fetch description and note as well
     let jsoned_set = filterSet([set]);
     s_editItems({
       variables: { data: jsoned_set },
