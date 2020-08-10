@@ -124,31 +124,38 @@ export class ItemResolver {
       relations: [
         "itemConnector",
         "itemConnector.item",
+        "itemConnector.item.item_meta",
         "wsConnector",
         "wsConnector.ws",
       ],
     });
     for (const item_set of target_set.itemConnector) {
-      let this_id: string = String(item_set.item.id);
+      let this_id: number = item_set.item.id;
       let update_data = _.find(request_items, { id_on_server: this_id });
+
+      var item_meta: ItemMeta = await getRepository(ItemMeta).findOneOrFail(
+        item_set.item.item_meta.itemId
+      );
+
       if (update_data === undefined) {
-        // remove from set
+        item_set.item.remove();
       } else {
         let item: Item = await Item.findOneOrFail(this_id);
         item.type = update_data.type;
         item.data = update_data.data;
-        // add also description and note
-        item.save();
+        await item.save();
+
+        item_meta.description = update_data.description;
+        item_meta.note = update_data.note;
+        await await getRepository(ItemMeta).save(item_meta);
       }
     }
-    console.log(request_items);
 
     let new_items = request_items.filter(
       (item: Partial<Item> & { id_on_server: string }) =>
         !item?.id_on_server || item?.id_on_server === undefined
     );
 
-    console.log(new_items);
     if (new_items.length === 0) return { res: "Success" };
 
     let request_user: User = await User.findOneOrFail(ctx.user.id, {

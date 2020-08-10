@@ -29,7 +29,6 @@ export class Item extends Base {
 
   @Field((type) => ItemMeta)
   @OneToOne((type) => ItemMeta, (item_meta) => item_meta.item)
-  @JoinColumn()
   item_meta: ItemMeta;
 
   @Field((type) => [ItemList])

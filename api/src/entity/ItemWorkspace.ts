@@ -22,7 +22,9 @@ export class ItemWorkspace {
   wsId: number;
 
   @Field((type) => Item)
-  @ManyToOne((type) => Item, (item) => item.wsConnector)
+  @ManyToOne((type) => Item, (item) => item.wsConnector, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "itemId" })
   item: Item;
 

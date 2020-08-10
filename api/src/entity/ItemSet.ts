@@ -23,7 +23,9 @@ export class ItemSet {
   setId: number;
 
   @Field((type) => Item)
-  @ManyToOne((type) => Item, (item) => item.setConnector)
+  @ManyToOne((type) => Item, (item) => item.setConnector, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "itemId" })
   item: Item;
 

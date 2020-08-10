@@ -73,8 +73,8 @@ export class SetResolver {
         id: item.id,
         type: item.type,
         data: item.data,
-        description: item.item_meta.description,
-        note: item.item_meta.note,
+        description: item.item_meta.description ?? "",
+        note: item.item_meta.note ?? "",
       });
     }
     return this_items;
