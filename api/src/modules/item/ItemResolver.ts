@@ -120,9 +120,9 @@ export class ItemResolver {
     let set = JSON.parse(newItemData.data)[0];
     let request_items = set.items;
 
-    let update_set_name: Set = await Set.findOneOrFail(set.set_id_on_server);
-    update_set_name.name = set.name;
-    await update_set_name.save();
+    await Set.update(set.set_id_on_server, {
+      name: set.name,
+    });
 
     let target_set: Set = await Set.findOneOrFail(set.set_id_on_server, {
       relations: [
@@ -138,21 +138,18 @@ export class ItemResolver {
       let this_id: number = item_set.item.id;
       let update_data = _.find(request_items, { id_on_server: this_id });
 
-      var item_meta: ItemMeta = await getRepository(ItemMeta).findOneOrFail(
-        item_set.item.item_meta.itemId
-      );
-
       if (update_data === undefined) {
         item_set.item.remove();
       } else {
-        let item: Item = await Item.findOneOrFail(this_id);
-        item.type = update_data.type;
-        item.data = update_data.data;
-        await item.save();
+        await Item.update(this_id, {
+          type: update_data.type,
+          data: update_data.data,
+        });
 
-        item_meta.description = update_data.description;
-        item_meta.note = update_data.note;
-        await await getRepository(ItemMeta).save(item_meta);
+        await getRepository(ItemMeta).update(item_set.item.item_meta.itemId, {
+          description: update_data.description,
+          note: update_data.note,
+        });
       }
     }
 
