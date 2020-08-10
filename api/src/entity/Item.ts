@@ -10,7 +10,6 @@ import { Field, ObjectType } from "type-graphql";
 import { Base } from "./Base";
 import { UserMeta } from "./UserMeta";
 import { ItemMeta } from "./ItemMeta";
-import { ItemList } from "./ItemList";
 import { ItemSet } from "./ItemSet";
 import { List } from "./List";
 import { ItemWorkspace } from "./ItemWorkspace";
@@ -31,10 +30,10 @@ export class Item extends Base {
   @OneToOne((type) => ItemMeta, (item_meta) => item_meta.item)
   item_meta: ItemMeta;
 
-  @Field((type) => [ItemList])
-  @OneToMany((type) => ItemList, (item_list) => item_list.item)
-  @JoinColumn()
-  listConnector: ItemList[];
+  // @Field((type) => [ItemList])
+  // @OneToMany((type) => ItemList, (item_list) => item_list.item)
+  // @JoinColumn()
+  // listConnector: ItemList[];
 
   @Field((type) => [ItemSet])
   @OneToMany((type) => ItemSet, (item_set) => item_set.item)
@@ -49,8 +48,8 @@ export class Item extends Base {
   @ManyToOne((type) => UserMeta, (user_meta) => user_meta.item)
   user_meta: UserMeta;
 
-  @Field((type) => [List])
-  list: List[];
+  // @Field((type) => [List])
+  // list: List[];
 
   // helpers - index calculations
   // get startIndex(): number {

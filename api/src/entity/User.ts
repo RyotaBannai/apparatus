@@ -62,7 +62,7 @@ export const LoginOutputUnion = createUnionType({
   name: "LoginOutput", // the name of the GraphQL union
   types: () => [TokenEntity, LoginFails] as const, // function that returns tuple of object types classes
   resolveType: (value) => {
-    // if value if array, this source comes off as single object
+    // if value is array, this source comes off as single object
     if ("token" in value) {
       return TokenEntity; // we can return object type class (the one with `@ObjectType()`)
     }

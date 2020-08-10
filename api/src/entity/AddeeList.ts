@@ -7,27 +7,31 @@ import {
   CreateDateColumn,
 } from "typeorm";
 import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
-import { Item } from "./Item";
+import { Addee } from "./Addee";
 import { List } from "./List";
 
 @ObjectType()
 @Entity()
-export class ItemList {
+export class AddeeList {
   @Field()
   @PrimaryColumn()
-  itemId: number;
+  addeeId: number;
 
   @Field()
   @PrimaryColumn()
   listId: number;
 
-  @Field((type) => Item)
-  @ManyToOne((type) => Item, (item) => item.listConnector)
-  @JoinColumn({ name: "itemId" })
-  item: Item;
+  @Field((type) => Addee)
+  @ManyToOne((type) => Addee, (addee) => addee.listConnector, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "addeeId" })
+  addee: Addee;
 
   @Field((type) => List)
-  @ManyToOne((type) => List, (list) => list.itemConnector)
+  @ManyToOne((type) => List, (list) => list.addeeConnector, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "listId" })
   list: List;
 

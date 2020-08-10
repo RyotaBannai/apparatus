@@ -25,7 +25,6 @@ import { User } from "../../entity/User";
 import { Set } from "../../entity/Set";
 import { ItemSet } from "../../entity/ItemSet";
 import { List } from "../../entity/List";
-import { ItemList } from "../../entity/ItemList";
 import { ItemWorkspace } from "../../entity/ItemWorkspace";
 import { SetWorkspace } from "../../entity/SetWorkspace";
 import { Workspace } from "../../entity/Workspace";
@@ -205,7 +204,7 @@ export class ItemResolver {
     });
     await updated.save();
     return await Item.findOneOrFail(item.id, {
-      relations: ["listConnector", "listConnector.list"],
+      // relations: ["listConnector", "listConnector.list"],
     });
   }
 
@@ -214,30 +213,30 @@ export class ItemResolver {
     @Args() { startIndex, endIndex }: GetItemArgs
   ): Promise<Item[]> {
     this.itemCollection = await Item.find({
-      relations: ["listConnector", "listConnector.list"],
+      // relations: ["listConnector", "listConnector.list"],
     });
     return this.itemCollection.slice(startIndex, endIndex);
   }
 
-  @Query((returns) => Item)
-  async getOneItem(
-    @Arg("id") id: number,
-    @routinizedFindById() item: Item
-  ): Promise<Item | undefined> {
-    return item;
-  }
+  // @Query((returns) => Item)
+  // async getOneItem(
+  //   @Arg("id") id: number,
+  //   @routinizedFindById() item: Item
+  // ): Promise<Item | undefined> {
+  //   return item;
+  // }
 
-  @FieldResolver()
-  async list(@Root() item: Item) {
-    this.itemCollection = await Item.findOneOrFail(item.id, {
-      relations: ["listConnector", "listConnector.list"],
-    });
-    const this_list: List[] = [];
-    for (const { list } of this.itemCollection.listConnector) {
-      this_list.push(list);
-    }
-    return this_list;
-  }
+  // @FieldResolver()
+  // async list(@Root() item: Item) {
+  //   this.itemCollection = await Item.findOneOrFail(item.id, {
+  //     relations: ["listConnector", "listConnector.list"],
+  //   });
+  //   const this_list: List[] = [];
+  //   for (const { list } of this.itemCollection.listConnector) {
+  //     this_list.push(list);
+  //   }
+  //   return this_list;
+  // }
 }
 
 function getId(params: any): number | undefined {
@@ -252,11 +251,11 @@ function getId(params: any): number | undefined {
   }
 }
 
-function routinizedFindById() {
-  return createParamDecorator((params) => {
-    let id: number | undefined = getId(params.args);
-    return Item.findOneOrFail(id, {
-      relations: ["listConnector", "listConnector.list"],
-    });
-  });
-}
+// function routinizedFindById() {
+//   return createParamDecorator((params) => {
+//     let id: number | undefined = getId(params.args);
+//     return Item.findOneOrFail(id, {
+//       relations: ["listConnector", "listConnector.list"],
+//     });
+//   });
+// }

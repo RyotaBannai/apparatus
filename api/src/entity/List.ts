@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany, JoinColumn, ManyToMany } from "typeorm";
 import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Base } from "./Base";
-import { ItemList } from "./ItemList";
+import { AddeeList } from "./AddeeList";
 
 @ObjectType()
 @Entity()
@@ -10,9 +10,9 @@ export class List extends Base {
   @Column()
   name: string;
 
-  @Field((type) => [ItemList])
-  @OneToMany((type) => ItemList, (item_list) => item_list.list)
-  itemConnector: ItemList[];
+  @Field((type) => [AddeeList])
+  @OneToMany((type) => AddeeList, (addee_list) => addee_list.list)
+  addeeConnector: AddeeList[];
 
   // @Column({ nullable: true })
   // setConnector: ItemSet[]];

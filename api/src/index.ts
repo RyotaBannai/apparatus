@@ -4,6 +4,7 @@ import { buildSchema } from "type-graphql";
 import { UserResolver } from "./modules/user/UserResolver";
 import { ItemResolver } from "./modules/item/ItemResolver";
 import { SetResolver } from "./modules/set/SetResolver";
+import { AddeeResolver } from "./modules/addee/addeeResolver";
 import { WorkspaceResolver } from "./modules/workspace/WorkspaceResolver";
 import { jwtMiddleware } from "./entity/User";
 import { customAuthChecker } from "./entity/User";
@@ -20,7 +21,13 @@ const main = async () => {
     .catch((err) => console.log("Typeorm Error: ", err));
 
   const schema = await buildSchema({
-    resolvers: [UserResolver, ItemResolver, SetResolver, WorkspaceResolver],
+    resolvers: [
+      UserResolver,
+      ItemResolver,
+      SetResolver,
+      AddeeResolver,
+      WorkspaceResolver,
+    ],
     authChecker: customAuthChecker,
   });
 
@@ -44,7 +51,7 @@ const main = async () => {
       origin: "http://localhost:3000",
     })
   );
-  app.use("/graphql", jwtMiddleware);
+  // app.use("/graphql", jwtMiddleware);
 
   apolloServer.applyMiddleware({ app });
 
