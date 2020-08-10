@@ -120,6 +120,10 @@ export class ItemResolver {
     let set = JSON.parse(newItemData.data)[0];
     let request_items = set.items;
 
+    let update_set_name: Set = await Set.findOneOrFail(set.set_id_on_server);
+    update_set_name.name = set.name;
+    await update_set_name.save();
+
     let target_set: Set = await Set.findOneOrFail(set.set_id_on_server, {
       relations: [
         "itemConnector",
@@ -129,6 +133,7 @@ export class ItemResolver {
         "wsConnector.ws",
       ],
     });
+
     for (const item_set of target_set.itemConnector) {
       let this_id: number = item_set.item.id;
       let update_data = _.find(request_items, { id_on_server: this_id });
@@ -156,7 +161,10 @@ export class ItemResolver {
         !item?.id_on_server || item?.id_on_server === undefined
     );
 
-    if (new_items.length === 0) return { res: "Success" };
+    if (new_items.length === 0) {
+      this.deSet(set.set_id_on_server);
+      return { res: "Success" };
+    }
 
     let request_user: User = await User.findOneOrFail(ctx.user.id, {
       relations: ["user_meta"],
@@ -176,7 +184,16 @@ export class ItemResolver {
       await getRepository(ItemSet).save(new_item_set);
     }
 
+    this.deSet(set.set_id_on_server);
     return { res: "Success" };
+  }
+
+  private async deSet(set_id: number) {
+    let set: Set = await Set.findOneOrFail(set_id, {
+      relations: ["itemConnector", "itemConnector.item"],
+    });
+    if (set.itemConnector.length > 1) return;
+    set.remove();
   }
 
   @Mutation(() => Item)
