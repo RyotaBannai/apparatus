@@ -41,6 +41,23 @@ export const SetFeature = createSlice({
         state[set.mode] = [...state[set.mode], new_set];
       }
     },
+    deleteSetByKey: (
+      state,
+      action: {
+        type: string;
+        payload: {
+          key_name: keyof ApparatusSet.Set;
+          key: number | string;
+          mode: Global.Mode;
+        };
+      }
+    ) => {
+      const { key_name, key, mode } = action.payload;
+      state[mode] = state[mode].filter(
+        (set: ApparatusSet.SetOrUndefined) =>
+          set !== undefined && set[key_name] !== key
+      );
+    },
 
     addateItem: (
       state,

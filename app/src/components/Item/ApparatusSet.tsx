@@ -82,17 +82,17 @@ export const ApparatusSet: FC<Props> = ({
   useEffect(() => {
     if (mode === "edit") {
       if (items === undefined) return;
-      let items_edit: any[] = [];
-      for (const item of items) {
-        items_edit = [
-          ...items_edit,
-          {
+
+      let items_edit: Item.Items = [];
+      if (_.head(items).id_on_server === undefined) {
+        for (const item of items) {
+          items_edit.push({
             ...item,
             id: takeIdForItem(),
             id_on_server: item.id,
-          },
-        ];
-      }
+          });
+        }
+      } else items_edit = items;
 
       dispatchCreateSet({
         id,
@@ -102,10 +102,10 @@ export const ApparatusSet: FC<Props> = ({
         mode,
       });
 
-      let old_items: any[] = [];
+      let item_components: (FC<Props> | JSX.Element | Element)[] = [];
       for (const item_edit of items_edit) {
-        old_items = [
-          ...old_items,
+        item_components = [
+          ...item_components,
           <ApparatusItem
             {...item_edit}
             set_id={id}
@@ -115,8 +115,8 @@ export const ApparatusSet: FC<Props> = ({
         ];
       }
 
-      setChild(old_items);
-    } else {
+      setChild(item_components);
+    } else if (mode === "new") {
       if (items !== undefined) {
         dispatchCreateSet({
           id,
@@ -125,15 +125,15 @@ export const ApparatusSet: FC<Props> = ({
           mode,
         });
 
-        let old_items: any[] = [];
-
+        let item_components: (FC<Props> | JSX.Element | Element)[] = [];
         for (const item of items) {
-          old_items = [
-            ...old_items,
+          item_components = [
+            ...item_components,
             <ApparatusItem {...item} set_id={id} key={uuidv4()} mode={"new"} />,
           ];
         }
-        setChild(old_items);
+
+        setChild(item_components);
       } else {
         dispatchCreateSet({
           id,
@@ -142,6 +142,10 @@ export const ApparatusSet: FC<Props> = ({
 
         callAddChild(null);
       }
+    } else {
+      console.log(
+        "Error on ApparatusSet component: couldn't accept this mode."
+      );
     }
   }, []);
 
