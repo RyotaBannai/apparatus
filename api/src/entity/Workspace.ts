@@ -6,7 +6,7 @@ import {
   JoinColumn,
   ManyToMany,
 } from "typeorm";
-import { ID, Field, ObjectType, ArgsType, InputType } from "type-graphql";
+import { ID, Field, ObjectType } from "type-graphql";
 import { Base } from "./Base";
 import { Item } from "./Item";
 import { ItemWorkspace } from "./ItemWorkspace";
@@ -45,30 +45,4 @@ export class Workspace extends Base {
   @OneToMany((type) => ListWorkspace, (list_ws) => list_ws.ws)
   @JoinColumn()
   listConnector: ListWorkspace[];
-}
-
-@InputType({ description: "New WS data" })
-export class createWSInput implements Partial<Workspace> {
-  @Field((type) => String, { nullable: false })
-  name: string;
-  @Field((type) => String, { nullable: false })
-  description: string;
-}
-
-@InputType({ description: "Edit WS" })
-export class editWSInput extends createWSInput {
-  @Field((type) => String)
-  id: string;
-}
-
-@ArgsType()
-export class getWSbyIDArgs {
-  @Field((type) => String)
-  id: string;
-}
-
-@ArgsType()
-export class getWSArgs implements Partial<Workspace> {
-  @Field((type) => ID, { nullable: false })
-  ownerId: number;
 }

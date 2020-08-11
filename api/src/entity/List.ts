@@ -11,6 +11,14 @@ export class List extends Base {
   @Column()
   name: string;
 
+  @Field()
+  @Column()
+  description: string;
+
+  @Field((type) => ID)
+  @Column()
+  ownerId: number;
+
   @Field((type) => [AddeeList])
   @OneToMany((type) => AddeeList, (addee_list) => addee_list.list)
   addeeConnector: AddeeList[];

@@ -12,12 +12,12 @@ import {
 import { getRepository } from "typeorm";
 import { Context } from "vm";
 import {
-  Workspace,
   createWSInput,
   editWSInput,
   getWSArgs,
-  getWSbyIDArgs,
-} from "../../entity/Workspace";
+  getWSByIDArgs,
+} from "./TypeDefs";
+import { Workspace } from "../../entity/Workspace";
 import { Item } from "../../entity/Item";
 
 @Resolver((of) => Workspace)
@@ -53,7 +53,7 @@ export class WorkspaceResolver {
 
   @Query((returns) => Workspace)
   async getWorkspace(
-    @Args() { id }: getWSbyIDArgs, // @Arg("id") id: number,
+    @Args() { id }: getWSByIDArgs, // @Arg("id") id: number,
     @Ctx() ctx: Context
   ): Promise<Workspace> {
     return await Workspace.findOneOrFail({
