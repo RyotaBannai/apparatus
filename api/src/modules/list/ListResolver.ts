@@ -15,7 +15,9 @@ import { createListInput, editListInput, getListByIDArgs } from "./TypeDefs";
 import { Response } from "../TypeDefsGlobal";
 import { Global } from "../../const/constants";
 import { Item } from "../../entity/Item";
+import { Set } from "../../entity/Set";
 import { List } from "../../entity/List";
+import { AddeeList } from "../../entity/AddeeList";
 
 @Resolver((of) => List)
 export class ListResolver {
@@ -61,18 +63,13 @@ export class ListResolver {
     });
   }
 
-  // @FieldResolver()
-  // async items(@Root() list: List) {
-  //   const this_workspace: Workspace = await Workspace.findOneOrFail(
-  //     workspace.id,
-  //     {
-  //       relations: ["itemConnector", "itemConnector.item"],
-  //     }
-  //   );
-  //   const this_items: Item[] = [];
-  //   for (const { item } of this_workspace.itemConnector) {
-  //     this_items.push(item);
-  //   }
-  //   return this_items;
-  // }
+  @FieldResolver()
+  async targets(@Root() list: List) {
+    const this_list: List = await List.findOneOrFail(list.id, {
+      relations: ["addeeConnector", "addeeConnector.addee"],
+    });
+    return this_list.addeeConnector.map(
+      (addee_list: AddeeList) => addee_list.addee.target
+    );
+  }
 }

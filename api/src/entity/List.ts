@@ -1,6 +1,9 @@
 import { Entity, Column, OneToMany, JoinColumn, ManyToMany } from "typeorm";
 import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Base } from "./Base";
+import { Item } from "./Item";
+import { Set } from "./Set";
+import { AddeeUnion } from "./Addee";
 import { AddeeList } from "./AddeeList";
 import { ListWorkspace } from "./ListWorkspace";
 
@@ -18,6 +21,9 @@ export class List extends Base {
   @Field((type) => ID)
   @Column()
   ownerId: number;
+
+  @Field((type) => AddeeUnion)
+  targets: (Item | Set)[];
 
   @Field((type) => [AddeeList])
   @OneToMany((type) => AddeeList, (addee_list) => addee_list.list)
