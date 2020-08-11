@@ -52,6 +52,21 @@ declare namespace ApparatusSet {
     is_set: boolean;
   }
 }
+
+declare namespace Addee {
+  type Addee = Item | Set;
+  type Addees = Array<Item | Set>;
+}
+
+declare namespace ApparatusList {
+  interface List {
+    name: string;
+    description?: string | null | undefined;
+  }
+
+  type ListData = { id: string } & List;
+}
+
 declare namespace Workspace {
   interface Workspace {
     name: string;

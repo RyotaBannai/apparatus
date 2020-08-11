@@ -21,7 +21,7 @@ const cache = new InMemoryCache({
   typePolicies: policy.typePolicies,
 });
 
-const uri = "http://localhost:4000/graphql";
+const uri = "http://localhost:4001/graphql";
 const httpLink = new HttpLink({ uri });
 const authMiddleware = new ApolloLink((operation, forward) => {
   let token = localStorage.getItem("token");

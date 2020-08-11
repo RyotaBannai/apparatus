@@ -16,6 +16,7 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import KeyboardArrowRightIcon from "@material-ui/icons/KeyboardArrowRight";
+import { v4 as uuidv4 } from "uuid";
 
 function createData(
   id: string,
@@ -32,6 +33,7 @@ function createData(
     current_ws_id,
   };
 }
+
 interface WrapProps {
   isCurrent: boolean;
   children: React.ReactElement<any, any>;
@@ -106,6 +108,7 @@ const ListPage: FC<Props> = () => {
   const { data, refetch } = useQuery(S_GET_WORKSPACES);
   const { getCurrentWS } = useWSHelpers;
   const current_ws_id = getCurrentWS().id as string;
+
   const returnData = (
     workspaces: Array<Workspace.Workspace & { id: string; items: Item.Items }>
   ) => {
@@ -136,14 +139,14 @@ const ListPage: FC<Props> = () => {
               </TableHead>
               <TableBody>
                 {returnData(data.getWorkspaces).map((row) => (
-                  <Row key={row.name} row={row} />
+                  <Row key={uuidv4()} row={row} />
                 ))}
               </TableBody>
             </Table>
           </TableContainer>
         </div>
       ) : (
-        <div>No workspace</div>
+        <div>No workspace found</div>
       )}
     </>
   );

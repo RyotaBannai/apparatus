@@ -48,7 +48,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
   const [openWS, setOpenWS] = useState(false);
   const [openItem, setOpenItem] = useState(true);
   const [openSet, setOpenSet] = useState(true);
-  const [openList, setOpenList] = useState(false);
+  const [openList, setOpenList] = useState(true);
   const [openFolder, setOpenFolder] = useState(false);
 
   return (
