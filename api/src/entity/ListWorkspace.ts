@@ -7,29 +7,29 @@ import {
   CreateDateColumn,
 } from "typeorm";
 import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
-import { Set } from "./Set";
+import { List } from "./List";
 import { Workspace } from "./Workspace";
 
 @ObjectType()
 @Entity()
-export class SetWorkspace {
+export class ListWorkspace {
   @Field()
   @PrimaryColumn()
-  setId: number;
+  listId: number;
 
   @Field()
   @PrimaryColumn()
   wsId: number;
 
-  @Field((type) => Set)
-  @ManyToOne((type) => Set, (set) => set.wsConnector, {
+  @Field((type) => List)
+  @ManyToOne((type) => List, (list) => list.wsConnector, {
     onDelete: "CASCADE",
   })
-  @JoinColumn({ name: "setId" })
-  set: Set;
+  @JoinColumn({ name: "listId" })
+  list: List;
 
   @Field((type) => Workspace)
-  @ManyToOne((type) => Workspace, (ws) => ws.setConnector)
+  @ManyToOne((type) => Workspace, (ws) => ws.listConnector)
   @JoinColumn({ name: "wsId" })
   ws: Workspace;
 

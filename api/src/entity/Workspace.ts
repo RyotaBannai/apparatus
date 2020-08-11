@@ -10,6 +10,8 @@ import { ID, Field, ObjectType, ArgsType, InputType } from "type-graphql";
 import { Base } from "./Base";
 import { Item } from "./Item";
 import { ItemWorkspace } from "./ItemWorkspace";
+import { SetWorkspace } from "./SetWorkspace";
+import { ListWorkspace } from "./ListWorkspace";
 
 @ObjectType()
 @Entity()
@@ -33,6 +35,16 @@ export class Workspace extends Base {
   @OneToMany((type) => ItemWorkspace, (item_ws) => item_ws.ws)
   @JoinColumn()
   itemConnector: ItemWorkspace[];
+
+  @Field((type) => [SetWorkspace])
+  @OneToMany((type) => SetWorkspace, (set_ws) => set_ws.ws)
+  @JoinColumn()
+  setConnector: SetWorkspace[];
+
+  @Field((type) => [ListWorkspace])
+  @OneToMany((type) => ListWorkspace, (list_ws) => list_ws.ws)
+  @JoinColumn()
+  listConnector: ListWorkspace[];
 }
 
 @InputType({ description: "New WS data" })

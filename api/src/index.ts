@@ -51,7 +51,7 @@ const main = async () => {
       origin: "http://localhost:3000",
     })
   );
-  // app.use("/graphql", jwtMiddleware);
+  app.use("/graphql", jwtMiddleware);
 
   apolloServer.applyMiddleware({ app });
 
