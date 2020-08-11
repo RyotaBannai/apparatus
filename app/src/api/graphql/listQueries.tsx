@@ -12,9 +12,23 @@ export const S_CREATE_LIST = gql`
 export const S_GET_LISTS = gql`
   {
     getLists {
-      id
       name
       description
+      targets {
+        ... on Item {
+          id
+          data
+          type
+        }
+        ... on Set {
+          name
+          items {
+            id
+            data
+            type
+          }
+        }
+      }
     }
   }
 `;

@@ -64,7 +64,7 @@ declare namespace ApparatusList {
     description?: string | null | undefined;
   }
 
-  type ListData = { id: string } & List;
+  type ListData = { id: string; targets: Addee.Addees } & List;
 }
 
 declare namespace Workspace {

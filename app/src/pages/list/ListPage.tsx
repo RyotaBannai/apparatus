@@ -23,13 +23,13 @@ function createData({
   id,
   name,
   description,
-}: // addees: Addee.Addees
-ApparatusList.ListData) {
+  targets,
+}: ApparatusList.ListData) {
   return {
     id,
     name,
     description,
-    // addee_count: addees.length,
+    targets_count: targets.length,
   };
 }
 
@@ -49,7 +49,7 @@ function Row(props: { row: ReturnType<typeof createData> }) {
         >
           <TableCell>{row.name}</TableCell>
           <TableCell>{row.description}</TableCell>
-          <TableCell> addee count </TableCell>
+          <TableCell> {row.targets_count} </TableCell>
         </TableRow>
       ) : (
         <TableRow hover className={classes.root}>
