@@ -1,5 +1,6 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
+import { NavLink } from "react-router-dom";
 import { S_GET_LISTS } from "../../api/graphql/listQueries";
 import { useStyles } from "../../assets/style/workspace/page.style";
 import {
@@ -37,7 +38,6 @@ function Row(props: { row: ReturnType<typeof createData> }) {
   const { row } = props;
   const classes = useStyles();
   const [goToList, setGoToList] = useState<boolean>();
-  const selectThisListHanlder = () => {};
 
   return (
     <>
@@ -61,16 +61,17 @@ function Row(props: { row: ReturnType<typeof createData> }) {
             </Tooltip>
           </TableCell>
           <TableCell colSpan={2}>
-            <Button
-              variant="contained"
-              color="primary"
-              endIcon={<Icon>arrow_right</Icon>}
-              disableRipple
-              disableTouchRipple
-              onClick={selectThisListHanlder}
-            >
-              Go to this List
-            </Button>
+            <NavLink exact to={`list_edit/${row.id}`}>
+              <Button
+                variant="contained"
+                color="primary"
+                endIcon={<Icon>arrow_right</Icon>}
+                disableRipple
+                disableTouchRipple
+              >
+                Go to this List
+              </Button>
+            </NavLink>
           </TableCell>
         </TableRow>
       )}

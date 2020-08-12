@@ -11,7 +11,8 @@ const CreateItemPage = lazy(() => import("../pages/item/CreatePage"));
 const EditItemPage = lazy(() => import("../pages/item/EditPage"));
 const ListSetPage = lazy(() => import("../pages/set/ListPage"));
 const ListListPage = lazy(() => import("../pages/list/ListPage"));
-const ListCreatePage = lazy(() => import("../pages/list/CreatePage"));
+const CreateListPage = lazy(() => import("../pages/list/CreatePage"));
+const EditListPage = lazy(() => import("../pages/list/EditPage"));
 const Login = lazy(() => import("../pages/Login"));
 const Signin = lazy(() => import("../pages/Signin"));
 
@@ -32,7 +33,8 @@ export const ApparatusRouter: FC<Props> = () => {
           <Route exact path="/item_edit/:set_id" component={EditItemPage} />
           <Route exact path="/set_list" component={ListSetPage} />
           <Route exact path="/list_list" component={ListListPage} />
-          <Route exact path="/list_create" component={ListCreatePage} />
+          <Route exact path="/list_create" component={CreateListPage} />
+          <Route exact path="/list_edit/:list_id" component={EditListPage} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/signin" component={Signin} />
         </Suspense>
