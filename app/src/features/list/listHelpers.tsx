@@ -1,3 +1,5 @@
 export const useListHelpers = {
-  getList: (state: Global.RootState) => state.list,
+  getNewList: (state: Global.RootState) => state.list.new,
+
+  getEditLists: (state: Global.RootState) => state.list.edit,
 };

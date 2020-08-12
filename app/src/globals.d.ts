@@ -64,6 +64,13 @@ declare namespace ApparatusList {
     description?: string | null | undefined;
   }
 
+  type Lists = ApparatusList.List[];
+
+  interface ListState {
+    new: ApparatusList.List;
+    edit: (ApparatusList.List & { id_on_server?: string })[];
+  }
+
   type ListData = { id: string; targets: Addee.Addees } & List;
 }
 
