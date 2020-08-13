@@ -3,6 +3,7 @@ import blueGrey from "@material-ui/core/colors/blueGrey";
 import grey from "@material-ui/core/colors/grey";
 import indigo from "@material-ui/core/colors/indigo";
 import cyan from "@material-ui/core/colors/cyan";
+import red from "@material-ui/core/colors/red";
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -23,11 +24,23 @@ export const useStyles = makeStyles((theme: Theme) =>
         minHeight: 100,
       },
     },
+    gridButtonArea: {
+      width: "50%",
+    },
     gridName: {
       width: "100%",
     },
     gridDescription: {
       width: "100%",
+    },
+    cancelEditButton: {
+      backgroundColor: red[50],
+      "&:hover": {
+        backgroundColor: red[100],
+      },
+      "&:focus": {
+        outlineColor: red[100],
+      },
     },
   })
 );

@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { whereUpdateArray } from "../../modules/where";
 import * as _ from "lodash";
 
 let initialList: ApparatusList.ListState = {
@@ -10,32 +9,23 @@ let initialList: ApparatusList.ListState = {
   edit: [],
 };
 
-type AddDateListActionPayload = Partial<ApparatusList.List> & {
-  id?: number | string;
-  id_on_server?: string;
-  type: string;
-  mode: Global.Mode;
-};
-
 const updateList = (
-  new_data: { type: string; list: ApparatusList.List } & Partial<
-    ApparatusList.List
-  >
+  new_data: { list: ApparatusList.List } & Partial<ApparatusList.List>
 ) => {
-  const { type, list, name, description } = new_data;
-  if (type === "name") {
+  const { list, name, description } = new_data;
+  if (name !== undefined) {
     return {
       ...list,
       name,
     };
-  } else if (type === "description") {
+  } else if (description !== undefined) {
     return {
       ...list,
       description,
     };
   } else {
     console.log("this type is not supported");
-    return;
+    return list;
   }
 };
 
@@ -47,43 +37,47 @@ export const ListFeature = createSlice({
       state,
       action: {
         type: string;
-        payload: AddDateListActionPayload;
+        payload: ApparatusList.AddateListActionPayload;
       }
     ) => {
       const {
         name,
         description,
-        type,
         mode,
         id,
         id_on_server,
+        targets,
       } = action.payload;
-
-      if (mode === "edit" && id === undefined) {
-        let list: ApparatusList.List | undefined = _.find(state.edit, {
-          id_on_server: id,
-        });
+      console.log(action.payload);
+      if (mode === "edit" && id !== undefined) {
+        let list: ApparatusList.List = _.find(state.edit, {
+          id: id,
+        }) as ApparatusList.List;
 
         if (list === undefined) {
           state.edit = [
             ...state.edit,
             {
+              id,
+              id_on_server,
               name,
               description,
-              id_on_server,
+              targets,
             },
           ] as ApparatusList.Lists;
         } else {
-          state.edit = whereUpdateArray<ApparatusList.List, string>(
-            state.edit,
-            updateList({ type, name, list }) as ApparatusList.List,
-            "id_on_server",
-            id_on_server as string
-          );
+          state.edit = [
+            ...state.edit,
+            {
+              id,
+              id_on_server,
+              targets,
+              ...updateList({ name, description, list }),
+            } as ApparatusList.List,
+          ];
         }
       } else if (mode === "new") {
         state.new = updateList({
-          type,
           name,
           description,
           list: state.new,

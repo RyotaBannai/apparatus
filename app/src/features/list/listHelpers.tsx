@@ -1,4 +1,7 @@
+import { makeVar, ReactiveVar } from "@apollo/client";
 import * as _ from "lodash";
+
+export const listCount = makeVar<number>(0);
 
 export const useListHelpers = {
   getNewList: (state: Global.RootState) => state.list.new,
@@ -11,5 +14,7 @@ export const useListHelpers = {
   ) =>
     _.find(lists, {
       [key_name]: key,
-    }),
+    }) as ApparatusList.ListData,
+
+  takeIdForList: () => listCount(listCount() + 1) && listCount(),
 };

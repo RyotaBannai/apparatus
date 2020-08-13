@@ -35,7 +35,6 @@ const CreatePage: FC<Props> = () => {
     dispatch(
       addateList({
         [update_data]: value,
-        type: update_data,
         mode: "new",
       })
     );

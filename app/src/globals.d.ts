@@ -66,12 +66,19 @@ declare namespace ApparatusList {
 
   type Lists = ApparatusList.List[];
 
+  type ListData = { id: string; targets: Addee.Addees } & List;
+
   interface ListState {
     new: ApparatusList.List;
     edit: (ApparatusList.List & { id_on_server?: string })[];
   }
 
-  type ListData = { id: string; targets: Addee.Addees } & List;
+  type AddateListActionPayload = Partial<ApparatusList.List> & {
+    id?: number | string;
+    id_on_server?: string | number;
+    mode: Global.Mode;
+    targets?: Addee.Addees | Array<[]>;
+  };
 }
 
 declare namespace Workspace {
