@@ -37,26 +37,16 @@ const EditPage: FC<Props> = () => {
     key: list_id,
   });
 
-  const onChangeName = (e: any) => handleEvent(e, "name");
-  const onChangeDescription = (e: any) => handleEvent(e, "description");
-  const handleEvent = (e: any, form_name: string) => {
-    e.preventDefault();
-    setChange([{ key: form_name, value: e.target.value }]);
-  };
-  interface updateSetInput {
-    key: string;
-    value: string;
-  }
-  const setChange = (newListData: updateSetInput[]) => {
+  const setChange = (newListData: ApparatusList.UpdateSetInput[]) => {
     let payload = Object.assign(
       {
+        id: Number(this_list?.id),
         mode: "edit",
       },
-      ...newListData.map((keyValue: updateSetInput) => ({
+      ...newListData.map((keyValue: ApparatusList.UpdateSetInput) => ({
         [keyValue.key]: keyValue.value,
       }))
     );
-    console.log(payload);
     dispatch(addateList(payload));
   };
 
@@ -82,8 +72,10 @@ const EditPage: FC<Props> = () => {
     },
   });
 
-  const getInputValue = (ref: React.MutableRefObject<string | null>) =>
-    ((ref.current as unknown) as HTMLElement).querySelector("input")?.value;
+  const getValueFromHTMLElement = (
+    ref: React.MutableRefObject<string | null>,
+    tag_type: "input" | "textarea"
+  ) => ((ref.current as unknown) as HTMLElement).querySelector(tag_type)?.value;
 
   useEffect(() => {
     if (this_list === undefined) {
@@ -120,7 +112,6 @@ const EditPage: FC<Props> = () => {
                 required
                 defaultValue={this_list?.name ?? data?.getList.name ?? ""}
                 className={classes.name}
-                onChange={onChangeName}
               />
             </Grid>
           </Grid>
@@ -136,7 +127,6 @@ const EditPage: FC<Props> = () => {
                 variant="outlined"
                 defaultValue={this_list?.description ?? ""}
                 className={classes.description}
-                onChange={onChangeDescription}
               />
             </Grid>
           </Grid>
@@ -170,16 +160,23 @@ const EditPage: FC<Props> = () => {
                   e.preventDefault();
                   setEditSetData(!editSetData);
                   setOpen(!saveSnackBarOpen);
-
                   if (inputName === null || inputDescription === null) return;
-                  dispatch(
-                    addateList({
-                      id: this_list?.id,
-                      description: getInputValue(inputDescription),
-                      name: getInputValue(inputName),
-                      mode: "edit",
-                    })
-                  );
+                  setChange([
+                    {
+                      key: "name",
+                      value: getValueFromHTMLElement(
+                        inputName,
+                        "input"
+                      ) as string,
+                    },
+                    {
+                      key: "description",
+                      value: getValueFromHTMLElement(
+                        inputDescription,
+                        "textarea"
+                      ) as string,
+                    },
+                  ]);
 
                   // s_editWorkspace({
                   //   variables: { ...l_data, id: getCurrentWS().id },

@@ -74,11 +74,16 @@ declare namespace ApparatusList {
   }
 
   type AddateListActionPayload = Partial<ApparatusList.List> & {
-    id?: number | string;
-    id_on_server?: string | number;
+    id?: number;
+    id_on_server?: string;
     mode: Global.Mode;
     targets?: Addee.Addees | Array<[]>;
   };
+
+  interface UpdateSetInput {
+    key: string;
+    value: string;
+  }
 }
 
 declare namespace Workspace {

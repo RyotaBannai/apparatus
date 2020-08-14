@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { whereUpdateArray } from "../../modules/where";
 import * as _ from "lodash";
 
 let initialList: ApparatusList.ListState = {
@@ -13,20 +14,20 @@ const updateList = (
   new_data: { list: ApparatusList.List } & Partial<ApparatusList.List>
 ) => {
   const { list, name, description } = new_data;
+  let updated_list: Partial<ApparatusList.ListData> = list;
   if (name !== undefined) {
-    return {
-      ...list,
+    updated_list = {
+      ...updated_list,
       name,
     };
-  } else if (description !== undefined) {
-    return {
-      ...list,
+  }
+  if (description !== undefined) {
+    updated_list = {
+      ...updated_list,
       description,
     };
-  } else {
-    console.log("this type is not supported");
-    return list;
   }
+  return updated_list;
 };
 
 export const ListFeature = createSlice({
@@ -48,12 +49,10 @@ export const ListFeature = createSlice({
         id_on_server,
         targets,
       } = action.payload;
-      console.log(action.payload);
       if (mode === "edit" && id !== undefined) {
         let list: ApparatusList.List = _.find(state.edit, {
           id: id,
         }) as ApparatusList.List;
-
         if (list === undefined) {
           state.edit = [
             ...state.edit,
@@ -66,15 +65,12 @@ export const ListFeature = createSlice({
             },
           ] as ApparatusList.Lists;
         } else {
-          state.edit = [
-            ...state.edit,
-            {
-              id,
-              id_on_server,
-              targets,
-              ...updateList({ name, description, list }),
-            } as ApparatusList.List,
-          ];
+          state.edit = whereUpdateArray<ApparatusList.List, string>(
+            state.edit,
+            updateList({ name, description, list }) as ApparatusList.List,
+            "id",
+            String(id)
+          );
         }
       } else if (mode === "new") {
         state.new = updateList({
