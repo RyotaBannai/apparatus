@@ -189,7 +189,11 @@ const EditPage: FC<Props> = () => {
           </Grid>
         </>
       ) : (
-        <Card className={classes.root}>
+        <Card
+          className={classes.root}
+          onMouseEnter={() => console.log("hover")}
+          onMouseLeave={() => console.log("leave")}
+        >
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
               {this_list?.name ?? data?.getList.name ?? ""}

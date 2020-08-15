@@ -73,6 +73,15 @@ declare namespace ApparatusList {
     edit: (ApparatusList.List & { id_on_server?: string })[];
   }
 
+  interface ListHoverState {
+    id: string;
+    is_hover: boolean;
+  }
+
+  interface InitialListMeta {
+    hover_states: ListHoverState[];
+  }
+
   type AddateListActionPayload = Partial<ApparatusList.List> & {
     id?: number;
     id_on_server?: string;
