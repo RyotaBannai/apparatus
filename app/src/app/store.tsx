@@ -7,11 +7,13 @@ import logger from "redux-logger";
 import SetFeature from "../features/set/setFeatureSlice";
 import WSFeature from "../features/workspace/wsFeatureSlice";
 import ListFeature from "../features/list/listFeatureSlice";
+import ListMetaFeature from "../features/list/listMetaFeatureSlice";
 
 const rootReducer = combineReducers({
   set: SetFeature,
   workspace: WSFeature,
   list: ListFeature,
+  list_meta: ListMetaFeature,
 });
 
 // export const setupStore = () => {
