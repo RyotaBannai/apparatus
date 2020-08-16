@@ -47,12 +47,8 @@ export class SetResolver {
     });
     let sets_in_this_ws: Set[] = [];
     for (const set of sets) {
-      let set_wses: SetWorkspace[] = set.wsConnector;
-      for (const set_ws of set_wses) {
-        if (set_ws.ws.id === wsId) {
-          sets_in_this_ws.push(set);
-          break;
-        }
+      if (set.wsConnector.ws.id === wsId) {
+        sets_in_this_ws.push(set);
       }
     }
     return sets_in_this_ws;

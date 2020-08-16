@@ -36,6 +36,12 @@ export class updateItemInputs implements Partial<Item> {
 }
 
 @ArgsType()
+export class getItemsArgs {
+  @Field((type) => Number)
+  wsId: number;
+}
+
+@ArgsType()
 export class GetItemArgs {
   @Field((type) => Int, { nullable: true })
   @Min(0)

@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, JoinColumn, ManyToMany } from "typeorm";
+import { Entity, Column, OneToMany, JoinColumn, OneToOne } from "typeorm";
 import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Base } from "./Base";
 import { Item } from "./Item";
@@ -29,7 +29,6 @@ export class List extends Base {
   @OneToMany((type) => AddeeList, (addee_list) => addee_list.list)
   addeeConnector: AddeeList[];
 
-  @OneToMany((type) => ListWorkspace, (list_ws) => list_ws.list)
-  @JoinColumn()
-  wsConnector: ListWorkspace[];
+  @OneToOne((type) => ListWorkspace, (list_ws) => list_ws.list)
+  wsConnector: ListWorkspace;
 }

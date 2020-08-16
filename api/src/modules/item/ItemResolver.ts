@@ -19,6 +19,7 @@ import {
   addItemInputs,
   updateItemInputs,
   GetItemArgs,
+  getItemsArgs,
 } from "./TypeDefs";
 import { Context } from "vm";
 import { User } from "../../entity/User";
@@ -166,7 +167,7 @@ export class ItemResolver {
       relations: ["user_meta"],
     });
     const this_workspace: Workspace = await Workspace.findOneOrFail(
-      target_set.wsConnector[0].ws.id
+      target_set.wsConnector.ws.id
     );
     for (const item of new_items) {
       let new_item: Item = await this.saveItem(
@@ -209,14 +210,22 @@ export class ItemResolver {
   }
 
   @Query((returns) => [Item])
-  async getItems(
-    @Args() { startIndex, endIndex }: GetItemArgs
-  ): Promise<Item[]> {
-    this.itemCollection = await Item.find({
-      // relations: ["listConnector", "listConnector.list"],
+  async getItems(@Args() { wsId }: getItemsArgs): Promise<Item[]> {
+    const items: Item[] = await Item.find({
+      relations: ["item_meta", "wsConnector", "wsConnector.ws"],
     });
-    return this.itemCollection.slice(startIndex, endIndex);
+    return items.filter((item) => item.wsConnector.ws.id === wsId);
   }
+
+  // @Query((returns) => [Item])
+  // async getItems(
+  //   @Args() { startIndex, endIndex }: GetItemArgs
+  // ): Promise<Item[]> {
+  //   this.itemCollection = await Item.find({
+  //     relations: ["item_meta"],
+  //   });
+  //   return this.itemCollection.slice(startIndex, endIndex);
+  // }
 
   // @Query((returns) => Item)
   // async getOneItem(

@@ -1,6 +1,7 @@
 import {
   Entity,
   PrimaryColumn,
+  OneToOne,
   ManyToOne,
   JoinColumn,
   UpdateDateColumn,
@@ -22,7 +23,7 @@ export class ListWorkspace {
   wsId: number;
 
   @Field((type) => List)
-  @ManyToOne((type) => List, (list) => list.wsConnector, {
+  @OneToOne((type) => List, (list) => list.wsConnector, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "listId" })

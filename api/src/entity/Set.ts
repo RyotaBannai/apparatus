@@ -1,4 +1,4 @@
-import { Entity, Column, OneToMany, JoinColumn, ManyToMany } from "typeorm";
+import { Entity, Column, OneToMany, JoinColumn, OneToOne } from "typeorm";
 import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Base } from "./Base";
 import { Item } from "./Item";
@@ -23,7 +23,6 @@ export class Set extends Base {
   @OneToMany((type) => ItemSet, (item_set) => item_set.set)
   itemConnector: ItemSet[];
 
-  @OneToMany((type) => SetWorkspace, (set_ws) => set_ws.set)
-  @JoinColumn()
-  wsConnector: SetWorkspace[];
+  @OneToOne((type) => SetWorkspace, (set_ws) => set_ws.set)
+  wsConnector: SetWorkspace;
 }

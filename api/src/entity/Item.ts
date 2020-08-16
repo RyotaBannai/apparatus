@@ -41,9 +41,8 @@ export class Item extends Base {
   setConnector: ItemSet[];
 
   @Field((type) => [ItemWorkspace])
-  @OneToMany((type) => ItemWorkspace, (item_ws) => item_ws.item)
-  @JoinColumn()
-  wsConnector: ItemWorkspace[];
+  @OneToOne((type) => ItemWorkspace, (item_ws) => item_ws.item)
+  wsConnector: ItemWorkspace;
 
   @ManyToOne((type) => UserMeta, (user_meta) => user_meta.item)
   user_meta: UserMeta;

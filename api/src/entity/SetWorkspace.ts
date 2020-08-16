@@ -1,6 +1,7 @@
 import {
   Entity,
   PrimaryColumn,
+  OneToOne,
   ManyToOne,
   JoinColumn,
   UpdateDateColumn,
@@ -22,7 +23,7 @@ export class SetWorkspace {
   wsId: number;
 
   @Field((type) => Set)
-  @ManyToOne((type) => Set, (set) => set.wsConnector, {
+  @OneToOne((type) => Set, (set) => set.wsConnector, {
     onDelete: "CASCADE",
   })
   @JoinColumn({ name: "setId" })
