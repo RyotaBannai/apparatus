@@ -1,9 +1,10 @@
-import React, { useState, SyntheticEvent } from "react";
+import React, { useState, useEffect, SyntheticEvent } from "react";
 import { NavLink } from "react-router-dom";
 import { useStyles } from "../../assets/style/set/page.style";
 import {
   Button,
   Box,
+  Checkbox,
   Collapse,
   Grid,
   Icon,
@@ -14,15 +15,54 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
+import * as _ from "lodash";
 
-function Row(props: { row: ApparatusSet.createDataType }) {
-  const { row } = props;
+interface Props {
+  row: ApparatusSet.createDataType;
+  selectable: {
+    is_selectable: boolean;
+    add?: any;
+    remove?: any;
+    selected?: any;
+  };
+}
+
+function SetListTableRow(props: Props) {
+  const { row, selectable } = props;
   const classes = useStyles();
   const [goToSet, setGoToSet] = useState<boolean>();
+  const is_selected = selectable.selected.sets.includes(Number(row.id));
+
+  useEffect(() => {}, [selectable]);
 
   return (
     <>
       <TableRow hover className={classes.root}>
+        {selectable.is_selectable ? (
+          <TableCell>
+            <Checkbox
+              checked={is_selected}
+              color="primary"
+              inputProps={{ "aria-label": "secondary checkbox" }}
+              size={"small"}
+              onChange={(e) => {
+                const is_checked = e.target.checked;
+                const payload = {
+                  id: Number(e.target.value),
+                  add_to: "sets",
+                };
+                if (is_checked) {
+                  selectable.add(payload);
+                } else {
+                  selectable.remove(payload);
+                }
+              }}
+              value={row.id}
+            />
+          </TableCell>
+        ) : (
+          <></>
+        )}
         <TableCell onClick={(e: SyntheticEvent) => setGoToSet(!goToSet)}>
           {row.name}
         </TableCell>
@@ -32,7 +72,7 @@ function Row(props: { row: ApparatusSet.createDataType }) {
       </TableRow>
       {goToSet ? (
         <TableRow className={classes.root}>
-          <TableCell className={classes.itemTable} colSpan={2}>
+          <TableCell className={classes.itemTable} colSpan={3}>
             <Collapse in={goToSet} timeout="auto" unmountOnExit>
               <Box margin={1}>
                 <Grid
@@ -92,4 +132,4 @@ function Row(props: { row: ApparatusSet.createDataType }) {
   );
 }
 
-export { Row as default };
+export { SetListTableRow as default };

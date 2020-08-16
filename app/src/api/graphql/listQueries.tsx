@@ -58,3 +58,17 @@ export const S_GET_LISTS = gql`
     }
   }
 `;
+
+export const S_ADD_ADDEES = gql`
+  mutation ADD_ADDEES(
+    $id: Float!
+    $addee_type: String!
+    $addee_ids: [Float!]!
+  ) {
+    addAddees(
+      data: { id: $id, addee_type: $addee_type, addee_ids: $addee_ids }
+    ) {
+      id
+    }
+  }
+`;

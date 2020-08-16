@@ -99,7 +99,7 @@ const CreatePage: FC<Props> = () => {
               });
             }}
           >
-            Create Workspace
+            Create List
           </Button>
         </Grid>
       </Grid>

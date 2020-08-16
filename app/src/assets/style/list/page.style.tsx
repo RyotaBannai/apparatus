@@ -4,6 +4,7 @@ import grey from "@material-ui/core/colors/grey";
 import indigo from "@material-ui/core/colors/indigo";
 import cyan from "@material-ui/core/colors/cyan";
 import red from "@material-ui/core/colors/red";
+import { inherits } from "util";
 
 export const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -11,6 +12,9 @@ export const useStyles = makeStyles((theme: Theme) =>
       "& > *": {
         borderBottom: "unset",
       },
+      transition: theme.transitions.create("all", {
+        duration: theme.transitions.duration.complex,
+      }),
     },
     name: {
       width: "50%",
@@ -40,6 +44,25 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       "&:focus": {
         outlineColor: red[100],
+      },
+    },
+    addableAppBar: {
+      color: "#000",
+      backgroundColor: grey[300],
+      borderRadius: 5,
+      margin: "25px 0",
+      boxShadow:
+        "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
+      "& h6": {
+        fontSize: "1rem",
+      },
+    },
+    formType: {
+      minWidth: 80,
+      margin: "0 15px",
+      cursor: "pointer",
+      "& div": {
+        padding: theme.spacing(1),
       },
     },
   })

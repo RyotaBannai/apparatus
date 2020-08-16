@@ -35,6 +35,9 @@ const ListPage: FC<Props> = () => {
       variables: {
         wsId: Number(getCurrentWS().id),
       },
+      onError(error: ApolloError) {
+        console.log(error);
+      },
     }
   );
 
@@ -53,6 +56,7 @@ const ListPage: FC<Props> = () => {
             returnData={returnData}
             createData={createData}
             data={data?.getSets}
+            selectable={{ is_selectable: false }}
           />
         </div>
       ) : (

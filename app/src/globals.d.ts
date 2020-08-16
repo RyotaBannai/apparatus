@@ -27,7 +27,7 @@ declare namespace ApparatusSet {
     set_id_on_server?: number | null;
     name: string;
     items: Items;
-    show: boolean;
+    show?: boolean;
   }
 
   type SetOrUndefined = ApparatusSet | undefined;
@@ -50,6 +50,13 @@ declare namespace ApparatusSet {
   interface Status {
     id: number;
     is_set: boolean;
+  }
+
+  interface createDataType {
+    id: number;
+    name: string;
+    items: Item.Items;
+    item_count: number;
   }
 }
 
@@ -80,6 +87,19 @@ declare namespace ApparatusList {
 
   interface InitialListMeta {
     hover_states: ListHoverState[];
+    editable: boolean;
+    addable: {
+      is_addable: boolean;
+      add_from: "items" | "sets";
+      targets: {
+        items: Item.Items;
+        sets: ApparatusSet.Sets;
+      };
+      selected_targets: {
+        items: number[];
+        sets: number[];
+      };
+    };
   }
 
   type AddateListActionPayload = Partial<ApparatusList.List> & {
