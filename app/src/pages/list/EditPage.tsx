@@ -18,6 +18,7 @@ import { useListHelpers } from "../../features/list/listHelpers";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
 import ListEditPageTopName from "../../components/List/ListEditPageTopName";
 import ListEditPageAddSection from "../../components/List/ListEditPageAddSection";
+import ListEditPageListTargets from "../../components/List/ListEditPageListTargets";
 
 interface Props {}
 
@@ -129,7 +130,7 @@ const EditPage: FC<Props> = () => {
   return (
     <div>
       {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
-      <pre>{JSON.stringify(this_list, null, 1)}</pre>
+      {/* <pre>{JSON.stringify(this_list, null, 1)}</pre> */}
       <ListEditPageTopName
         this_list={this_list}
         data={data}
@@ -141,6 +142,12 @@ const EditPage: FC<Props> = () => {
         list_id={list_id}
         selected={selected}
         targets={targets}
+        callSnackBarOpenHandler={callSnackBarOpenHandler}
+      />
+      <ListEditPageListTargets
+        targets={this_list?.targets}
+        getHoverStateByIdHandler={getHoverStateByIdHandler}
+        changeHoverState={changeHoverState}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
       />
       <SnackbarAlert isOpen={saveSnackBarOpen} />

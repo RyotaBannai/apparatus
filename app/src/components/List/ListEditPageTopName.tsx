@@ -76,7 +76,7 @@ const ListEditPageTopName: FC<Props> = (props) => {
   useEffect(() => {}, [this_list, data, callSnackBarOpenHandler]);
 
   return (
-    <Grid container alignItems="center" direction="row" spacing={1}>
+    <Grid container direction="row" spacing={1}>
       {editSetData ? (
         <Grid item xs={9}>
           <Grid container alignItems="center" direction="row" spacing={1}>
@@ -167,7 +167,7 @@ const ListEditPageTopName: FC<Props> = (props) => {
       ) : (
         <Grid item xs={9}>
           <Card
-            className={classes.root}
+            className={classes.listName}
             onMouseEnter={() =>
               changeHoverState({
                 id: "list_title",

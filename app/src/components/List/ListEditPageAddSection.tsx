@@ -9,6 +9,7 @@ import {
   AppBar,
   Box,
   Button,
+  Divider,
   Grid,
   Icon,
   MenuItem,
@@ -93,6 +94,15 @@ const ListEditPageAddSection: FC<Props> = (props) => {
     <>
       {is_addable ? (
         <Box>
+          <Typography
+            variant="h5"
+            color="textPrimary"
+            component="p"
+            style={{ marginLeft: 10, marginTop: 30 }}
+          >
+            Add Form
+          </Typography>
+          <Divider style={{ marginBottom: 10 }} />
           <AppBar position="static" className={classes.addableAppBar}>
             <Toolbar variant="dense">
               <Grid container alignItems="center" direction="row" spacing={1}>
@@ -143,6 +153,11 @@ const ListEditPageAddSection: FC<Props> = (props) => {
                       >
                         Add
                       </Button>
+                    </Grid>
+                    <Grid item>
+                      <Typography variant="h6" color="inherit">
+                        to this list
+                      </Typography>
                     </Grid>
                   </>
                 ) : (
