@@ -21,24 +21,7 @@ import ScatterPlotIcon from "@material-ui/icons/ScatterPlot";
 import SpaceBarIcon from "@material-ui/icons/SpaceBar";
 import ViewHeadlineIcon from "@material-ui/icons/ViewHeadline";
 import ViewColumnIcon from "@material-ui/icons/ViewColumn";
-
-const drawerWidth = 240;
-
-const useStyles = makeStyles((theme) => ({
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
-  },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerContainer: {
-    overflow: "auto",
-  },
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
-}));
+import { useStyles } from "../../assets/style/layout/drawer.style";
 
 // TODO: open unOpen の状態を localStorage で管理する
 interface Props {}
@@ -67,6 +50,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
             onClick={() => setOpenWS(!openWS)}
             disableRipple
             disableTouchRipple
+            className={classes.listParent}
           >
             <ListItemIcon>
               <LayersOutlinedIcon />
@@ -108,11 +92,13 @@ export const ApparatusDrawer: FC<Props> = (props) => {
               ))}
             </List>
           </Collapse>
+          <Divider />
           <ListItem
             button
             onClick={() => setOpenItem(!openItem)}
             disableRipple
             disableTouchRipple
+            className={classes.listParent}
           >
             <ListItemIcon>
               <ScatterPlotIcon />
@@ -149,11 +135,13 @@ export const ApparatusDrawer: FC<Props> = (props) => {
               ))}
             </List>
           </Collapse>
+          <Divider />
           <ListItem
             button
             onClick={() => setOpenSet(!openSet)}
             disableRipple
             disableTouchRipple
+            className={classes.listParent}
           >
             <ListItemIcon>
               <SpaceBarIcon />
@@ -185,11 +173,13 @@ export const ApparatusDrawer: FC<Props> = (props) => {
               ))}
             </List>
           </Collapse>
+          <Divider />
           <ListItem
             button
             onClick={() => setOpenList(!openList)}
             disableRipple
             disableTouchRipple
+            className={classes.listParent}
           >
             <ListItemIcon>
               <ViewHeadlineIcon />
@@ -226,11 +216,13 @@ export const ApparatusDrawer: FC<Props> = (props) => {
               ))}
             </List>
           </Collapse>
+          <Divider />
           <ListItem
             button
             onClick={() => setOpenFolder(!openFolder)}
             disableRipple
             disableTouchRipple
+            className={classes.listParent}
           >
             <ListItemIcon>
               <ViewColumnIcon />
