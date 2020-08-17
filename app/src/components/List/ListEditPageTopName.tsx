@@ -74,6 +74,7 @@ const ListEditPageTopName: FC<Props> = (props) => {
   };
 
   useEffect(() => {}, [this_list, data, callSnackBarOpenHandler]);
+
   return (
     <Grid container alignItems="center" direction="row" spacing={1}>
       {editSetData ? (
