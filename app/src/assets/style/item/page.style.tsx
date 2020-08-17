@@ -16,5 +16,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     alertDeleteSetOnEdit: {
       marginBottom: 10,
     },
+    root: {
+      "& > *": {
+        borderBottom: "unset",
+      },
+    },
+    note: {
+      backgroundColor: "#eeeeee",
+      borderRadius: 4,
+      padding: "8px !important",
+    },
   })
 );
