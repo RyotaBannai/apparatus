@@ -217,6 +217,22 @@ export class ItemResolver {
     return items.filter((item) => item.wsConnector.ws.id === wsId);
   }
 
+  @Query((returns) => [Item])
+  async getPureItems(@Args() { wsId }: getItemsArgs): Promise<Item[]> {
+    const items: Item[] = await Item.find({
+      relations: [
+        "item_meta",
+        "wsConnector",
+        "wsConnector.ws",
+        "setConnector",
+        "setConnector.set",
+      ],
+    });
+    return items
+      .filter((item) => item.wsConnector.ws.id === wsId)
+      .filter((item) => item.setConnector.length === 0);
+  }
+
   // @Query((returns) => [Item])
   // async getItems(
   //   @Args() { startIndex, endIndex }: GetItemArgs

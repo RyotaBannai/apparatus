@@ -68,8 +68,12 @@ export class ListResolver {
     const this_list: List = await List.findOneOrFail(list.id, {
       relations: ["addeeConnector", "addeeConnector.addee"],
     });
+
     return this_list.addeeConnector.map(
-      (addee_list: AddeeList) => addee_list.addee.target
+      async (addee_list: AddeeList) =>
+        await getRepository(addee_list.addee.morphType).findOneOrFail(
+          addee_list.addee.morphId
+        )
     );
   }
 }
