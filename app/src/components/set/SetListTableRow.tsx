@@ -31,7 +31,7 @@ function SetListTableRow(props: Props) {
   const { row, selectable } = props;
   const classes = useStyles();
   const [goToSet, setGoToSet] = useState<boolean>();
-  const is_selected = selectable.selected.sets.includes(Number(row.id));
+  const is_selected = selectable.selected?.sets.includes(Number(row.id));
 
   useEffect(() => {}, [selectable]);
 

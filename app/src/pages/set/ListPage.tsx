@@ -4,7 +4,7 @@ import { S_GET_SETS } from "../../api/graphql/setQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import SetListTable from "../../components/set/SetListTable";
 
-function createData(
+export function createData(
   id: number,
   name: string,
   items: Item.Items
@@ -17,7 +17,7 @@ function createData(
   };
 }
 
-const returnData = (sets: ApparatusSet.Set[]) => {
+export const returnData = (sets: ApparatusSet.Set[]) => {
   let rows: ReturnType<typeof createData>[] = [];
   for (const { id, name, items } of sets) {
     rows = [...rows, createData(id, name, items)];
