@@ -88,7 +88,7 @@ function SetListTableRow(props: Props) {
                     </Typography>
                   </Grid>
                   <Grid item>
-                    <NavLink exact to={`/item_edit/${row.id}`}>
+                    <NavLink exact to={`/set_edit/${row.id}`}>
                       <Button
                         variant="contained"
                         color="primary"

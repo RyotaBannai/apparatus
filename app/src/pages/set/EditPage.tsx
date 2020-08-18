@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
+import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useLazyQuery, useMutation, ApolloError } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,11 +7,10 @@ import { useSetHelpers } from "../../features/set/setHelpers";
 import { S_GET_SET } from "../../api/graphql/setQueries";
 import { S_EDIT_ITEMS } from "../../api/graphql/itemQueries";
 import { useStyles } from "../../assets/style/item/page.style";
-import { Grid } from "@material-ui/core";
+import { Button, Grid, Icon } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
-import { SaveButton } from "../../components/parts/Button/SaveButton";
 import * as _ from "lodash";
 
 interface Props {}
@@ -49,16 +42,13 @@ const EditPage: FC<Props> = () => {
     },
   });
 
-  const sendItems = useCallback(
-    (e: SyntheticEvent) => {
-      e.preventDefault();
-      let jsoned_set = filterSet([set]);
-      s_editItems({
-        variables: { data: jsoned_set },
-      });
-    },
-    [set]
-  );
+  const sendItems = (e: SyntheticEvent) => {
+    e.preventDefault();
+    let jsoned_set = filterSet([set]);
+    s_editItems({
+      variables: { data: jsoned_set },
+    });
+  };
 
   const [
     fetchSet,
@@ -81,6 +71,10 @@ const EditPage: FC<Props> = () => {
     } else {
       setChild([<ApparatusSet {...set} mode={mode} />]);
     }
+
+    return () => {
+      // maybe do something.
+    };
   }, []);
 
   if (sg_loading) return <p>Loading...</p>;
@@ -97,10 +91,19 @@ const EditPage: FC<Props> = () => {
       {children.map((child) => child)}
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>
-          <SaveButton name="Save Edit" handleOnClick={sendItems} />
+          <Button
+            variant="contained"
+            color="primary"
+            endIcon={<Icon>arrow_right</Icon>}
+            disableRipple
+            disableTouchRipple
+            onClick={sendItems}
+          >
+            Save Edit
+          </Button>
+          <SnackbarAlert isOpen={saveSnackBarOpen} />
         </Grid>
       </Grid>
-      <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>
   );
 };

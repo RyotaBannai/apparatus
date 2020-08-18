@@ -1,8 +1,8 @@
 import { gql } from "@apollo/client";
 
 export const S_CREATE_LIST = gql`
-  mutation CREATE_LIST($name: String!, $description: String!) {
-    createList(data: { name: $name, description: $description }) {
+  mutation CREATE_LIST($name: String!, $description: String!, $wsId: Float!) {
+    createList(data: { name: $name, description: $description, wsId: $wsId }) {
       id
       name
     }
@@ -35,8 +35,8 @@ export const S_GET_LIST = gql`
 `;
 
 export const S_GET_LISTS = gql`
-  {
-    getLists {
+  query GET_LISTS($wsId: Float!) {
+    getLists(wsId: $wsId) {
       id
       name
       description

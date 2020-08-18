@@ -59,7 +59,7 @@ const ListPage: FC<Props> = () => {
           />
         </div>
       ) : (
-        <div>No set</div>
+        <div>No item</div>
       )}
     </>
   );

@@ -5,6 +5,7 @@ import { useStyles } from "../../assets/style/list/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useListActions } from "../../features/list/listFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";
+import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
 import {
   Button,
@@ -23,6 +24,7 @@ const CreatePage: FC<Props> = () => {
   const data = useSelector(getNewList);
   const classes = useStyles();
   const [saveSnackBarOpen, setOpen] = useState(false);
+  const { getCurrentWS } = useWSHelpers;
 
   const onChangeName = (e: any) => handleEvent(e, "name");
   const onChangeDescription = (e: any) => handleEvent(e, "description");
@@ -95,7 +97,7 @@ const CreatePage: FC<Props> = () => {
             onClick={(e: SyntheticEvent) => {
               e.preventDefault();
               s_createList({
-                variables: data,
+                variables: { ...data, wsId: Number(getCurrentWS().id) },
               });
             }}
           >

@@ -74,7 +74,9 @@ function ItemListTableRow(props: Props) {
           <></>
         )}
         <TableCell onClick={toggleGotoEdit}>{row?.data}</TableCell>
-        <TableCell onClick={toggleGotoEdit}>{row?.description}</TableCell>
+        <TableCell onClick={toggleGotoEdit}>
+          {row?.description ?? "No description"}
+        </TableCell>
       </TableRow>
       {goToItem ? (
         <TableRow className={classes.root}>
@@ -90,7 +92,7 @@ function ItemListTableRow(props: Props) {
                     >
                       Note
                     </Typography>
-                    <div>{row?.note ?? ""}</div>
+                    <div>{row?.note ?? "No note"}</div>
                   </Grid>
                   <Grid item xs={2}>
                     <NavLink exact to={`/item_edit/${row.id}`}>

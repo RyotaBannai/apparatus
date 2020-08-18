@@ -3,6 +3,7 @@ import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { NavLink } from "react-router-dom";
 import { S_GET_LISTS } from "../../api/graphql/listQueries";
 import { useStyles } from "../../assets/style/workspace/page.style";
+import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import {
   Button,
   Icon,
@@ -82,7 +83,15 @@ function Row(props: { row: ReturnType<typeof createData> }) {
 interface Props {}
 
 const ListPage: FC<Props> = () => {
-  const { data, refetch } = useQuery(S_GET_LISTS);
+  const { getCurrentWS } = useWSHelpers;
+  const { data, refetch } = useQuery(S_GET_LISTS, {
+    variables: {
+      wsId: Number(getCurrentWS().id),
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
 
   useEffect(() => {
     refetch();
