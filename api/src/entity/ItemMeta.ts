@@ -19,11 +19,11 @@ export class ItemMeta {
   itemId: number;
 
   @Field()
-  @Column("text", { nullable: true })
+  @Column("text", { nullable: false, default: "" })
   description: string;
 
   @Field()
-  @Column("text", { nullable: true })
+  @Column("text", { nullable: false, default: "" })
   note: string;
 
   @Field((type) => Item)

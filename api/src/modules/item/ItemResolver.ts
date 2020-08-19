@@ -20,6 +20,7 @@ import {
   updateItemInputs,
   GetItemArgs,
   getItemsArgs,
+  ItemData,
 } from "./TypeDefs";
 import { Context } from "vm";
 import { User } from "../../entity/User";
@@ -113,6 +114,41 @@ export class ItemResolver {
   }
 
   @Mutation(() => Response)
+  async updateItem(
+    @Arg("data") updateItemData: addItemInput,
+    @Ctx() ctx: Context
+  ): Promise<Object> {
+    let set = JSON.parse(updateItemData.data)[0];
+    let request_items = set.items;
+    let item_count = request_items.length;
+    if (item_count === 1) {
+      const { id_on_server, type, data, description, note } = _.head(
+        request_items
+      ) as ItemData & { id_on_server: number };
+      await this.updateItemData({
+        id: Number(id_on_server),
+        type,
+        data,
+        description,
+        note,
+      });
+    } else if (item_count > 2) {
+      // TODO: create new set
+      // TODO: separate creat item and update item
+    }
+
+    // const item = await Item.findOneOrFail(updateItemData.id);
+    // const updated = Item.create({
+    //   ...item,
+    //   ...updateItemData,
+    // });
+    // await updated.save();
+    // return await Item.findOneOrFail(item.id, {
+    //   // relations: ["listConnector", "listConnector.list"],
+    // });
+    return { res: "Success" };
+  }
+  @Mutation(() => Response)
   async updateItems(
     @Arg("data") newItemData: updateItemInputs,
     @Ctx() ctx: Context
@@ -141,12 +177,10 @@ export class ItemResolver {
       if (update_data === undefined) {
         item_set.item.remove();
       } else {
-        await Item.update(this_id, {
+        await this.updateItemData({
+          id: this_id,
           type: update_data.type,
           data: update_data.data,
-        });
-
-        await getRepository(ItemMeta).update(item_set.item.item_meta.itemId, {
           description: update_data.description,
           note: update_data.note,
         });
@@ -185,28 +219,24 @@ export class ItemResolver {
     return { res: "Success" };
   }
 
+  private async updateItemData(props: ItemData): Promise<void> {
+    const { id, data, type, description, note } = props;
+    await Item.update(id!, {
+      type,
+      data,
+    });
+    await getRepository(ItemMeta).update(id!, {
+      description,
+      note,
+    });
+  }
+
   private async deSet(set_id: number) {
     let set: Set = await Set.findOneOrFail(set_id, {
       relations: ["itemConnector", "itemConnector.item"],
     });
     if (set.itemConnector.length > 1) return;
     set.remove();
-  }
-
-  @Mutation(() => Item)
-  async updateItem(
-    @Arg("data") updateItemData: addItemInput,
-    @Ctx() ctx: Context
-  ): Promise<Item> {
-    const item = await Item.findOneOrFail(updateItemData.id);
-    const updated = Item.create({
-      ...item,
-      ...updateItemData,
-    });
-    await updated.save();
-    return await Item.findOneOrFail(item.id, {
-      // relations: ["listConnector", "listConnector.list"],
-    });
   }
 
   @Query((returns) => [Item])
@@ -243,13 +273,12 @@ export class ItemResolver {
   //   return this.itemCollection.slice(startIndex, endIndex);
   // }
 
-  // @Query((returns) => Item)
-  // async getOneItem(
-  //   @Arg("id") id: number,
-  //   @routinizedFindById() item: Item
-  // ): Promise<Item | undefined> {
-  //   return item;
-  // }
+  @Query((returns) => Item)
+  async getItem(@Arg("id") id: number): Promise<Item> {
+    return Item.findOneOrFail(id, {
+      relations: ["item_meta"],
+    });
+  }
 
   // @FieldResolver()
   // async list(@Root() item: Item) {
@@ -264,23 +293,14 @@ export class ItemResolver {
   // }
 }
 
-function getId(params: any): number | undefined {
-  if ("id" in params) {
-    return Number(params.id);
-  } else {
-    for (const [key, value] of Object.entries(params)) {
-      if (typeof value == "object" && value !== null) {
-        return getId(value);
-      }
-    }
-  }
-}
-
-// function routinizedFindById() {
-//   return createParamDecorator((params) => {
-//     let id: number | undefined = getId(params.args);
-//     return Item.findOneOrFail(id, {
-//       relations: ["listConnector", "listConnector.list"],
-//     });
-//   });
+// function getId(params: any): number | undefined {
+//   if ("id" in params) {
+//     return Number(params.id);
+//   } else {
+//     for (const [key, value] of Object.entries(params)) {
+//       if (typeof value == "object" && value !== null) {
+//         return getId(value);
+//       }
+//     }
+//   }
 // }

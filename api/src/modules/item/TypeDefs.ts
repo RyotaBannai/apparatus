@@ -13,14 +13,8 @@ import { Item, ItemType } from "../../entity/Item";
 
 @InputType({ description: "New item data" })
 export class addItemInput implements Partial<Item> {
-  @Field((type) => Float, { nullable: true })
-  id?: number;
-
-  @Field((type) => String, { nullable: true })
+  @Field((type) => String)
   data: string;
-
-  @Field((type) => String, { nullable: true })
-  type: ItemType;
 }
 
 @InputType({ description: "New items data" })

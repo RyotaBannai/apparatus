@@ -5,8 +5,12 @@ import { ID, Field, ObjectType, ArgsType, InputType } from "type-graphql";
 export class createListInput implements Partial<List> {
   @Field((type) => String, { nullable: false })
   name: string;
+
   @Field((type) => String, { nullable: false })
   description: string;
+
+  @Field((type) => Number)
+  wsId: number;
 }
 
 @InputType({ description: "Edit List" })
@@ -19,4 +23,10 @@ export class editListInput extends createListInput {
 export class getListByIDArgs {
   @Field((type) => String)
   id: string;
+}
+
+@ArgsType()
+export class getListsArgs {
+  @Field((type) => Number)
+  wsId: number;
 }

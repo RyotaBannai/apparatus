@@ -11,13 +11,20 @@ import {
 } from "type-graphql";
 import { getRepository, UpdateResult } from "typeorm";
 import { Context } from "vm";
-import { createListInput, editListInput, getListByIDArgs } from "./TypeDefs";
+import {
+  createListInput,
+  editListInput,
+  getListByIDArgs,
+  getListsArgs,
+} from "./TypeDefs";
 import { Response } from "../TypeDefsGlobal";
 import { Global } from "../../const/constants";
 import { Item } from "../../entity/Item";
 import { Set } from "../../entity/Set";
 import { List } from "../../entity/List";
 import { AddeeList } from "../../entity/AddeeList";
+import { ListWorkspace } from "../../entity/ListWorkspace";
+import { Workspace } from "../../entity/Workspace";
 
 @Resolver((of) => List)
 export class ListResolver {
@@ -26,11 +33,21 @@ export class ListResolver {
     @Arg("data") newListData: createListInput,
     @Ctx() ctx: Context
   ): Promise<List> {
-    return await List.create({
+    const new_list: List = await List.create({
       name: newListData.name,
       description: newListData.description,
       ownerId: ctx.user.id,
     }).save();
+
+    const workspace: Workspace = await Workspace.findOneOrFail(
+      newListData.wsId
+    );
+    let new_item_ws: ListWorkspace = new ListWorkspace();
+    new_item_ws.list = new_list;
+    new_item_ws.ws = workspace;
+    await getRepository(ListWorkspace).save(new_item_ws);
+
+    return new_list;
   }
 
   @Mutation(() => List)
@@ -57,10 +74,15 @@ export class ListResolver {
   }
 
   @Query((returns) => [List])
-  async getLists(@Ctx() ctx: Context): Promise<List[] | undefined> {
-    return await List.find({
+  async getLists(
+    @Args() { wsId }: getListsArgs,
+    @Ctx() ctx: Context
+  ): Promise<List[] | undefined> {
+    let this_lists: List[] = await List.find({
       where: { ownerId: ctx.user.id },
+      relations: ["wsConnector", "wsConnector.ws"],
     });
+    return this_lists.filter((list) => list.wsConnector?.ws.id === wsId);
   }
 
   @FieldResolver()
