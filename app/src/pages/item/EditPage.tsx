@@ -10,27 +10,28 @@ import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useSetActions } from "../../features/set/setFeatureSlice";
 import { useSetHelpers } from "../../features/set/setHelpers";
-import { S_GET_SET } from "../../api/graphql/setQueries";
+import { S_GET_ITEM } from "../../api/graphql/itemQueries";
 import { S_EDIT_ITEMS } from "../../api/graphql/itemQueries";
 import { useStyles } from "../../assets/style/item/page.style";
-import { Grid } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
-import { SaveButton } from "../../components/parts/Button/SaveButton";
+import { BottomButtonSection } from "../../components/parts/BottomButtonSection";
 import * as _ from "lodash";
 
-interface Props {}
+interface IProps {}
 
-const EditPage: FC<Props> = () => {
+const EditPage: FC<IProps> = () => {
   const classes = useStyles();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
-  let { set_id } = useParams<{ set_id?: string | undefined }>();
   const { takeIdForSet, filterSet, getEditSets, getSetByKey } = useSetHelpers;
+  let { item_id } = useParams<{ item_id?: string | undefined }>();
+  const set_id = -item_id!;
+  const edit_set_state = useSelector(getEditSets);
   const set = getSetByKey(useSelector(getEditSets), {
     keyname: "set_id_on_server",
-    key: set_id as string,
+    key: set_id,
   });
   const mode = "edit";
 
@@ -61,23 +62,36 @@ const EditPage: FC<Props> = () => {
   );
 
   const [
-    fetchSet,
+    fetchItem,
     { loading: sg_loading, error: sg_error, called: sg_called, data, refetch },
-  ] = useLazyQuery(S_GET_SET, {
+  ] = useLazyQuery(S_GET_ITEM, {
     variables: {
-      id: Number(set_id),
+      id: Number(item_id),
     },
-    onCompleted({ getSet }) {
-      let props = { ...getSet, id: takeIdForSet() };
+    onCompleted({ getItem }) {
+      console.log(getItem);
+      let items = [
+        {
+          id: getItem.id,
+          type: getItem.type,
+          data: getItem.data,
+          description: getItem.item_meta.description,
+          note: getItem.item_meta.note,
+        },
+      ];
+      let props = { items, id: takeIdForSet() };
       setChild([
-        <ApparatusSet {...props} set_id_on_server={getSet.id} mode={mode} />,
+        <ApparatusSet {...props} set_id_on_server={-item_id!} mode={mode} />,
       ]);
+    },
+    onError(error: ApolloError) {
+      console.log(error);
     },
   });
 
   useEffect(() => {
     if (set === undefined) {
-      fetchSet();
+      fetchItem();
     } else {
       setChild([<ApparatusSet {...set} mode={mode} />]);
     }
@@ -88,18 +102,13 @@ const EditPage: FC<Props> = () => {
   return (
     <div>
       <h2>Edit Set</h2>
-      {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
       {!set?.show && (
         <Alert severity="info" className={classes.alertDeleteSetOnEdit}>
           Delete this Set and its items by pressing SAVE EDIT button.
         </Alert>
       )}
       {children.map((child) => child)}
-      <Grid container alignItems="center" direction="row" spacing={1}>
-        <Grid item>
-          <SaveButton name="Save Edit" handleOnClick={sendItems} />
-        </Grid>
-      </Grid>
+      <BottomButtonSection name="Save Edit" handleOnClick={sendItems} />
       <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>
   );

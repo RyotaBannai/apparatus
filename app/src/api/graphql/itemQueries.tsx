@@ -16,6 +16,20 @@ export const S_EDIT_ITEMS = gql`
   }
 `;
 
+export const S_GET_ITEM = gql`
+  query GET_ITEM($id: Float!) {
+    getItem(id: $id) {
+      id
+      type
+      data
+      item_meta {
+        description
+        note
+      }
+    }
+  }
+`;
+
 export const S_GET_ITEMS = gql`
   query GET_ITEMS($wsId: Float!) {
     getItems(wsId: $wsId) {

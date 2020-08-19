@@ -7,10 +7,10 @@ import { useSetHelpers } from "../../features/set/setHelpers";
 import { S_GET_SET } from "../../api/graphql/setQueries";
 import { S_EDIT_ITEMS } from "../../api/graphql/itemQueries";
 import { useStyles } from "../../assets/style/item/page.style";
-import { Button, Grid, Icon } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
+import { BottomButtonSection } from "../../components/parts/BottomButtonSection";
 import * as _ from "lodash";
 
 interface Props {}
@@ -71,10 +71,6 @@ const EditPage: FC<Props> = () => {
     } else {
       setChild([<ApparatusSet {...set} mode={mode} />]);
     }
-
-    return () => {
-      // maybe do something.
-    };
   }, []);
 
   if (sg_loading) return <p>Loading...</p>;
@@ -89,21 +85,8 @@ const EditPage: FC<Props> = () => {
         </Alert>
       )}
       {children.map((child) => child)}
-      <Grid container alignItems="center" direction="row" spacing={1}>
-        <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            endIcon={<Icon>arrow_right</Icon>}
-            disableRipple
-            disableTouchRipple
-            onClick={sendItems}
-          >
-            Save Edit
-          </Button>
-          <SnackbarAlert isOpen={saveSnackBarOpen} />
-        </Grid>
-      </Grid>
+      <BottomButtonSection name="Save Edit" handleOnClick={sendItems} />
+      <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>
   );
 };

@@ -7,9 +7,10 @@ import { Pagination } from "../pages/DemoPagination";
 const CreateWorkspacePage = lazy(() => import("../pages/workspace/CreatePage"));
 const ListWorkspacePage = lazy(() => import("../pages/workspace/Listpage"));
 const EditWorkspacePage = lazy(() => import("../pages/workspace/EditPage"));
+const EditItemPage = lazy(() => import("../pages/item/EditPage"));
 const ListItemPage = lazy(() => import("../pages/item/ListPage"));
 const CreateItemPage = lazy(() => import("../pages/item/CreatePage"));
-const EditItemPage = lazy(() => import("../pages/set/EditPage"));
+const EditSetPage = lazy(() => import("../pages/set/EditPage"));
 const ListSetPage = lazy(() => import("../pages/set/ListPage"));
 const ListListPage = lazy(() => import("../pages/list/ListPage"));
 const CreateListPage = lazy(() => import("../pages/list/CreatePage"));
@@ -30,9 +31,10 @@ export const ApparatusRouter: FC<Props> = () => {
           />
           <Route exact path="/workspace_list" component={ListWorkspacePage} />
           <Route exact path="/workspace_edit" component={EditWorkspacePage} />
+          <Route exact path="/item_edit/:item_id" component={EditItemPage} />
           <Route exact path="/item_list" component={ListItemPage} />
           <Route exact path="/item_create" component={CreateItemPage} />
-          <Route exact path="/set_edit/:set_id" component={EditItemPage} />
+          <Route exact path="/set_edit/:set_id" component={EditSetPage} />
           <Route exact path="/set_list" component={ListSetPage} />
           <Route exact path="/list_list" component={ListListPage} />
           <Route exact path="/list_create" component={CreateListPage} />
