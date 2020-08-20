@@ -77,6 +77,8 @@ export class ItemData {
   note: string;
 }
 
+export type ItemDataFromEdit = ItemData & { id_on_server: number };
+
 @ObjectType()
 export class Response {
   @Field((type) => String)

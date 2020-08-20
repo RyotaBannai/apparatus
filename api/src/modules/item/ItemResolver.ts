@@ -21,6 +21,7 @@ import {
   GetItemArgs,
   getItemsArgs,
   ItemData,
+  ItemDataFromEdit,
 } from "./TypeDefs";
 import { Context } from "vm";
 import { User } from "../../entity/User";
@@ -59,24 +60,19 @@ export class ItemResolver {
     for (const { name, items, ws_id } of sets) {
       const this_workspace: Workspace = await Workspace.findOneOrFail(ws_id);
       if (items.length > 1) {
-        let new_set: Set = Set.create({ name: name, ownerId: ctx.user.id });
-        await new_set.save();
-
-        let new_set_ws: SetWorkspace = new SetWorkspace();
-        new_set_ws.set = new_set;
-        new_set_ws.ws = this_workspace;
-        await getRepository(SetWorkspace).save(new_set_ws);
+        const new_set: Set = await this.createSetAndAddToWS(
+          name,
+          ctx.user.id,
+          this_workspace
+        );
 
         for (const item of items) {
-          let new_item: Item = await this.saveItem(
+          this.saveItemAndAddToSet(
             item,
             request_user.user_meta,
-            this_workspace
+            this_workspace,
+            new_set
           );
-          let new_item_set: ItemSet = new ItemSet();
-          new_item_set.item = new_item;
-          new_item_set.set = new_set;
-          await getRepository(ItemSet).save(new_item_set);
         }
       } else {
         for (const item of items) {
@@ -113,6 +109,39 @@ export class ItemResolver {
     return new_item;
   }
 
+  private async saveItemAndAddToSet(
+    item: any,
+    user_meta: UserMeta,
+    workspace: Workspace,
+    set: Set
+  ) {
+    let new_item: Item = await this.saveItem(item, user_meta, workspace);
+    await this.addItemToSet(new_item, set);
+  }
+
+  private async addItemToSet(item: Item, set: Set) {
+    let new_item_set: ItemSet = new ItemSet();
+    new_item_set.item = item;
+    new_item_set.set = set;
+    await getRepository(ItemSet).save(new_item_set);
+  }
+
+  private async createSetAndAddToWS(
+    name: string,
+    ownerId: number,
+    this_workspace: Workspace
+  ): Promise<Set> {
+    let new_set: Set = Set.create({ name, ownerId });
+    await new_set.save();
+
+    let new_set_ws: SetWorkspace = new SetWorkspace();
+    new_set_ws.set = new_set;
+    new_set_ws.ws = this_workspace;
+    await getRepository(SetWorkspace).save(new_set_ws);
+
+    return new_set;
+  }
+
   @Mutation(() => Response)
   async updateItem(
     @Arg("data") updateItemData: addItemInput,
@@ -120,32 +149,45 @@ export class ItemResolver {
   ): Promise<Object> {
     let set = JSON.parse(updateItemData.data)[0];
     let request_items = set.items;
+
     let item_count = request_items.length;
     if (item_count === 1) {
-      const { id_on_server, type, data, description, note } = _.head(
-        request_items
-      ) as ItemData & { id_on_server: number };
+      const item = _.head(request_items) as ItemDataFromEdit;
       await this.updateItemData({
-        id: Number(id_on_server),
-        type,
-        data,
-        description,
-        note,
+        ...item,
+        id: Number(item.id_on_server),
       });
-    } else if (item_count > 2) {
-      // TODO: create new set
-      // TODO: separate creat item and update item
+    } else if (item_count > 1) {
+      let request_user: User = await User.findOneOrFail(ctx.user.id, {
+        relations: ["user_meta"],
+      });
+      const this_workspace: Workspace = await Workspace.findOneOrFail(
+        set.ws_id
+      );
+      let new_set: Set = await this.createSetAndAddToWS(
+        set.name,
+        ctx.user.id,
+        this_workspace
+      );
+      for (const item of set.items) {
+        let this_item: Item | undefined =
+          item?.id_on_server && (await Item.findOne(item?.id_on_server));
+        if (this_item !== undefined) {
+          const this_item: Item = await this.updateItemData({
+            ...item,
+            id: Number(item.id_on_server),
+          });
+          await this.addItemToSet(this_item, new_set);
+        } else {
+          await this.saveItemAndAddToSet(
+            item,
+            request_user.user_meta,
+            this_workspace,
+            new_set
+          );
+        }
+      }
     }
-
-    // const item = await Item.findOneOrFail(updateItemData.id);
-    // const updated = Item.create({
-    //   ...item,
-    //   ...updateItemData,
-    // });
-    // await updated.save();
-    // return await Item.findOneOrFail(item.id, {
-    //   // relations: ["listConnector", "listConnector.list"],
-    // });
     return { res: "Success" };
   }
   @Mutation(() => Response)
@@ -175,7 +217,7 @@ export class ItemResolver {
       let update_data = _.find(request_items, { id_on_server: this_id });
 
       if (update_data === undefined) {
-        item_set.item.remove();
+        await item_set.item.remove();
       } else {
         await this.updateItemData({
           id: this_id,
@@ -204,37 +246,38 @@ export class ItemResolver {
       target_set.wsConnector.ws.id
     );
     for (const item of new_items) {
-      let new_item: Item = await this.saveItem(
+      await this.saveItemAndAddToSet(
         item,
         request_user.user_meta,
-        this_workspace
+        this_workspace,
+        target_set
       );
-      let new_item_set: ItemSet = new ItemSet();
-      new_item_set.item = new_item;
-      new_item_set.set = target_set;
-      await getRepository(ItemSet).save(new_item_set);
     }
 
     this.deSet(set.set_id_on_server);
     return { res: "Success" };
   }
 
-  private async updateItemData(props: ItemData): Promise<void> {
+  private async updateItemData(props: ItemData): Promise<Item> {
     const { id, data, type, description, note } = props;
-    await Item.update(id!, {
-      type,
-      data,
-    });
+    let this_item: Item = await Item.findOneOrFail(id);
+    this_item.type = type;
+    this_item.data = data;
+    this_item.save();
+
     await getRepository(ItemMeta).update(id!, {
       description,
       note,
     });
+
+    return this_item;
   }
 
   private async deSet(set_id: number) {
     let set: Set = await Set.findOneOrFail(set_id, {
       relations: ["itemConnector", "itemConnector.item"],
     });
+    console.log(set);
     if (set.itemConnector.length > 1) return;
     set.remove();
   }
