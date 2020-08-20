@@ -1,10 +1,10 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useLazyQuery, useMutation, ApolloError } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useSetActions } from "../../features/set/setFeatureSlice";
+import { useSelector } from "react-redux";
 import { useSetHelpers } from "../../features/set/setHelpers";
 import { S_GET_SET } from "../../api/graphql/setQueries";
+import { S_DELETE_ITEMS } from "../../api/graphql/itemQueries";
 import { S_EDIT_ITEMS } from "../../api/graphql/itemQueries";
 import { useStyles } from "../../assets/style/item/page.style";
 import { Alert } from "@material-ui/lab";
@@ -42,11 +42,34 @@ const EditPage: FC<Props> = () => {
     },
   });
 
+  const [s_deleteItems] = useMutation(S_DELETE_ITEMS, {
+    onCompleted({ deleteItems: { res } }) {
+      if (res === "Success") {
+        setOpen(!saveSnackBarOpen);
+      } else {
+        console.log(
+          "Apollo mutation createItems response's status is unexpected."
+        );
+      }
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
   const sendItems = (e: SyntheticEvent) => {
     e.preventDefault();
     let jsoned_set = filterSet([set]);
     s_editItems({
       variables: { data: jsoned_set },
+    });
+  };
+
+  const deleteItems = () => {
+    s_deleteItems({
+      variables: {
+        set_id: Number(set_id),
+      },
     });
   };
 
@@ -86,9 +109,11 @@ const EditPage: FC<Props> = () => {
       )}
       {children.map((child) => child)}
       <BottomButtonSection
-        nameSave="Save Edit"
         mode={mode}
+        nameSave="Save Edit"
+        nameDelete="Delete Set"
         handleOnSave={sendItems}
+        handleOnDelete={deleteItems}
       />
       <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>

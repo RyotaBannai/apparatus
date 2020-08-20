@@ -48,13 +48,13 @@ const ListPage: FC<Props> = () => {
   if (sg_error) return <p>Error :(</p>;
   return (
     <>
-      {data?.getItems.length > 0 ? (
+      {data?.getPureItems.length > 0 ? (
         <div>
           <h2>Item List</h2>
           <ItemListTable
             returnData={returnData}
             createData={createData}
-            data={data?.getItems}
+            data={data?.getPureItems}
             selectable={{ is_selectable: false }}
           />
         </div>

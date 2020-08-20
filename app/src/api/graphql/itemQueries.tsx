@@ -40,7 +40,7 @@ export const S_GET_ITEM = gql`
 
 export const S_GET_ITEMS = gql`
   query GET_ITEMS($wsId: Float!) {
-    getItems(wsId: $wsId) {
+    getPureItems(wsId: $wsId) {
       id
       type
       data
@@ -51,6 +51,14 @@ export const S_GET_ITEMS = gql`
 export const S_DELETE_ITEM = gql`
   mutation DELETE_ITEM($id: Float!) {
     deleteItem(id: $id) {
+      res
+    }
+  }
+`;
+
+export const S_DELETE_ITEMS = gql`
+  mutation DELETE_ITEMS($set_id: Float!) {
+    deleteItems(set_id: $set_id) {
       res
     }
   }
