@@ -162,27 +162,31 @@ export const ApparatusItem: FC<Props> = ({
             />
           </Grid>
         </Grid>
-        <Grid container alignItems="flex-end" direction="row" spacing={1}>
-          <Grid item className={classes.gridItem}>
-            <InputLabel htmlFor="note">Note</InputLabel>
-            <TextField
-              id="note"
-              multiline
-              rowsMax={2}
-              variant="outlined"
-              defaultValue={note ?? ""}
-              className={classes.note}
-              onChange={onChangeNote}
-            />
+        {mode === "new" ? (
+          <Grid container alignItems="flex-end" direction="row" spacing={1}>
+            <Grid item className={classes.gridItem}>
+              <InputLabel htmlFor="note">Note</InputLabel>
+              <TextField
+                id="note"
+                multiline
+                rowsMax={2}
+                variant="outlined"
+                defaultValue={note ?? ""}
+                className={classes.note}
+                onChange={onChangeNote}
+              />
+            </Grid>
+            <Grid item>
+              <Tooltip title="Delete" placement="top">
+                <Icon className={classes.deleteForm} onClick={onDeleteItem}>
+                  delete_forever
+                </Icon>
+              </Tooltip>
+            </Grid>
           </Grid>
-          <Grid item>
-            <Tooltip title="Delete" placement="top">
-              <Icon className={classes.deleteForm} onClick={onDeleteItem}>
-                delete_forever
-              </Icon>
-            </Tooltip>
-          </Grid>
-        </Grid>
+        ) : (
+          <></>
+        )}
       </div>
     );
 };

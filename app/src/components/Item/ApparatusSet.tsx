@@ -171,39 +171,43 @@ export const ApparatusSet: FC<Props> = ({
           <></>
         )}
         <div className={classes.itemBox}>{children.map((child) => child)}</div>
-        <Grid container alignItems="center" direction="row" spacing={1}>
-          {is_set ? (
-            <Grid item className={classes.addItemHugeButton}>
-              <Button
-                variant="contained"
-                className={classes.addButton}
-                startIcon={<Icon>add_circle</Icon>}
-                disableRipple
-                disableTouchRipple
-                onClick={(e) => {
-                  e.preventDefault();
-                  callAddChild(children);
-                }}
-              >
-                Add Item To Set
-              </Button>
-            </Grid>
-          ) : (
-            <Grid item>
-              <Tooltip title="To Set" placement="top">
-                <Icon
-                  className={classes.toSet}
+        {mode === "new" ? (
+          <Grid container alignItems="center" direction="row" spacing={1}>
+            {is_set ? (
+              <Grid item className={classes.addItemHugeButton}>
+                <Button
+                  variant="contained"
+                  className={classes.addButton}
+                  startIcon={<Icon>add_circle</Icon>}
+                  disableRipple
+                  disableTouchRipple
                   onClick={(e) => {
                     e.preventDefault();
                     callAddChild(children);
                   }}
                 >
-                  add_box
-                </Icon>
-              </Tooltip>
-            </Grid>
-          )}
-        </Grid>
+                  Add Item To Set
+                </Button>
+              </Grid>
+            ) : (
+              <Grid item>
+                <Tooltip title="To Set" placement="top">
+                  <Icon
+                    className={classes.toSet}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      callAddChild(children);
+                    }}
+                  >
+                    add_box
+                  </Icon>
+                </Tooltip>
+              </Grid>
+            )}
+          </Grid>
+        ) : (
+          <></>
+        )}
       </Box>
     );
 };

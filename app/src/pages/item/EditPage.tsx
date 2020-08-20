@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSetActions } from "../../features/set/setFeatureSlice";
 import { useSetHelpers } from "../../features/set/setHelpers";
 import { S_GET_ITEM } from "../../api/graphql/itemQueries";
-import { S_EDIT_ITEMS } from "../../api/graphql/itemQueries";
+import { S_EDIT_ITEM } from "../../api/graphql/itemQueries";
 import { useStyles } from "../../assets/style/item/page.style";
 import { Alert } from "@material-ui/lab";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
@@ -35,8 +35,8 @@ const EditPage: FC<IProps> = () => {
   });
   const mode = "edit";
 
-  const [s_editItems] = useMutation(S_EDIT_ITEMS, {
-    onCompleted({ updateItems: { res } }) {
+  const [s_editItems] = useMutation(S_EDIT_ITEM, {
+    onCompleted({ updateItem: { res } }) {
       if (res === "Success") {
         setOpen(!saveSnackBarOpen);
       } else {
@@ -69,7 +69,6 @@ const EditPage: FC<IProps> = () => {
       id: Number(item_id),
     },
     onCompleted({ getItem }) {
-      console.log(getItem);
       let items = [
         {
           id: getItem.id,
@@ -101,7 +100,7 @@ const EditPage: FC<IProps> = () => {
   if (sg_error) return <p>Error :(</p>;
   return (
     <div>
-      <h2>Edit Set</h2>
+      <h2>Edit Item</h2>
       {!set?.show && (
         <Alert severity="info" className={classes.alertDeleteSetOnEdit}>
           Delete this Set and its items by pressing SAVE EDIT button.

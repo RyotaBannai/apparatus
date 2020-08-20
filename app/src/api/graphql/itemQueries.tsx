@@ -8,6 +8,14 @@ export const S_ADD_ITEMS = gql`
   }
 `;
 
+export const S_EDIT_ITEM = gql`
+  mutation EDIT_ITEM($data: String!) {
+    updateItem(data: { data: $data }) {
+      res
+    }
+  }
+`;
+
 export const S_EDIT_ITEMS = gql`
   mutation EDIT_ITEMS($data: String!) {
     updateItems(data: { data: $data }) {
