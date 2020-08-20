@@ -7,11 +7,13 @@ import React, {
 } from "react";
 import { useLazyQuery, useMutation, ApolloError } from "@apollo/client";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useSetActions } from "../../features/set/setFeatureSlice";
+import { useSelector } from "react-redux";
 import { useSetHelpers } from "../../features/set/setHelpers";
-import { S_GET_ITEM } from "../../api/graphql/itemQueries";
-import { S_EDIT_ITEM } from "../../api/graphql/itemQueries";
+import {
+  S_GET_ITEM,
+  S_EDIT_ITEM,
+  S_DELETE_ITEM,
+} from "../../api/graphql/itemQueries";
 import { useStyles } from "../../assets/style/item/page.style";
 import { Alert } from "@material-ui/lab";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
@@ -50,6 +52,21 @@ const EditPage: FC<IProps> = () => {
     },
   });
 
+  const [s_deleteItem] = useMutation(S_DELETE_ITEM, {
+    onCompleted({ deleteItem: { res } }) {
+      if (res === "Success") {
+        setOpen(!saveSnackBarOpen);
+      } else {
+        console.log(
+          "Apollo mutation createItems response's status is unexpected."
+        );
+      }
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
   const sendItems = useCallback(
     (e: SyntheticEvent) => {
       e.preventDefault();
@@ -60,6 +77,14 @@ const EditPage: FC<IProps> = () => {
     },
     [set]
   );
+
+  const deleteItem = () => {
+    s_deleteItem({
+      variables: {
+        id: Number(item_id),
+      },
+    });
+  };
 
   const [
     fetchItem,
@@ -108,9 +133,11 @@ const EditPage: FC<IProps> = () => {
       )}
       {children.map((child) => child)}
       <BottomButtonSection
-        nameSave="Save Edit"
         mode={mode}
+        nameSave="Save Edit"
+        nameDelete="Delete Item"
         handleOnSave={sendItems}
+        handleOnDelete={deleteItem}
       />
       <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>

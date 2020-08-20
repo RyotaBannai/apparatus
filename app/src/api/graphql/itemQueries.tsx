@@ -47,3 +47,11 @@ export const S_GET_ITEMS = gql`
     }
   }
 `;
+
+export const S_DELETE_ITEM = gql`
+  mutation DELETE_ITEM($id: Float!) {
+    deleteItem(id: $id) {
+      res
+    }
+  }
+`;
