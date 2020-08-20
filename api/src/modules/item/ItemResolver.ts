@@ -244,27 +244,25 @@ export class ItemResolver {
     });
   }
 
-  // @FieldResolver()
-  // async list(@Root() item: Item) {
-  //   this.itemCollection = await Item.findOneOrFail(item.id, {
-  //     relations: ["listConnector", "listConnector.list"],
-  //   });
-  //   const this_list: List[] = [];
-  //   for (const { list } of this.itemCollection.listConnector) {
-  //     this_list.push(list);
-  //   }
-  //   return this_list;
-  // }
-}
+  @Mutation(() => Response)
+  async deleteItem(@Arg("id") id: number): Promise<Object> {
+    let this_item: Item = await Item.findOneOrFail(id, {
+      relations: ["item_meta"],
+    });
+    await this_item.remove();
+    return { res: "Success" };
+  }
 
-// function getId(params: any): number | undefined {
-//   if ("id" in params) {
-//     return Number(params.id);
-//   } else {
-//     for (const [key, value] of Object.entries(params)) {
-//       if (typeof value == "object" && value !== null) {
-//         return getId(value);
-//       }
-//     }
-//   }
-// }
+  @Mutation(() => Response)
+  async deleteItems(@Arg("set_id") set_id: number): Promise<Object> {
+    let this_set: Set = await Set.findOneOrFail(set_id, {
+      relations: ["itemConnector", "itemConnector.item"],
+    });
+    for (const item_set of this_set.itemConnector) {
+      await item_set.item.remove();
+    }
+    await this_set.remove();
+
+    return { res: "Success" };
+  }
+}
