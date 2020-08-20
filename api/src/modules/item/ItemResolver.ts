@@ -143,53 +143,17 @@ export class ItemResolver {
   }
 
   @Mutation(() => Response)
-  async updateItem(
-    @Arg("data") updateItemData: addItemInput,
-    @Ctx() ctx: Context
-  ): Promise<Object> {
+  async updateItem(@Arg("data") updateItemData: addItemInput): Promise<Object> {
     let set = JSON.parse(updateItemData.data)[0];
     let request_items = set.items;
-
-    let item_count = request_items.length;
-    if (item_count === 1) {
-      const item = _.head(request_items) as ItemDataFromEdit;
-      await this.updateItemData({
-        ...item,
-        id: Number(item.id_on_server),
-      });
-    } else if (item_count > 1) {
-      let request_user: User = await User.findOneOrFail(ctx.user.id, {
-        relations: ["user_meta"],
-      });
-      const this_workspace: Workspace = await Workspace.findOneOrFail(
-        set.ws_id
-      );
-      let new_set: Set = await this.createSetAndAddToWS(
-        set.name,
-        ctx.user.id,
-        this_workspace
-      );
-      for (const item of set.items) {
-        let this_item: Item | undefined =
-          item?.id_on_server && (await Item.findOne(item?.id_on_server));
-        if (this_item !== undefined) {
-          const this_item: Item = await this.updateItemData({
-            ...item,
-            id: Number(item.id_on_server),
-          });
-          await this.addItemToSet(this_item, new_set);
-        } else {
-          await this.saveItemAndAddToSet(
-            item,
-            request_user.user_meta,
-            this_workspace,
-            new_set
-          );
-        }
-      }
-    }
+    const item = _.head(request_items) as ItemDataFromEdit;
+    await this.updateItemData({
+      ...item,
+      id: Number(item.id_on_server),
+    });
     return { res: "Success" };
   }
+
   @Mutation(() => Response)
   async updateItems(
     @Arg("data") newItemData: updateItemInputs,
@@ -201,60 +165,17 @@ export class ItemResolver {
     await Set.update(set.set_id_on_server, {
       name: set.name,
     });
-
-    let target_set: Set = await Set.findOneOrFail(set.set_id_on_server, {
-      relations: [
-        "itemConnector",
-        "itemConnector.item",
-        "itemConnector.item.item_meta",
-        "wsConnector",
-        "wsConnector.ws",
-      ],
-    });
-
-    for (const item_set of target_set.itemConnector) {
-      let this_id: number = item_set.item.id;
-      let update_data = _.find(request_items, { id_on_server: this_id });
-
-      if (update_data === undefined) {
-        await item_set.item.remove();
-      } else {
-        await this.updateItemData({
-          id: this_id,
-          type: update_data.type,
-          data: update_data.data,
-          description: update_data.description,
-          note: update_data.note,
-        });
-      }
+    for (const item of request_items) {
+      const { id_on_server, type, data, description, note } = item;
+      await this.updateItemData({
+        id: id_on_server,
+        type,
+        data,
+        description,
+        note,
+      });
     }
 
-    let new_items = request_items.filter(
-      (item: Partial<Item> & { id_on_server: string }) =>
-        !item?.id_on_server || item?.id_on_server === undefined
-    );
-
-    if (new_items.length === 0) {
-      this.deSet(set.set_id_on_server);
-      return { res: "Success" };
-    }
-
-    let request_user: User = await User.findOneOrFail(ctx.user.id, {
-      relations: ["user_meta"],
-    });
-    const this_workspace: Workspace = await Workspace.findOneOrFail(
-      target_set.wsConnector.ws.id
-    );
-    for (const item of new_items) {
-      await this.saveItemAndAddToSet(
-        item,
-        request_user.user_meta,
-        this_workspace,
-        target_set
-      );
-    }
-
-    this.deSet(set.set_id_on_server);
     return { res: "Success" };
   }
 
