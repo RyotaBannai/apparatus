@@ -3,7 +3,7 @@ import { Button, Icon } from "@material-ui/core";
 
 interface IProps {
   name: string;
-  handleOnClick: (e: SyntheticEvent) => void;
+  handleOnClick?: (e: SyntheticEvent) => void | undefined;
 }
 export const SaveButton: FC<IProps> = ({ name, handleOnClick }) => {
   useEffect(() => {}, [handleOnClick]);

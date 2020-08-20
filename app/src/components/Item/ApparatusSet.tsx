@@ -153,7 +153,7 @@ export const ApparatusSet: FC<Props> = ({
   else
     return (
       <Box className={is_set ? classes.set : classes.item}>
-        <pre>{JSON.stringify(data, null, 1)}</pre>
+        {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
         {is_set ? (
           <Grid container alignItems="flex-end" direction="row" spacing={1}>
             <Grid item>

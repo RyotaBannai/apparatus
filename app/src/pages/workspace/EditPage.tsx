@@ -1,4 +1,10 @@
-import React, { useState, useEffect, SyntheticEvent, FC } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  SyntheticEvent,
+  FC,
+} from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import {
   S_GET_WORKSPACE,
@@ -9,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useWSActions } from "../../features/workspace/wsFeatureSlice";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
+import { SaveButton } from "../../components/parts/Button/SaveButton";
 import {
   Button,
   Grid,
@@ -41,6 +48,16 @@ const EditPage: FC<Props> = () => {
       })
     );
   };
+
+  let handleOnClick = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      s_editWorkspace({
+        variables: { ...l_data, id: getCurrentWS().id },
+      });
+    },
+    [l_data]
+  );
 
   const { loading: sg_loading, error: sg_error, data } = useQuery(
     S_GET_WORKSPACE,
@@ -101,20 +118,7 @@ const EditPage: FC<Props> = () => {
       </Grid>
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>
-          <Button
-            variant="contained"
-            endIcon={<Icon>arrow_right</Icon>}
-            disableRipple
-            disableTouchRipple
-            onClick={(e: SyntheticEvent) => {
-              e.preventDefault();
-              s_editWorkspace({
-                variables: { ...l_data, id: getCurrentWS().id },
-              });
-            }}
-          >
-            Edit Workspace
-          </Button>
+          <SaveButton name="Edit Workspace" handleOnClick={handleOnClick} />
         </Grid>
       </Grid>
       <SnackbarAlert isOpen={saveSnackBarOpen} />

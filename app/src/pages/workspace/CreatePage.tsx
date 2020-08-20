@@ -1,4 +1,10 @@
-import React, { useState, useEffect, SyntheticEvent, FC } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  SyntheticEvent,
+  FC,
+} from "react";
 import { useMutation, ApolloError } from "@apollo/client";
 import { S_CREATE_WORKSPACE } from "../../api/graphql/workspaceQueries";
 import { useStyles } from "../../assets/style/workspace/page.style";
@@ -6,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useWSActions } from "../../features/workspace/wsFeatureSlice";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
+import { SaveButton } from "../../components/parts/Button/SaveButton";
 import {
   Button,
   Grid,
@@ -51,6 +58,16 @@ const CreatePage: FC<Props> = () => {
     },
   });
 
+  let handleOnClick = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      s_createWorkspace({
+        variables: data,
+      });
+    },
+    [data]
+  );
+
   if (sa_loading) return <p>Loading...</p>;
   if (sa_error) return <p>Error :(</p>;
   return (
@@ -86,20 +103,7 @@ const CreatePage: FC<Props> = () => {
       </Grid>
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>
-          <Button
-            variant="contained"
-            endIcon={<Icon>arrow_right</Icon>}
-            disableRipple
-            disableTouchRipple
-            onClick={(e: SyntheticEvent) => {
-              e.preventDefault();
-              s_createWorkspace({
-                variables: data,
-              });
-            }}
-          >
-            Create Workspace
-          </Button>
+          <SaveButton name="Create Workspace" handleOnClick={handleOnClick} />
         </Grid>
       </Grid>
       <SnackbarAlert isOpen={saveSnackBarOpen} />

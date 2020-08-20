@@ -85,7 +85,11 @@ const EditPage: FC<Props> = () => {
         </Alert>
       )}
       {children.map((child) => child)}
-      <BottomButtonSection name="Save Edit" handleOnClick={sendItems} />
+      <BottomButtonSection
+        nameSave="Save Edit"
+        mode={mode}
+        handleOnSave={sendItems}
+      />
       <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>
   );

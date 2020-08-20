@@ -1,4 +1,10 @@
-import React, { useState, useEffect, SyntheticEvent, FC } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  SyntheticEvent,
+  FC,
+} from "react";
 import { useMutation, ApolloError } from "@apollo/client";
 import { S_ADD_ITEMS } from "../../api/graphql/itemQueries";
 import { Button, Grid, Icon } from "@material-ui/core";
@@ -8,6 +14,7 @@ import { useStyles } from "../../assets/style/item/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useSetActions } from "../../features/set/setFeatureSlice";
 import { useSetHelpers } from "../../features/set/setHelpers";
+import { BottomButtonSection } from "../../components/parts/BottomButtonSection";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {}
@@ -36,6 +43,14 @@ const CreatePage: FC<Props> = () => {
     }
     setChild(newChildren);
   };
+
+  const handleOnAdd = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      callSetChild(children);
+    },
+    [children]
+  );
 
   const [
     s_addItems,
@@ -93,36 +108,14 @@ const CreatePage: FC<Props> = () => {
       <h2>Create New Item</h2>
       {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
       {children.map((child) => child)}
-      <Grid container alignItems="center" direction="row" spacing={1}>
-        <Grid item>
-          <Button
-            variant="contained"
-            className={classes.addButton}
-            startIcon={<Icon>add_circle</Icon>}
-            disableRipple
-            disableTouchRipple
-            onClick={(e: SyntheticEvent) => {
-              e.preventDefault();
-              callSetChild(children);
-            }}
-          >
-            Add Item
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            variant="contained"
-            color="primary"
-            endIcon={<Icon>arrow_right</Icon>}
-            disableRipple
-            disableTouchRipple
-            onClick={sendItems}
-          >
-            Save Item
-          </Button>
-          <SnackbarAlert isOpen={saveSnackBarOpen} />
-        </Grid>
-      </Grid>
+      <BottomButtonSection
+        nameAdd="Add Item"
+        nameSave="Save Item"
+        mode={mode}
+        handleOnSave={sendItems}
+        handleOnAdd={handleOnAdd}
+      />
+      <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>
   );
 };
