@@ -12,6 +12,7 @@
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@material-ui/styles": "^4.10.0",
     "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -24,6 +25,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@types/redux-logger": "^3.0.8",
+    "@types/styled-components": "^5.1.2",
     "@types/uuid": "^8.0.0",
     "apollo-boost": "^0.4.9",
     "apollo-link-context": "^1.0.20",
@@ -49,6 +51,7 @@
     "redux-logger": "^3.0.6",
     "redux-observable": "^1.2.0",
     "rxjs": "^6.6.0",
+    "styled-components": "^5.1.1",
     "typescript": "^4.0.0-beta",
     "uuid": "^8.3.0"
   },
