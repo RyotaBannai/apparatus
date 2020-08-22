@@ -25,9 +25,8 @@ const ListEditListItem: FC<Props> = (props) => {
   const classes = useStyles();
   const [editItem, setEditItem] = useState(false);
 
-  useEffect(() => {
-    console.log(item);
-  }, [item]);
+  useEffect(() => {}, [item]);
+
   return (
     <>
       <Card

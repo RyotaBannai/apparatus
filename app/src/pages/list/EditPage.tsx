@@ -115,7 +115,7 @@ const EditPage: FC<Props> = () => {
       fetchSet();
     }
 
-    if (targets?.sets.length === 0) {
+    if (targets?.items.length === 0) {
       fetchItem();
     }
 

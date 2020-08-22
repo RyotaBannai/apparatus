@@ -22,6 +22,7 @@ import SpaceBarIcon from "@material-ui/icons/SpaceBar";
 import ViewHeadlineIcon from "@material-ui/icons/ViewHeadline";
 import ViewColumnIcon from "@material-ui/icons/ViewColumn";
 import { useStyles } from "../../assets/style/layout/drawer.style";
+import { v4 as uuidv4 } from "uuid";
 
 // TODO: open unOpen の状態を localStorage で管理する
 interface Props {}
@@ -77,7 +78,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
                   icon: <GrainOutlinedIcon />,
                 },
               ].map((data, index) => (
-                <NavLink exact to={data.link}>
+                <NavLink exact to={data.link} key={uuidv4()}>
                   <ListItem
                     button
                     key={data.text}
@@ -120,7 +121,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
                   icon: <GrainOutlinedIcon />,
                 },
               ].map((data, index) => (
-                <NavLink exact to={data.link}>
+                <NavLink exact to={data.link} key={uuidv4()}>
                   <ListItem
                     button
                     key={data.text}
@@ -158,7 +159,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
                   icon: <NotesOutlinedIcon />,
                 },
               ].map((data, index) => (
-                <NavLink exact to={data.link}>
+                <NavLink exact to={data.link} key={uuidv4()}>
                   <ListItem
                     button
                     key={data.text}
@@ -201,7 +202,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
                   icon: <GrainOutlinedIcon />,
                 },
               ].map((data, index) => (
-                <NavLink exact to={data.link}>
+                <NavLink exact to={data.link} key={uuidv4()}>
                   <ListItem
                     button
                     key={data.text}
@@ -244,7 +245,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
                   icon: <GrainOutlinedIcon />,
                 },
               ].map((data, index) => (
-                <NavLink exact to={data.link}>
+                <NavLink exact to={data.link} key={uuidv4()}>
                   <ListItem
                     button
                     key={data.text}
@@ -266,7 +267,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
             { text: "Login", link: "/login" },
             { text: "Sign in", link: "/signin" },
           ].map((data, index) => (
-            <NavLink exact to={data.link}>
+            <NavLink exact to={data.link} key={uuidv4()}>
               <ListItem
                 button
                 key={data.text}

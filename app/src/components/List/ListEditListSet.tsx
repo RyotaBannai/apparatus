@@ -8,6 +8,7 @@ import React, {
 import { Box, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/set.style";
 import ListEditListItem from "./ListEditListItem";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   set: ApparatusSet.Set;
@@ -42,6 +43,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
       {set?.items.map((item: Item.Item) => {
         return (
           <ListEditListItem
+            key={uuidv4()}
             item={item}
             getHoverStateByIdHandler={getHoverStateByIdHandler}
             changeHoverState={changeHoverState}

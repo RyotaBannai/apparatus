@@ -9,6 +9,7 @@ import { Box, Divider, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
 import ListEditListItem from "./ListEditListItem";
 import ListEditListSet from "./ListEditListSet";
+import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   targets: Addee.Addees;
@@ -54,6 +55,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
         } else if (target.__typename === "Set") {
           return (
             <ListEditListSet
+              key={uuidv4()}
               set={target}
               getHoverStateByIdHandler={getHoverStateByIdHandler}
               changeHoverState={changeHoverState}

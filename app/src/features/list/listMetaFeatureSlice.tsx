@@ -103,6 +103,7 @@ export const ListMetaFeature = createSlice({
       }
     ) => {
       const { targets } = action.payload;
+      console.log(targets);
       if (isSets(targets)) {
         state.addable.targets.sets = targets;
       }
