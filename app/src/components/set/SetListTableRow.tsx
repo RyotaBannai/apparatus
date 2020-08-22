@@ -15,7 +15,6 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import * as _ from "lodash";
 import { createData } from "./service";
 
 interface IProps {

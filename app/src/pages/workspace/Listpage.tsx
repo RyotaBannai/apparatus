@@ -1,5 +1,5 @@
 import React, { useState, useEffect, SyntheticEvent, FC } from "react";
-import { useQuery, useMutation, ApolloError } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { S_GET_WORKSPACES } from "../../api/graphql/workspaceQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { useStyles } from "../../assets/style/workspace/page.style";
@@ -121,7 +121,7 @@ const ListPage: FC<Props> = () => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [refetch]);
 
   return (
     <>

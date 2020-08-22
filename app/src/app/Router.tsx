@@ -1,8 +1,8 @@
 import React, { Suspense, lazy, FC } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Layout } from "../pages/layouts/Layout";
-import { Sub } from "../pages/Sub";
-import { Pagination } from "../pages/DemoPagination";
+// import { Sub } from "../pages/Sub";
+// import { Pagination } from "../pages/DemoPagination";
 
 const CreateWorkspacePage = lazy(() => import("../pages/workspace/CreatePage"));
 const ListWorkspacePage = lazy(() => import("../pages/workspace/Listpage"));

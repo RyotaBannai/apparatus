@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
+import React, { useEffect, FC } from "react";
 import { Box, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/set.style";
 import ListEditListItem from "./ListEditListItem";
@@ -26,9 +20,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
   } = props;
   const classes = useStyles();
 
-  useEffect(() => {
-    console.log(set);
-  }, [set]);
+  useEffect(() => {}, []);
 
   return (
     <Box className={classes.root}>

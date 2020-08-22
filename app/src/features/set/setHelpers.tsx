@@ -1,6 +1,6 @@
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
-import { makeVar, ReactiveVar } from "@apollo/client";
-import { whereUpdateArray, whereUpdateHash } from "../../modules/where";
+import { makeVar } from "@apollo/client";
+import { whereUpdateHash } from "../../modules/where";
 import * as _ from "lodash";
 
 export const setCount = makeVar<number>(0);

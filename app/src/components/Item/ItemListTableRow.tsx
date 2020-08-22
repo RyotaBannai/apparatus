@@ -12,7 +12,6 @@ import {
   TableRow,
   Typography,
 } from "@material-ui/core";
-import * as _ from "lodash";
 
 interface IProps {
   row: Item.Item;

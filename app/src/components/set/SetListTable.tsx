@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
 import SetListTableRow from "./SetListTableRow";
-import { returnData, createData } from "./service";
+import { returnData } from "./service";
 
 interface IProps {
   data: ApparatusSet.Sets | undefined;

@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import * as _ from "lodash";
 
 let initialWS: Workspace.Workspace = {
   name: "Workspace",

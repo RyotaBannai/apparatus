@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
+import React, { useEffect, useCallback, FC } from "react";
 import {
   AppBar,
   Box,
@@ -52,10 +46,7 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
     updateAddableAddFrom,
   } = useListMetaActions();
 
-  const [
-    s_add_addees,
-    { loading: sa_loading, error: sa_error, called: sa_called },
-  ] = useMutation(S_ADD_ADDEES, {
+  const [s_add_addees] = useMutation(S_ADD_ADDEES, {
     onCompleted({ res }) {
       callSnackBarOpenHandler();
     },

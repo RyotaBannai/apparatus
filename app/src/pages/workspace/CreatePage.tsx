@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
+import React, { useState, useCallback, SyntheticEvent, FC } from "react";
 import { useMutation, ApolloError } from "@apollo/client";
 import { S_CREATE_WORKSPACE } from "../../api/graphql/workspaceQueries";
 import { useStyles } from "../../assets/style/workspace/page.style";
@@ -13,14 +7,7 @@ import { useWSActions } from "../../features/workspace/wsFeatureSlice";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { SaveButton } from "../../components/Parts/Button/SaveButton";
-import {
-  Button,
-  Grid,
-  Icon,
-  InputLabel,
-  OutlinedInput,
-  TextField,
-} from "@material-ui/core";
+import { Grid, InputLabel, OutlinedInput, TextField } from "@material-ui/core";
 
 interface Props {}
 const CreatePage: FC<Props> = () => {
@@ -48,7 +35,7 @@ const CreatePage: FC<Props> = () => {
 
   const [
     s_createWorkspace,
-    { loading: sa_loading, error: sa_error, called: sa_called },
+    { loading: sa_loading, error: sa_error },
   ] = useMutation(S_CREATE_WORKSPACE, {
     onCompleted({ res }) {
       setOpen(!saveSnackBarOpen);
@@ -65,7 +52,7 @@ const CreatePage: FC<Props> = () => {
         variables: data,
       });
     },
-    [data]
+    [data, s_createWorkspace]
   );
 
   if (sa_loading) return <p>Loading...</p>;

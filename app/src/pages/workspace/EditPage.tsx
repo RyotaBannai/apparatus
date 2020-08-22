@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
+import React, { useState, useCallback, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import {
   S_GET_WORKSPACE,
@@ -16,14 +10,7 @@ import { useWSActions } from "../../features/workspace/wsFeatureSlice";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { SaveButton } from "../../components/Parts/Button/SaveButton";
-import {
-  Button,
-  Grid,
-  Icon,
-  InputLabel,
-  OutlinedInput,
-  TextField,
-} from "@material-ui/core";
+import { Grid, InputLabel, OutlinedInput, TextField } from "@material-ui/core";
 
 interface Props {}
 const EditPage: FC<Props> = () => {
@@ -49,16 +36,6 @@ const EditPage: FC<Props> = () => {
     );
   };
 
-  let handleOnClick = useCallback(
-    (e: SyntheticEvent) => {
-      e.preventDefault();
-      s_editWorkspace({
-        variables: { ...l_data, id: getCurrentWS().id },
-      });
-    },
-    [l_data]
-  );
-
   const { loading: sg_loading, error: sg_error, data } = useQuery(
     S_GET_WORKSPACE,
     {
@@ -68,10 +45,7 @@ const EditPage: FC<Props> = () => {
     }
   );
 
-  const [
-    s_editWorkspace,
-    { loading: sa_loading, error: sa_error, called: sa_called },
-  ] = useMutation(S_EDIT_WORKSPACE, {
+  const [s_editWorkspace] = useMutation(S_EDIT_WORKSPACE, {
     onCompleted({ res }) {
       setOpen(!saveSnackBarOpen);
     },
@@ -79,6 +53,16 @@ const EditPage: FC<Props> = () => {
       console.log(error);
     },
   });
+
+  let handleOnClick = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      s_editWorkspace({
+        variables: { ...l_data, id: getCurrentWS().id },
+      });
+    },
+    [l_data, s_editWorkspace, getCurrentWS]
+  );
 
   if (sg_loading) return <p>Loading...</p>;
   if (sg_error) return <p>Error :(</p>;

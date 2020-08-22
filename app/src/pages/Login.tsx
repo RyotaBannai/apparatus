@@ -30,7 +30,7 @@ const Login: React.FC<Props> = () => {
   const { getCurrentWS, setCurrentWS } = useWSHelpers;
   let email: any = "";
   let password: any = "";
-  const [login, { called, loading, data }] = useLazyQuery(LOGIN, {
+  const [login, { data }] = useLazyQuery(LOGIN, {
     pollInterval: 0,
     context: {
       headers: {

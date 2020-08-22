@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
-import { createData, returnData } from "./service";
+import { returnData } from "./service";
 import ItemListTableRow from "../../components/Item/ItemListTableRow";
 
 interface IProps {

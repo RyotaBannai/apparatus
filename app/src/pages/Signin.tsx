@@ -1,10 +1,9 @@
 import React from "react";
-import { useQuery, useMutation, useApolloClient } from "@apollo/client";
-import { ApolloClient, ApolloError } from "apollo-client";
+import { useMutation } from "@apollo/client";
+import { ApolloError } from "apollo-client";
 import gql from "graphql-tag";
 import {
   Button,
-  Input,
   InputLabel,
   OutlinedInput,
   Grid,
@@ -26,7 +25,7 @@ const Signin: React.FC<Props> = () => {
   let name: any = "";
   let email: any = "";
   let password: any = "";
-  const [addUser, { data, loading, called }] = useMutation(ADD_USER, {
+  const [addUser, { data }] = useMutation(ADD_USER, {
     context: {
       headers: {
         "operation-name": "SIGNIN",

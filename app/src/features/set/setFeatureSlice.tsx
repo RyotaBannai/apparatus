@@ -1,10 +1,4 @@
-import {
-  createSlice,
-  createAction,
-  PayloadAction,
-  createAsyncThunk,
-} from "@reduxjs/toolkit";
-import { useSetHelpers } from "./setHelpers";
+import { createSlice } from "@reduxjs/toolkit";
 import {
   whereUpdateArray,
   whereUpdateHash,
@@ -16,7 +10,7 @@ let initialSets: ApparatusSet.InitialSets = {
   new: [],
   edit: [],
 };
-// const { addWSId } = useSetHelpers;
+
 export const SetFeature = createSlice({
   name: "set",
   initialState: initialSets,
@@ -70,7 +64,7 @@ export const SetFeature = createSlice({
       let this_set: ApparatusSet.SetOrUndefined = _.find(state[mode], {
         id: action.payload.set_id,
       });
-      if (this_set === undefined) throw "There's not this set.";
+      if (this_set === undefined) throw new Error("There's not this set.");
 
       let this_item = _.find(this_set.items, {
         id: item.id,

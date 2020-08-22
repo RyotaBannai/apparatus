@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
+import React, { useEffect, FC } from "react";
 import { Box, Divider, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
 import ListEditListItem from "./ListEditListItem";

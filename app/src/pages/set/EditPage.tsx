@@ -11,7 +11,6 @@ import { Alert } from "@material-ui/lab";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { BottomButtonSection } from "../../components/Parts/BottomButtonSection";
-import * as _ from "lodash";
 
 interface Props {}
 
@@ -73,20 +72,20 @@ const EditPage: FC<Props> = () => {
     });
   };
 
-  const [
-    fetchSet,
-    { loading: sg_loading, error: sg_error, called: sg_called, data, refetch },
-  ] = useLazyQuery(S_GET_SET, {
-    variables: {
-      id: Number(set_id),
-    },
-    onCompleted({ getSet }) {
-      let props = { ...getSet, id: takeIdForSet() };
-      setChild([
-        <ApparatusSet {...props} set_id_on_server={getSet.id} mode={mode} />,
-      ]);
-    },
-  });
+  const [fetchSet, { loading: sg_loading, error: sg_error }] = useLazyQuery(
+    S_GET_SET,
+    {
+      variables: {
+        id: Number(set_id),
+      },
+      onCompleted({ getSet }) {
+        let props = { ...getSet, id: takeIdForSet() };
+        setChild([
+          <ApparatusSet {...props} set_id_on_server={getSet.id} mode={mode} />,
+        ]);
+      },
+    }
+  );
 
   useEffect(() => {
     if (set === undefined) {
@@ -94,7 +93,7 @@ const EditPage: FC<Props> = () => {
     } else {
       setChild([<ApparatusSet {...set} mode={mode} />]);
     }
-  }, []);
+  }, [set, fetchSet]);
 
   if (sg_loading) return <p>Loading...</p>;
   if (sg_error) return <p>Error :(</p>;

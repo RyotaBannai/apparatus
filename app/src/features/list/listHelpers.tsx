@@ -1,4 +1,4 @@
-import { makeVar, ReactiveVar } from "@apollo/client";
+import { makeVar } from "@apollo/client";
 import * as _ from "lodash";
 
 export const listCount = makeVar<number>(0);

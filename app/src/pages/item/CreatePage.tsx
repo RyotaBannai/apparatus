@@ -7,10 +7,8 @@ import React, {
 } from "react";
 import { useMutation, ApolloError } from "@apollo/client";
 import { S_ADD_ITEMS } from "../../api/graphql/itemQueries";
-import { Button, Grid, Icon } from "@material-ui/core";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
-import { useStyles } from "../../assets/style/item/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useSetActions } from "../../features/set/setFeatureSlice";
 import { useSetHelpers } from "../../features/set/setHelpers";
@@ -20,7 +18,6 @@ import { v4 as uuidv4 } from "uuid";
 interface Props {}
 
 const CreatePage: FC<Props> = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
   const { hiddenSets, removeShowFalse } = useSetActions();
   const { takeIdForSet, filterSet, getNewSets } = useSetHelpers;
@@ -52,25 +49,25 @@ const CreatePage: FC<Props> = () => {
     [children]
   );
 
-  const [
-    s_addItems,
-    { loading: sa_loading, error: sa_error, called: sa_called },
-  ] = useMutation(S_ADD_ITEMS, {
-    onCompleted({ createItems: { res } }) {
-      if (res === "Success") {
-        dispatch(hiddenSets({ mode }));
-        callSetChild(null);
-        setOpen(!saveSnackBarOpen);
-      } else {
-        console.log(
-          "Apollo mutation createItems response's status is unexpected."
-        );
-      }
-    },
-    onError(error: ApolloError) {
-      console.log(error);
-    },
-  });
+  const [s_addItems, { loading: sa_loading, error: sa_error }] = useMutation(
+    S_ADD_ITEMS,
+    {
+      onCompleted({ createItems: { res } }) {
+        if (res === "Success") {
+          dispatch(hiddenSets({ mode }));
+          callSetChild(null);
+          setOpen(!saveSnackBarOpen);
+        } else {
+          console.log(
+            "Apollo mutation createItems response's status is unexpected."
+          );
+        }
+      },
+      onError(error: ApolloError) {
+        console.log(error);
+      },
+    }
+  );
 
   const sendItems = (e: SyntheticEvent) => {
     e.preventDefault();

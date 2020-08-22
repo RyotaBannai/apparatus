@@ -19,7 +19,7 @@ const ListPage: FC<Props> = () => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [refetch]);
 
   return (
     <>

@@ -19,7 +19,6 @@ import { Alert } from "@material-ui/lab";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { BottomButtonSection } from "../../components/Parts/BottomButtonSection";
-import * as _ from "lodash";
 
 interface IProps {}
 
@@ -30,7 +29,6 @@ const EditPage: FC<IProps> = () => {
   const { takeIdForSet, filterSet, getEditSets, getSetByKey } = useSetHelpers;
   let { item_id } = useParams<{ item_id?: string | undefined }>();
   const set_id = -item_id!;
-  const edit_set_state = useSelector(getEditSets);
   const set = getSetByKey(useSelector(getEditSets), {
     keyname: "set_id_on_server",
     key: set_id,
@@ -75,7 +73,7 @@ const EditPage: FC<IProps> = () => {
         variables: { data: jsoned_set },
       });
     },
-    [set]
+    [set, filterSet, s_editItems]
   );
 
   const deleteItem = () => {
@@ -86,32 +84,32 @@ const EditPage: FC<IProps> = () => {
     });
   };
 
-  const [
-    fetchItem,
-    { loading: sg_loading, error: sg_error, called: sg_called, data, refetch },
-  ] = useLazyQuery(S_GET_ITEM, {
-    variables: {
-      id: Number(item_id),
-    },
-    onCompleted({ getItem }) {
-      let items = [
-        {
-          id: getItem.id,
-          type: getItem.type,
-          data: getItem.data,
-          description: getItem.item_meta.description,
-          note: getItem.item_meta.note,
-        },
-      ];
-      let props = { items, id: takeIdForSet() };
-      setChild([
-        <ApparatusSet {...props} set_id_on_server={-item_id!} mode={mode} />,
-      ]);
-    },
-    onError(error: ApolloError) {
-      console.log(error);
-    },
-  });
+  const [fetchItem, { loading: sg_loading, error: sg_error }] = useLazyQuery(
+    S_GET_ITEM,
+    {
+      variables: {
+        id: Number(item_id),
+      },
+      onCompleted({ getItem }) {
+        let items = [
+          {
+            id: getItem.id,
+            type: getItem.type,
+            data: getItem.data,
+            description: getItem.item_meta.description,
+            note: getItem.item_meta.note,
+          },
+        ];
+        let props = { items, id: takeIdForSet() };
+        setChild([
+          <ApparatusSet {...props} set_id_on_server={-item_id!} mode={mode} />,
+        ]);
+      },
+      onError(error: ApolloError) {
+        console.log(error);
+      },
+    }
+  );
 
   useEffect(() => {
     if (set === undefined) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SyntheticEvent, FC } from "react";
+import React, { useState, useCallback, SyntheticEvent, FC } from "react";
 import { useMutation, ApolloError } from "@apollo/client";
 import { S_CREATE_LIST } from "../../api/graphql/listQueries";
 import { useStyles } from "../../assets/style/list/page.style";
@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useListActions } from "../../features/list/listFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
+import { SaveButton } from "../../components/Parts/Button/SaveButton";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import {
   Button,
@@ -42,17 +43,27 @@ const CreatePage: FC<Props> = () => {
     );
   };
 
-  const [
-    s_createList,
-    { loading: sa_loading, error: sa_error, called: sa_called },
-  ] = useMutation(S_CREATE_LIST, {
-    onCompleted({ createList }) {
-      setOpen(!saveSnackBarOpen);
+  const [s_createList, { loading: sa_loading, error: sa_error }] = useMutation(
+    S_CREATE_LIST,
+    {
+      onCompleted({ createList }) {
+        setOpen(!saveSnackBarOpen);
+      },
+      onError(error: ApolloError) {
+        console.log(error);
+      },
+    }
+  );
+
+  const handleOnClick = useCallback(
+    (e: SyntheticEvent) => {
+      e.preventDefault();
+      s_createList({
+        variables: { ...data, wsId: Number(getCurrentWS().id) },
+      });
     },
-    onError(error: ApolloError) {
-      console.log(error);
-    },
-  });
+    [data]
+  );
 
   if (sa_loading) return <p>Loading...</p>;
   if (sa_error) return <p>Error :(</p>;
@@ -89,20 +100,7 @@ const CreatePage: FC<Props> = () => {
       </Grid>
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>
-          <Button
-            variant="contained"
-            endIcon={<Icon>arrow_right</Icon>}
-            disableRipple
-            disableTouchRipple
-            onClick={(e: SyntheticEvent) => {
-              e.preventDefault();
-              s_createList({
-                variables: { ...data, wsId: Number(getCurrentWS().id) },
-              });
-            }}
-          >
-            Create List
-          </Button>
+          <SaveButton name="Create List" handleOnClick={handleOnClick} />
         </Grid>
       </Grid>
       <SnackbarAlert isOpen={saveSnackBarOpen} />

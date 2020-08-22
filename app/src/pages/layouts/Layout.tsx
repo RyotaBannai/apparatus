@@ -4,9 +4,7 @@ import { ApparatusDrawer } from "./ApparatusDrawer";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 
-const drawerWidth = 240;
 const navBarWidth = 64;
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",

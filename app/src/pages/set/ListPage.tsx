@@ -1,5 +1,5 @@
-import React, { useState, useEffect, SyntheticEvent, FC } from "react";
-import { useQuery, useMutation, ApolloError } from "@apollo/client";
+import React, { useEffect, FC } from "react";
+import { useQuery, ApolloError } from "@apollo/client";
 import { S_GET_SETS } from "../../api/graphql/setQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import SetListTable from "../../components/Set/SetListTable";
@@ -22,7 +22,7 @@ const ListPage: FC<Props> = () => {
 
   useEffect(() => {
     refetch();
-  }, []);
+  }, [refetch]);
 
   if (sg_loading) return <p>Loading...</p>;
   if (sg_error) return <p>Error :(</p>;

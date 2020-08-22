@@ -1,4 +1,3 @@
-import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import cyan from "@material-ui/core/colors/cyan";
 import indigo from "@material-ui/core/colors/indigo";

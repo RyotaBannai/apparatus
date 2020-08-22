@@ -1,11 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
-import { useLazyQuery, useMutation, ApolloError } from "@apollo/client";
+import React, { useState, useEffect, useCallback, FC } from "react";
+import { useLazyQuery } from "@apollo/client";
 import { S_GET_LIST } from "../../api/graphql/listQueries";
 import { S_GET_SETS } from "../../api/graphql/setQueries";
 import { S_GET_ITEMS } from "../../api/graphql/itemQueries";
@@ -52,7 +46,7 @@ const EditPage: FC<Props> = () => {
 
   const [
     fetchList,
-    { loading: sg_loading, error: sg_error, data, refetch },
+    { loading: sg_loading, error: sg_error, data },
   ] = useLazyQuery(S_GET_LIST, {
     variables: {
       id: String(list_id),
@@ -88,7 +82,7 @@ const EditPage: FC<Props> = () => {
     );
 
   const { getCurrentWS } = useWSHelpers;
-  const [fetchSet, { refetch: set_refetch }] = useLazyQuery(S_GET_SETS, {
+  const [fetchSet] = useLazyQuery(S_GET_SETS, {
     variables: {
       wsId: Number(getCurrentWS().id),
     },
@@ -97,7 +91,7 @@ const EditPage: FC<Props> = () => {
     },
   });
 
-  const [fetchItem, { refetch: item_refetch }] = useLazyQuery(S_GET_ITEMS, {
+  const [fetchItem] = useLazyQuery(S_GET_ITEMS, {
     variables: {
       wsId: Number(getCurrentWS().id),
     },

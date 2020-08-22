@@ -1,6 +1,5 @@
 import React, { useState, FC } from "react";
 import { NavLink } from "react-router-dom";
-import { makeStyles } from "@material-ui/core/styles";
 import {
   Collapse,
   Drawer,
@@ -12,7 +11,6 @@ import {
   Toolbar,
 } from "@material-ui/core";
 import { ExpandLess, ExpandMore } from "@material-ui/icons";
-import GraphicEqOutlinedIcon from "@material-ui/icons/GraphicEqOutlined";
 import LayersOutlinedIcon from "@material-ui/icons/LayersOutlined";
 import NotesOutlinedIcon from "@material-ui/icons/NotesOutlined";
 import GrainOutlinedIcon from "@material-ui/icons/GrainOutlined";
