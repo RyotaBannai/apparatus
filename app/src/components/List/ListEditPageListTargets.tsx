@@ -38,6 +38,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
         if (target.__typename === "Item") {
           return (
             <ListEditListItem
+              is_set={false}
               item={target}
               getHoverStateByIdHandler={getHoverStateByIdHandler}
               changeHoverState={changeHoverState}
