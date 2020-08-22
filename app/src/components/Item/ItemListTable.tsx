@@ -9,12 +9,11 @@ import {
   TableRow,
 } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
+import { createData, returnData } from "./service";
 import ItemListTableRow from "../../components/Item/ItemListTableRow";
 
-interface Props {
+interface IProps {
   data: Item.Items | undefined;
-  returnData: any;
-  createData: any;
   selectable: {
     is_selectable: boolean;
     add?: any;
@@ -23,8 +22,8 @@ interface Props {
   };
 }
 
-const ItemListTable: FC<Props> = (props) => {
-  const { data, returnData, selectable } = props;
+const ItemListTable: FC<IProps> = (props) => {
+  const { data, selectable } = props;
 
   useEffect(() => {}, [data, selectable]);
 
@@ -43,7 +42,7 @@ const ItemListTable: FC<Props> = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {returnData(data).map((row: ApparatusSet.createDataType) => (
+          {returnData(data as Item.Items).map((row) => (
             <ItemListTableRow
               key={uuidv4()}
               row={row}

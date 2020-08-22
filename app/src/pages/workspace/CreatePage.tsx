@@ -11,8 +11,8 @@ import { useStyles } from "../../assets/style/workspace/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useWSActions } from "../../features/workspace/wsFeatureSlice";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
-import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
-import { SaveButton } from "../../components/parts/Button/SaveButton";
+import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
+import { SaveButton } from "../../components/Parts/Button/SaveButton";
 import {
   Button,
   Grid,

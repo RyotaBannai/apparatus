@@ -17,8 +17,8 @@ import {
 import { useStyles } from "../../assets/style/item/page.style";
 import { Alert } from "@material-ui/lab";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
-import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
-import { BottomButtonSection } from "../../components/parts/BottomButtonSection";
+import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
+import { BottomButtonSection } from "../../components/Parts/BottomButtonSection";
 import * as _ from "lodash";
 
 interface IProps {}

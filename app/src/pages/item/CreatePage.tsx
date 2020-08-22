@@ -9,12 +9,12 @@ import { useMutation, ApolloError } from "@apollo/client";
 import { S_ADD_ITEMS } from "../../api/graphql/itemQueries";
 import { Button, Grid, Icon } from "@material-ui/core";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
-import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
+import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { useStyles } from "../../assets/style/item/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useSetActions } from "../../features/set/setFeatureSlice";
 import { useSetHelpers } from "../../features/set/setHelpers";
-import { BottomButtonSection } from "../../components/parts/BottomButtonSection";
+import { BottomButtonSection } from "../../components/Parts/BottomButtonSection";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {}

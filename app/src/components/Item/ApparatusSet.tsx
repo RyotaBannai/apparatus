@@ -16,7 +16,7 @@ import { useSetHelpers } from "../../features/set/setHelpers";
 import * as _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
 
-interface Props {
+interface IProps {
   id: number;
   mode: Global.Mode;
   set_id_on_server?: number | undefined | null;
@@ -24,7 +24,7 @@ interface Props {
   items?: Array<any>;
 }
 
-export const ApparatusSet: FC<Props> = ({
+export const ApparatusSet: FC<IProps> = ({
   id,
   set_id_on_server,
   name,
@@ -102,7 +102,7 @@ export const ApparatusSet: FC<Props> = ({
         mode,
       });
 
-      let item_components: (FC<Props> | JSX.Element | Element)[] = [];
+      let item_components: (FC<IProps> | JSX.Element | Element)[] = [];
       for (const item_edit of items_edit) {
         item_components = [
           ...item_components,
@@ -125,7 +125,7 @@ export const ApparatusSet: FC<Props> = ({
           mode,
         });
 
-        let item_components: (FC<Props> | JSX.Element | Element)[] = [];
+        let item_components: (FC<IProps> | JSX.Element | Element)[] = [];
         for (const item of items) {
           item_components = [
             ...item_components,

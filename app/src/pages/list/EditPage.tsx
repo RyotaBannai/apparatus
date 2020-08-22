@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useListActions } from "../../features/list/listFeatureSlice";
 import { useListMetaActions } from "../../features/list/listMetaFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";
-import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
+import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import ListEditPageTopName from "../../components/List/ListEditPageTopName";
 import ListEditPageAddSection from "../../components/List/ListEditPageAddSection";
 import ListEditPageListTargets from "../../components/List/ListEditPageListTargets";

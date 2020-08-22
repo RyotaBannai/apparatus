@@ -2,28 +2,7 @@ import React, { useState, useEffect, SyntheticEvent, FC } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { S_GET_SETS } from "../../api/graphql/setQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
-import SetListTable from "../../components/set/SetListTable";
-
-export function createData(
-  id: number,
-  name: string,
-  items: Item.Items
-): ApparatusSet.createDataType {
-  return {
-    id,
-    name,
-    items,
-    item_count: items.length,
-  };
-}
-
-export const returnData = (sets: ApparatusSet.Set[]) => {
-  let rows: ReturnType<typeof createData>[] = [];
-  for (const { id, name, items } of sets) {
-    rows = [...rows, createData(id, name, items)];
-  }
-  return rows;
-};
+import SetListTable from "../../components/Set/SetListTable";
 
 interface Props {}
 
@@ -53,8 +32,6 @@ const ListPage: FC<Props> = () => {
         <div>
           <h2>Set List</h2>
           <SetListTable
-            returnData={returnData}
-            createData={createData}
             data={data?.getSets}
             selectable={{ is_selectable: false }}
           />

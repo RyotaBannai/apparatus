@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useListActions } from "../../features/list/listFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
-import { SnackbarAlert } from "../../components/parts/SnackbarAlert";
+import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import {
   Button,
   Grid,

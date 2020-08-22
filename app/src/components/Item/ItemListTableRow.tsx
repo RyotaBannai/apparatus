@@ -8,16 +8,13 @@ import {
   Collapse,
   Grid,
   Icon,
-  Table,
-  TableBody,
   TableCell,
-  TableHead,
   TableRow,
   Typography,
 } from "@material-ui/core";
 import * as _ from "lodash";
 
-interface Props {
+interface IProps {
   row: Item.Item;
   selectable: {
     is_selectable: boolean;
@@ -27,7 +24,7 @@ interface Props {
   };
 }
 
-function ItemListTableRow(props: Props) {
+function ItemListTableRow(props: IProps) {
   const { row, selectable } = props;
   const classes = useStyles();
   const [goToItem, setGoToItem] = useState<boolean>();

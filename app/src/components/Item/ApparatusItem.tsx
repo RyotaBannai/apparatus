@@ -14,7 +14,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useSetActions } from "../../features/set/setFeatureSlice";
 import { useSetHelpers } from "../../features/set/setHelpers";
 
-interface Props {
+interface IProps {
   set_id: number;
   id: number;
   mode: Global.Mode;
@@ -24,7 +24,7 @@ interface Props {
   note?: string;
 }
 
-export const ApparatusItem: FC<Props> = ({
+export const ApparatusItem: FC<IProps> = ({
   set_id,
   id,
   type,

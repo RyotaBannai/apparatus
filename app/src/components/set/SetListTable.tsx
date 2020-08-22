@@ -9,12 +9,11 @@ import {
   TableRow,
 } from "@material-ui/core";
 import { v4 as uuidv4 } from "uuid";
-import SetListTableRow from "../../components/set/SetListTableRow";
+import SetListTableRow from "./SetListTableRow";
+import { returnData, createData } from "./service";
 
-interface Props {
+interface IProps {
   data: ApparatusSet.Sets | undefined;
-  returnData: any;
-  createData: any;
   selectable: {
     is_selectable: boolean;
     add?: any;
@@ -23,8 +22,8 @@ interface Props {
   };
 }
 
-const SetListTable: FC<Props> = (props) => {
-  const { data, returnData, selectable } = props;
+const SetListTable: FC<IProps> = (props) => {
+  const { data, selectable } = props;
 
   useEffect(() => {}, [data, selectable]);
 
@@ -43,7 +42,7 @@ const SetListTable: FC<Props> = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {returnData(data).map((row: ApparatusSet.createDataType) => (
+          {returnData(data as ApparatusSet.Set[]).map((row) => (
             <SetListTableRow key={uuidv4()} row={row} selectable={selectable} />
           ))}
         </TableBody>

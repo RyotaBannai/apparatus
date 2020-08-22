@@ -51,13 +51,6 @@ declare namespace ApparatusSet {
     id: number;
     is_set: boolean;
   }
-
-  interface createDataType {
-    id: number;
-    name: string;
-    items: Item.Items;
-    item_count: number;
-  }
 }
 
 declare namespace Addee {

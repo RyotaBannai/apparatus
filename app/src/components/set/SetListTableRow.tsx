@@ -16,9 +16,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import * as _ from "lodash";
+import { createData } from "./service";
 
-interface Props {
-  row: ApparatusSet.createDataType;
+interface IProps {
+  row: ReturnType<typeof createData>;
   selectable: {
     is_selectable: boolean;
     add?: any;
@@ -27,7 +28,7 @@ interface Props {
   };
 }
 
-function SetListTableRow(props: Props) {
+function SetListTableRow(props: IProps) {
   const { row, selectable } = props;
   const classes = useStyles();
   const [goToSet, setGoToSet] = useState<boolean>();

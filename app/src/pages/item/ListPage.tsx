@@ -4,26 +4,6 @@ import { S_GET_ITEMS } from "../../api/graphql/itemQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import ItemListTable from "../../components/Item/ItemListTable";
 
-export function createData(
-  id: number,
-  type: string | undefined,
-  data: string | undefined
-): Item.Item {
-  return {
-    id,
-    type,
-    data,
-  };
-}
-
-export const returnData = (items: Item.Items) => {
-  let rows: ReturnType<typeof createData>[] = [];
-  for (const { id, type, data } of items) {
-    rows = [...rows, createData(id, type, data)];
-  }
-  return rows;
-};
-
 interface Props {}
 
 const ListPage: FC<Props> = () => {
@@ -52,8 +32,6 @@ const ListPage: FC<Props> = () => {
         <div>
           <h2>Item List</h2>
           <ItemListTable
-            returnData={returnData}
-            createData={createData}
             data={data?.getPureItems}
             selectable={{ is_selectable: false }}
           />

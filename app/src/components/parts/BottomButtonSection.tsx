@@ -1,8 +1,8 @@
 import React, { useEffect, SyntheticEvent, FC } from "react";
 import { Grid } from "@material-ui/core";
-import { SaveButton } from "../../components/parts/Button/SaveButton";
-import { DeleteButton } from "../../components/parts/Button/DeleteButton";
-import { AddButton } from "../../components/parts/Button/AddButton";
+import { SaveButton } from "./Button/SaveButton";
+import { DeleteButton } from "./Button/DeleteButton";
+import { AddButton } from "./Button/AddButton";
 
 interface IProps {
   nameSave?: string;

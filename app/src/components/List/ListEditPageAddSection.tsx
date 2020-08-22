@@ -19,15 +19,14 @@ import {
 } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
 import { useDispatch, useSelector } from "react-redux";
-import { useListActions } from "../../features/list/listFeatureSlice";
 import { useListMetaActions } from "../../features/list/listMetaFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";
-import SetListTable from "../../components/set/SetListTable";
-import { useLazyQuery, useMutation, ApolloError } from "@apollo/client";
+import { useMutation, ApolloError } from "@apollo/client";
 import { S_ADD_ADDEES } from "../../api/graphql/listQueries";
-import { returnData, createData } from "../../pages/set/ListPage";
+import ItemListTable from "../Item/ItemListTable";
+import SetListTable from "../Set/SetListTable";
 
-interface Props {
+interface IProps {
   list_id: string | undefined;
   selected: {
     items: number[];
@@ -40,7 +39,7 @@ interface Props {
   callSnackBarOpenHandler: () => void;
 }
 
-const ListEditPageAddSection: FC<Props> = (props) => {
+const ListEditPageAddSection: FC<IProps> = (props) => {
   const { list_id, selected, targets, callSnackBarOpenHandler } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -87,6 +86,53 @@ const ListEditPageAddSection: FC<Props> = (props) => {
 
   const onChangeAddableTarget = (e: any) =>
     dispatch(updateAddableAddFrom({ add_from: e.target.value }));
+
+  const onClickAddAddeeHandler = () => {
+    const variables = {
+      id: Number(list_id),
+      addee_type: add_from,
+      addee_ids: selected[add_from],
+    };
+    s_add_addees({
+      variables,
+    });
+  };
+
+  const displayTargetsList = useCallback(() => {
+    if (targets[add_from] !== undefined && targets[add_from].length > 0) {
+      if (add_from === "sets") {
+        return (
+          <div>
+            <SetListTable
+              data={targets?.sets}
+              selectable={{
+                is_selectable: true,
+                add: addSelectedTargetHandler,
+                remove: removeUnSelectedTargetHandler,
+                selected,
+              }}
+            />
+          </div>
+        );
+      } else if (add_from === "items") {
+        return (
+          <div>
+            <ItemListTable
+              data={targets?.items}
+              selectable={{
+                is_selectable: true,
+                add: addSelectedTargetHandler,
+                remove: removeUnSelectedTargetHandler,
+                selected,
+              }}
+            />
+          </div>
+        );
+      }
+    } else {
+      return <div>No data</div>;
+    }
+  }, [targets, add_from]);
 
   useEffect(() => {}, [list_id, selected, targets, callSnackBarOpenHandler]);
 
@@ -140,16 +186,7 @@ const ListEditPageAddSection: FC<Props> = (props) => {
                         endIcon={<Icon>arrow_right</Icon>}
                         disableRipple
                         disableTouchRipple
-                        onClick={() => {
-                          const variables = {
-                            id: Number(list_id),
-                            addee_type: add_from,
-                            addee_ids: selected[add_from],
-                          };
-                          s_add_addees({
-                            variables,
-                          });
-                        }}
+                        onClick={onClickAddAddeeHandler}
                       >
                         Add
                       </Button>
@@ -166,23 +203,7 @@ const ListEditPageAddSection: FC<Props> = (props) => {
               </Grid>
             </Toolbar>
           </AppBar>
-          {targets?.sets !== undefined && targets?.sets.length > 0 ? (
-            <div>
-              <SetListTable
-                returnData={returnData}
-                createData={createData}
-                data={targets?.sets}
-                selectable={{
-                  is_selectable: true,
-                  add: addSelectedTargetHandler,
-                  remove: removeUnSelectedTargetHandler,
-                  selected,
-                }}
-              />
-            </div>
-          ) : (
-            <div>No set</div>
-          )}
+          {displayTargetsList()}
         </Box>
       ) : (
         <></>
