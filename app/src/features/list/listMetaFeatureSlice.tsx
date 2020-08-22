@@ -160,13 +160,13 @@ export const ListMetaFeature = createSlice({
 });
 
 function isSets(targets: any[]): targets is ApparatusSet.Sets {
-  if (targets.length === 0) return false;
+  if (!targets?.length || targets?.length === 0) return false;
   const target = _.head(targets);
   return "name" in target && "items" in target;
 }
 
 function isItems(targets: any[]): targets is Item.Items {
-  if (targets.length === 0) return false;
+  if (!targets?.length || targets.length === 0) return false;
   const target = _.head(targets);
   return "type" in target && "data" in target;
 }

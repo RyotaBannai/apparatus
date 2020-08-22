@@ -80,7 +80,7 @@ export const ApparatusItem: FC<Props> = ({
   else
     return (
       <div className={classes.item}>
-        {this_item?.type === "line" ? (
+        {this_item?.type === "line" || type === "line" ? (
           <Grid container alignItems="flex-end" direction="row" spacing={1}>
             <Grid item>
               <InputLabel htmlFor="type">Type</InputLabel>
