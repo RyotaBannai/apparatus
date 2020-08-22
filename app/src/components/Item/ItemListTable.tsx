@@ -14,12 +14,7 @@ import ItemListTableRow from "../../components/Item/ItemListTableRow";
 
 interface IProps {
   data: Item.Items | undefined;
-  selectable: {
-    is_selectable: boolean;
-    add?: any;
-    remove?: any;
-    selected?: any;
-  };
+  selectable: ApparatusList.Selectable;
 }
 
 const ItemListTable: FC<IProps> = (props) => {

@@ -106,6 +106,13 @@ declare namespace ApparatusList {
     key: string;
     value: string;
   }
+
+  interface Selectable {
+    is_selectable: boolean;
+    add?: ({ id, add_to }: { id: number; add_to: "items" | "sets" }) => void;
+    remove?: ({ id, add_to }: { id: number; add_to: "items" | "sets" }) => void;
+    selected?: { items: number[]; sets: number[] };
+  }
 }
 
 declare namespace Workspace {

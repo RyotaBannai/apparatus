@@ -14,12 +14,7 @@ import { returnData } from "./service";
 
 interface IProps {
   data: ApparatusSet.Sets | undefined;
-  selectable: {
-    is_selectable: boolean;
-    add?: any;
-    remove?: any;
-    selected?: any;
-  };
+  selectable: ApparatusList.Selectable;
 }
 
 const SetListTable: FC<IProps> = (props) => {

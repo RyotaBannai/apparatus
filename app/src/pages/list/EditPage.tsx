@@ -95,8 +95,8 @@ const EditPage: FC<Props> = () => {
     variables: {
       wsId: Number(getCurrentWS().id),
     },
-    onCompleted({ getItems }) {
-      dispatch(updateAddableTargets({ targets: getItems }));
+    onCompleted({ getPureItems }) {
+      dispatch(updateAddableTargets({ targets: getPureItems }));
     },
   });
 

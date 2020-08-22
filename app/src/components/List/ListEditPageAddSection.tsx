@@ -61,9 +61,7 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
   }: {
     id: number;
     add_to: "items" | "sets";
-  }) => {
-    dispatch(addSelectedTarget({ id, add_to }));
-  };
+  }) => dispatch(addSelectedTarget({ id, add_to }));
 
   const removeUnSelectedTargetHandler = ({
     id,
@@ -71,9 +69,7 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
   }: {
     id: number;
     add_to: "items" | "sets";
-  }) => {
-    dispatch(removeUnSelectedTarget({ id, add_to }));
-  };
+  }) => dispatch(removeUnSelectedTarget({ id, add_to }));
 
   const onChangeAddableTarget = (e: any) =>
     dispatch(updateAddableAddFrom({ add_from: e.target.value }));
@@ -91,39 +87,29 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
 
   const displayTargetsList = useCallback(() => {
     if (targets[add_from] !== undefined && targets[add_from].length > 0) {
+      const selectable = {
+        is_selectable: true,
+        add: addSelectedTargetHandler,
+        remove: removeUnSelectedTargetHandler,
+        selected,
+      };
       if (add_from === "sets") {
         return (
           <div>
-            <SetListTable
-              data={targets?.sets}
-              selectable={{
-                is_selectable: true,
-                add: addSelectedTargetHandler,
-                remove: removeUnSelectedTargetHandler,
-                selected,
-              }}
-            />
+            <SetListTable data={targets?.sets} selectable={selectable} />
           </div>
         );
       } else if (add_from === "items") {
         return (
           <div>
-            <ItemListTable
-              data={targets?.items}
-              selectable={{
-                is_selectable: true,
-                add: addSelectedTargetHandler,
-                remove: removeUnSelectedTargetHandler,
-                selected,
-              }}
-            />
+            <ItemListTable data={targets?.items} selectable={selectable} />
           </div>
         );
       }
     } else {
       return <div>No data</div>;
     }
-  }, [targets, add_from]);
+  }, [targets, add_from, selected]);
 
   useEffect(() => {}, [list_id, selected, targets, callSnackBarOpenHandler]);
 
@@ -154,7 +140,7 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
                     required
                     variant="outlined"
                     autoWidth
-                    defaultValue={add_from ?? "sets"}
+                    defaultValue={add_from ?? "items"}
                     className={classes.formType}
                     onChange={onChangeAddableTarget}
                   >

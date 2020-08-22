@@ -15,47 +15,42 @@ import {
 
 interface IProps {
   row: Item.Item;
-  selectable: {
-    is_selectable: boolean;
-    add?: any;
-    remove?: any;
-    selected?: any;
-  };
+  selectable: ApparatusList.Selectable;
 }
 
 function ItemListTableRow(props: IProps) {
-  const { row, selectable } = props;
+  const {
+    row,
+    selectable: { is_selectable, add, remove, selected },
+  } = props;
   const classes = useStyles();
   const [goToItem, setGoToItem] = useState<boolean>();
-  const is_selected = selectable.selected?.items.includes(Number(row.id));
+  const is_selected = selected?.items.includes(Number(row.id));
 
-  const pressCheckBoxHandler = useCallback(
-    (e) => {
-      const is_checked = e.target.checked;
-      const payload = {
-        id: Number(e.target.value),
-        add_to: "items",
-      };
-      if (is_checked) {
-        selectable.add(payload);
-      } else {
-        selectable.remove(payload);
-      }
-    },
-    [selectable]
-  );
+  const pressCheckBoxHandler = useCallback((e) => {
+    const is_checked = e.target.checked;
+    const payload = {
+      id: Number(e.target.value),
+      add_to: "items" as "items",
+    };
+    if (is_checked === true && add !== undefined) {
+      add(payload);
+    } else if (is_checked === false && remove !== undefined) {
+      remove(payload);
+    }
+  }, []);
 
   const toggleGotoEdit = useCallback(
     (e: SyntheticEvent) => setGoToItem(!goToItem),
     [goToItem]
   );
 
-  useEffect(() => {}, [selectable]);
+  useEffect(() => {}, [selected, is_selected]);
 
   return (
     <>
       <TableRow hover className={classes.root}>
-        {selectable.is_selectable ? (
+        {is_selectable ? (
           <TableCell>
             <Checkbox
               checked={is_selected}

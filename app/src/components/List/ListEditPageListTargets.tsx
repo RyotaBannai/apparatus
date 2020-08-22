@@ -21,9 +21,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
   } = props;
   const classes = useStyles();
 
-  useEffect(() => {
-    console.log(targets);
-  }, [targets]);
+  useEffect(() => {}, [targets]);
 
   return (
     <Box className={classes.listBox}>

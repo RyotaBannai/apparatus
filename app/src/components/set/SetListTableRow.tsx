@@ -1,4 +1,4 @@
-import React, { useState, useEffect, SyntheticEvent } from "react";
+import React, { useState, useEffect, useCallback, SyntheticEvent } from "react";
 import { NavLink } from "react-router-dom";
 import { useStyles } from "../../assets/style/set/page.style";
 import {
@@ -19,44 +19,44 @@ import { createData } from "./service";
 
 interface IProps {
   row: ReturnType<typeof createData>;
-  selectable: {
-    is_selectable: boolean;
-    add?: any;
-    remove?: any;
-    selected?: any;
-  };
+  selectable: ApparatusList.Selectable;
 }
 
 function SetListTableRow(props: IProps) {
-  const { row, selectable } = props;
+  const {
+    row,
+    selectable: { is_selectable, add, remove, selected },
+  } = props;
   const classes = useStyles();
   const [goToSet, setGoToSet] = useState<boolean>();
-  const is_selected = selectable.selected?.sets.includes(Number(row.id));
+  const is_selected = selected?.sets.includes(Number(row.id));
 
-  useEffect(() => {}, [selectable]);
+  const pressCheckBoxHandler = useCallback((e) => {
+    const is_checked = e.target.checked;
+    const payload = {
+      id: Number(e.target.value),
+      add_to: "sets" as "sets",
+    };
+    if (is_checked === true && add !== undefined) {
+      add(payload);
+    } else if (is_checked === false && remove !== undefined) {
+      remove(payload);
+    }
+  }, []);
+
+  useEffect(() => {}, [selected]);
 
   return (
     <>
       <TableRow hover className={classes.root}>
-        {selectable.is_selectable ? (
+        {is_selectable ? (
           <TableCell>
             <Checkbox
               checked={is_selected}
               color="primary"
               inputProps={{ "aria-label": "secondary checkbox" }}
               size={"small"}
-              onChange={(e) => {
-                const is_checked = e.target.checked;
-                const payload = {
-                  id: Number(e.target.value),
-                  add_to: "sets",
-                };
-                if (is_checked) {
-                  selectable.add(payload);
-                } else {
-                  selectable.remove(payload);
-                }
-              }}
+              onChange={pressCheckBoxHandler}
               value={row.id}
             />
           </TableCell>

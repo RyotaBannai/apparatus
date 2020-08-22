@@ -7,7 +7,7 @@ let initialMetaList: ApparatusList.InitialListMeta = {
   editable: false,
   addable: {
     is_addable: false,
-    add_from: "sets",
+    add_from: "items",
     targets: {
       items: [],
       sets: [],
@@ -103,7 +103,6 @@ export const ListMetaFeature = createSlice({
       }
     ) => {
       const { targets } = action.payload;
-      console.log(targets);
       if (isSets(targets)) {
         state.addable.targets.sets = targets;
       }
