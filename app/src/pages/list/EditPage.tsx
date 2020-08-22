@@ -82,7 +82,7 @@ const EditPage: FC<Props> = () => {
     );
 
   const { getCurrentWS } = useWSHelpers;
-  const [fetchSet] = useLazyQuery(S_GET_SETS, {
+  const [fetchSet, { data: sets }] = useLazyQuery(S_GET_SETS, {
     variables: {
       wsId: Number(getCurrentWS().id),
     },
@@ -91,7 +91,7 @@ const EditPage: FC<Props> = () => {
     },
   });
 
-  const [fetchItem] = useLazyQuery(S_GET_ITEMS, {
+  const [fetchItem, { data: items }] = useLazyQuery(S_GET_ITEMS, {
     variables: {
       wsId: Number(getCurrentWS().id),
     },
@@ -106,10 +106,12 @@ const EditPage: FC<Props> = () => {
     }
 
     if (targets?.sets.length === 0) {
+      dispatch(updateAddableTargets({ targets: sets?.getSets }));
       fetchSet();
     }
 
     if (targets?.items.length === 0) {
+      dispatch(updateAddableTargets({ targets: items?.getPureItems }));
       fetchItem();
     }
 
@@ -117,7 +119,7 @@ const EditPage: FC<Props> = () => {
       id: "list_title",
       is_hover: false,
     });
-  }, []);
+  }, [sets, items]);
 
   if (sg_loading) return <p>Loading...</p>;
   if (sg_error) return <p>Error :(</p>;
