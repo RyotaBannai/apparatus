@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, FC } from "react";
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery, useQuery } from "@apollo/client";
 import { S_GET_LIST } from "../../api/graphql/listQueries";
 import { S_GET_SETS } from "../../api/graphql/setQueries";
 import { S_GET_ITEMS } from "../../api/graphql/itemQueries";
@@ -39,8 +39,6 @@ const EditPage: FC<Props> = () => {
   });
 
   const list_meta = useSelector(getListMeta);
-  // const getEditStateByIdHandler = (id: string) =>
-  // getHoverStateById(list_meta.hover_states, { id });
   const targets = useSelector(getAddableTargets);
   const selected = useSelector(getAddableSelected);
 
@@ -82,7 +80,7 @@ const EditPage: FC<Props> = () => {
     );
 
   const { getCurrentWS } = useWSHelpers;
-  const [fetchSet, { data: sets }] = useLazyQuery(S_GET_SETS, {
+  const { data: sets } = useQuery(S_GET_SETS, {
     variables: {
       wsId: Number(getCurrentWS().id),
     },
@@ -91,7 +89,7 @@ const EditPage: FC<Props> = () => {
     },
   });
 
-  const [fetchItem, { data: items }] = useLazyQuery(S_GET_ITEMS, {
+  const { data: items } = useQuery(S_GET_ITEMS, {
     variables: {
       wsId: Number(getCurrentWS().id),
     },
@@ -105,21 +103,11 @@ const EditPage: FC<Props> = () => {
       fetchList();
     }
 
-    if (targets?.sets.length === 0) {
-      dispatch(updateAddableTargets({ targets: sets?.getSets }));
-      fetchSet();
-    }
-
-    if (targets?.items.length === 0) {
-      dispatch(updateAddableTargets({ targets: items?.getPureItems }));
-      fetchItem();
-    }
-
     changeHoverState({
       id: "list_title",
       is_hover: false,
     });
-  }, [sets, items]);
+  }, []);
 
   if (sg_loading) return <p>Loading...</p>;
   if (sg_error) return <p>Error :(</p>;
