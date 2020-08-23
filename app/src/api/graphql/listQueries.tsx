@@ -22,6 +22,7 @@ export const S_GET_LIST = gql`
           type
         }
         ... on Set {
+          id
           name
           items {
             id
@@ -47,6 +48,7 @@ export const S_GET_LISTS = gql`
           type
         }
         ... on Set {
+          id
           name
           items {
             id

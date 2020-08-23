@@ -1,12 +1,7 @@
-import React, { useState, useEffect, FC } from "react";
+import React, { useEffect, FC } from "react";
 import { useStyles } from "../../assets/style/list/item.style";
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Typography,
-} from "@material-ui/core";
+import { Card, CardActions, CardContent, Typography } from "@material-ui/core";
+import { NavLink } from "react-router-dom";
 import { ListEditTargetButton } from "../Parts/Button/ListEditTargetButton";
 
 type TProps = {
@@ -52,6 +47,7 @@ const CardHoverable: FC<THoverableProps> = (props) => {
   } = props;
   const hover_state_prefix = "Item-";
   const item_id = hover_state_prefix + item?.id;
+  const item_link = `/item_edit/${item?.id}`;
   const classes = useStyles();
 
   useEffect(() => {}, [props]);
@@ -78,12 +74,9 @@ const CardHoverable: FC<THoverableProps> = (props) => {
         {children}
         {getHoverStateByIdHandler(item_id)?.is_hover ? (
           <CardActions>
-            <ListEditTargetButton
-              name="Edit"
-              handleOnClick={() => {
-                //TODO: link to edit page}
-              }}
-            />
+            <NavLink exact to={item_link}>
+              <ListEditTargetButton name="Edit" />
+            </NavLink>
           </CardActions>
         ) : (
           <></>

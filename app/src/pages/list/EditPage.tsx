@@ -107,7 +107,7 @@ const EditPage: FC<Props> = () => {
       id: "list_title",
       is_hover: false,
     });
-  }, []);
+  }, [this_list]);
 
   if (sg_loading) return <p>Loading...</p>;
   if (sg_error) return <p>Error :(</p>;

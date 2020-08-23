@@ -1,5 +1,6 @@
-import React, { useEffect, FC } from "react";
-import { Box, Button, Typography } from "@material-ui/core";
+import React, { useEffect, useCallback, FC } from "react";
+import { Box, Typography } from "@material-ui/core";
+import { NavLink } from "react-router-dom";
 import { useStyles } from "../../assets/style/list/set.style";
 import ListEditListItem from "./ListEditListItem";
 import { ListEditTargetButton } from "../Parts/Button/ListEditTargetButton";
@@ -22,6 +23,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
   const classes = useStyles();
   const hover_state_prefix = "Set-";
   const set_id = hover_state_prefix + set.id;
+  const set_link = `/set_edit/${set.id}`;
 
   useEffect(() => {}, [set]);
 
@@ -63,12 +65,9 @@ const ListEditPageListTargets: FC<Props> = (props) => {
       })}
       {getHoverStateByIdHandler(set_id)?.is_hover ? (
         <Box style={{ padding: 6 }}>
-          <ListEditTargetButton
-            name="Edit"
-            handleOnClick={() => {
-              //TODO: link to edit page}
-            }}
-          />
+          <NavLink exact to={set_link} key={uuidv4()}>
+            <ListEditTargetButton name="Edit" />
+          </NavLink>
         </Box>
       ) : (
         <></>
