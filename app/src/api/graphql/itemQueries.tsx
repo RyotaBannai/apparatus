@@ -1,5 +1,28 @@
 import { gql } from "@apollo/client";
 
+export const itemFragments = {
+  item: gql`
+    fragment ItemWithMeta on Item {
+      id
+      data
+      type
+      item_meta {
+        description
+        note
+      }
+    }
+  `,
+  itemData: gql`
+    fragment ItemDataWithMeta on Item {
+      id
+      data
+      type
+      description
+      note
+    }
+  `,
+};
+
 export const S_ADD_ITEMS = gql`
   mutation ADD_ITEMS($data: String!) {
     createItems(data: { data: $data }) {
@@ -44,6 +67,10 @@ export const S_GET_ITEMS = gql`
       id
       type
       data
+      item_meta {
+        description
+        note
+      }
     }
   }
 `;

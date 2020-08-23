@@ -25,7 +25,7 @@ const ListEditListItem: FC<TProps> = (props) => {
           {item?.data ?? ""}
         </Typography>
         <Typography variant="body2" color="textSecondary" component="p">
-          {item?.description ?? ""}
+          {item.description ?? ""}
         </Typography>
       </CardContent>
     </CardHoverable>

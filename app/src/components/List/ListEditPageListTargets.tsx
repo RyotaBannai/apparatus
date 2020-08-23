@@ -35,7 +35,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
       </Typography>
       <Divider style={{ marginBottom: 10 }} />
       {targets?.map((target: Addee.Addee) => {
-        if (target.__typename === "Item") {
+        if (target.__typename === "ItemData") {
           return (
             <ListEditListItem
               is_set={false}

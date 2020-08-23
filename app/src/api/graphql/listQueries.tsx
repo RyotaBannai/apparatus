@@ -1,4 +1,5 @@
 import { gql } from "@apollo/client";
+import { itemFragments } from "./itemQueries";
 
 export const S_CREATE_LIST = gql`
   mutation CREATE_LIST($name: String!, $description: String!, $wsId: Float!) {
@@ -16,10 +17,12 @@ export const S_GET_LIST = gql`
       name
       description
       targets {
-        ... on Item {
+        ... on ItemData {
           id
           data
           type
+          description
+          note
         }
         ... on Set {
           id
@@ -28,6 +31,8 @@ export const S_GET_LIST = gql`
             id
             data
             type
+            description
+            note
           }
         }
       }
@@ -42,7 +47,7 @@ export const S_GET_LISTS = gql`
       name
       description
       targets {
-        ... on Item {
+        ... on ItemData {
           id
           data
           type
