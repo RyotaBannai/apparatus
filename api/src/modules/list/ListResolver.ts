@@ -91,11 +91,35 @@ export class ListResolver {
       relations: ["addeeConnector", "addeeConnector.addee"],
     });
 
-    return this_list.addeeConnector.map(
-      async (addee_list: AddeeList) =>
-        await getRepository(addee_list.addee.morphType).findOneOrFail(
-          addee_list.addee.morphId
-        )
-    );
+    return this_list.addeeConnector.map(async (addee_list: AddeeList) => {
+      let relations: string[] = [];
+      if (addee_list.addee.morphType === "Item") {
+        relations = ["item_meta"];
+        const item: Item = (await getRepository(
+          addee_list.addee.morphType
+        ).findOneOrFail(addee_list.addee.morphId, {
+          relations: relations,
+        })) as Item;
+        return {
+          id: item.id,
+          type: item.type,
+          data: item.data,
+          description: item.item_meta.description,
+          note: item.item_meta.note,
+        };
+      } else if (addee_list.addee.morphType === "Set") {
+        relations = [
+          "itemConnector",
+          "itemConnector.item",
+          "itemConnector.item.item_meta",
+        ];
+        return await getRepository(addee_list.addee.morphType).findOneOrFail(
+          addee_list.addee.morphId,
+          {
+            relations: relations,
+          }
+        );
+      }
+    });
   }
 }

@@ -2,7 +2,7 @@ import { Entity, Column, OneToMany, JoinColumn, ManyToMany } from "typeorm";
 import { Ctx, Field, ID, ObjectType, createUnionType } from "type-graphql";
 import { Base } from "./Base";
 import { AddeeList } from "./AddeeList";
-import { Item } from "./Item";
+import { ItemData } from "../modules/item/TypeDefs";
 import { Set } from "./Set";
 
 @ObjectType()
@@ -17,7 +17,7 @@ export class Addee extends Base {
   morphId: number;
 
   @Field((type) => AddeeUnion)
-  target: Item | Set;
+  target: ItemData | Set;
 
   @OneToMany((type) => AddeeList, (addee_list) => addee_list.addee)
   listConnector: AddeeList[];
@@ -25,10 +25,10 @@ export class Addee extends Base {
 
 export const AddeeUnion = createUnionType({
   name: "AddeeUnion",
-  types: () => [Item, Set] as const,
+  types: () => [ItemData, Set] as const,
   resolveType: (value) => {
     if ("data" in value) {
-      return Item;
+      return ItemData;
     }
     if ("name" in value) {
       return Set;

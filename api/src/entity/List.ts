@@ -1,7 +1,7 @@
 import { Entity, Column, OneToMany, JoinColumn, OneToOne } from "typeorm";
 import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Base } from "./Base";
-import { Item } from "./Item";
+import { ItemData } from "../modules/item/TypeDefs";
 import { Set } from "./Set";
 import { AddeeUnion } from "./Addee";
 import { AddeeList } from "./AddeeList";
@@ -23,7 +23,7 @@ export class List extends Base {
   ownerId: number;
 
   @Field((type) => AddeeUnion)
-  targets: (Item | Set)[];
+  targets: (ItemData | Set)[];
 
   @Field((type) => [AddeeList])
   @OneToMany((type) => AddeeList, (addee_list) => addee_list.list)

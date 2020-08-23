@@ -12,7 +12,6 @@ import {
   Authorized,
 } from "type-graphql";
 import { getRepository } from "typeorm";
-import { Item } from "../../entity/Item";
 import {
   Response,
   addItemInput,
@@ -25,14 +24,15 @@ import {
 } from "./TypeDefs";
 import { Context } from "vm";
 import { User } from "../../entity/User";
-import { Set } from "../../entity/Set";
+import { UserMeta } from "../../entity/UserMeta";
+import { Item } from "../../entity/Item";
+import { ItemMeta } from "../../entity/ItemMeta";
 import { ItemSet } from "../../entity/ItemSet";
-import { List } from "../../entity/List";
 import { ItemWorkspace } from "../../entity/ItemWorkspace";
+import { Set } from "../../entity/Set";
 import { SetWorkspace } from "../../entity/SetWorkspace";
 import { Workspace } from "../../entity/Workspace";
-import { ItemMeta } from "../../entity/ItemMeta";
-import { UserMeta } from "../../entity/UserMeta";
+import { Addee } from "../../entity/Addee";
 import * as _ from "lodash";
 
 @Resolver((of) => Item)
@@ -250,6 +250,15 @@ export class ItemResolver {
       relations: ["item_meta"],
     });
     await this_item.remove();
+
+    let this_addess: Addee = await Addee.findOneOrFail({
+      where: {
+        morphId: id,
+        morphType: "Item",
+      },
+    });
+    await this_addess.remove();
+
     return { res: "Success" };
   }
 
@@ -262,6 +271,14 @@ export class ItemResolver {
       await item_set.item.remove();
     }
     await this_set.remove();
+
+    let this_addess: Addee = await Addee.findOneOrFail({
+      where: {
+        morphId: set_id,
+        morphType: "Set",
+      },
+    });
+    await this_addess.remove();
 
     return { res: "Success" };
   }

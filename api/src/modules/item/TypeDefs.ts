@@ -61,8 +61,8 @@ export class GetItemArgs {
 
 @ObjectType()
 export class ItemData {
-  @Field((type) => Float, { nullable: true })
-  id?: number;
+  @Field((type) => ID)
+  id: number;
 
   @Field((type) => String, { nullable: true })
   data: string;
