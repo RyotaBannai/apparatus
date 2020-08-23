@@ -30,7 +30,6 @@ const ListPage: FC<Props> = () => {
     <>
       {data?.getPureItems.length > 0 ? (
         <div>
-          <h2>Item List</h2>
           <ItemListTable
             data={data?.getPureItems}
             selectable={{ is_selectable: false }}

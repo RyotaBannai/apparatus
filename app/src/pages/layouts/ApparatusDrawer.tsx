@@ -16,7 +16,6 @@ import NotesOutlinedIcon from "@material-ui/icons/NotesOutlined";
 import GrainOutlinedIcon from "@material-ui/icons/GrainOutlined";
 import CallMissedOutgoingOutlinedIcon from "@material-ui/icons/CallMissedOutgoingOutlined";
 import ScatterPlotIcon from "@material-ui/icons/ScatterPlot";
-import SpaceBarIcon from "@material-ui/icons/SpaceBar";
 import ViewHeadlineIcon from "@material-ui/icons/ViewHeadline";
 import ViewColumnIcon from "@material-ui/icons/ViewColumn";
 import { useStyles } from "../../assets/style/layout/drawer.style";
@@ -110,51 +109,13 @@ export const ApparatusDrawer: FC<Props> = (props) => {
               {[
                 {
                   text: "List",
-                  link: "/item_list",
+                  link: "/target_list",
                   icon: <NotesOutlinedIcon />,
                 },
                 {
                   text: "Create",
                   link: "/item_create",
                   icon: <GrainOutlinedIcon />,
-                },
-              ].map((data, index) => (
-                <NavLink exact to={data.link} key={uuidv4()}>
-                  <ListItem
-                    button
-                    key={data.text}
-                    className={classes.nested}
-                    disableRipple
-                    disableTouchRipple
-                  >
-                    <ListItemIcon>{data.icon}</ListItemIcon>
-                    <ListItemText primary={data.text} />
-                  </ListItem>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
-          <Divider />
-          <ListItem
-            button
-            onClick={() => setOpenSet(!openSet)}
-            disableRipple
-            disableTouchRipple
-            className={classes.listParent}
-          >
-            <ListItemIcon>
-              <SpaceBarIcon />
-            </ListItemIcon>
-            <ListItemText primary="Set" />
-            {openSet ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={openSet} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {[
-                {
-                  text: "List",
-                  link: "/set_list",
-                  icon: <NotesOutlinedIcon />,
                 },
               ].map((data, index) => (
                 <NavLink exact to={data.link} key={uuidv4()}>

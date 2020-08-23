@@ -30,7 +30,6 @@ const ListPage: FC<Props> = () => {
     <>
       {data?.getSets.length > 0 ? (
         <div>
-          <h2>Set List</h2>
           <SetListTable
             data={data?.getSets}
             selectable={{ is_selectable: false }}
