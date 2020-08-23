@@ -9,15 +9,20 @@ declare namespace Global {
 }
 
 declare namespace Item {
-  interface Item {
+  type Item = {
     id: number;
     id_on_server?: number | undefined;
     type?: string;
     data?: string;
+  } & Item.ItemMeta;
+
+  interface ItemMeta {
     description?: string;
     note?: string;
   }
+
   type ItemOrUndefined = Item | undefined;
+
   type Items = Item[];
 }
 
@@ -85,7 +90,7 @@ declare namespace ApparatusList {
       is_addable: boolean;
       add_from: "items" | "sets";
       targets: {
-        items: Item.Items;
+        items: Array<Item.Item & { item_meta: Item.ItemMeta }>;
         sets: ApparatusSet.Sets;
       };
       selected_targets: {

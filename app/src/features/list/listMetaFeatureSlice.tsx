@@ -165,7 +165,9 @@ function isSets(targets: any[]): targets is ApparatusSet.Sets {
   return "name" in target && "items" in target;
 }
 
-function isItems(targets: any[]): targets is Item.Items {
+function isItems(
+  targets: any[]
+): targets is Array<Item.Item & { item_meta: Item.ItemMeta }> {
   if (!targets?.length || targets.length === 0) return false;
   const target = _.head(targets);
   return "type" in target && "data" in target;

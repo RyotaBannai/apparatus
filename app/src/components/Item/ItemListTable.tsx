@@ -13,7 +13,7 @@ import { returnData } from "./service";
 import ItemListTableRow from "../../components/Item/ItemListTableRow";
 
 interface IProps {
-  data: Item.Items | undefined;
+  data: Array<Item.Item & { item_meta: Item.ItemMeta }>;
   selectable: ApparatusList.Selectable;
 }
 
@@ -37,7 +37,7 @@ const ItemListTable: FC<IProps> = (props) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {returnData(data as Item.Items).map((row) => (
+          {returnData(data).map((row) => (
             <ItemListTableRow
               key={uuidv4()}
               row={row}

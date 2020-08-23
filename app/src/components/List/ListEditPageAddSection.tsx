@@ -27,7 +27,7 @@ interface IProps {
     sets: number[];
   };
   targets: {
-    items: Item.Items;
+    items: Array<Item.Item & { item_meta: Item.ItemMeta }>;
     sets: ApparatusSet.Sets;
   };
   callSnackBarOpenHandler: () => void;
