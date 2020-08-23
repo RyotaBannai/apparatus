@@ -23,7 +23,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     note: {
       backgroundColor: "#eeeeee",
-      borderRadius: 4,
+      borderRadius: 5,
       padding: "8px !important",
     },
   })

@@ -12,8 +12,15 @@ export const useStyles = makeStyles((theme: Theme) =>
     },
     itemTable: {
       padding: 10,
-      "& div": {
+      "& > div": {
         backgroundColor: "#eeeeee",
+        borderRadius: 5,
+        "& > div": {
+          borderRadius: 5,
+          "& > div": {
+            borderRadius: 5,
+          },
+        },
       },
     },
   })

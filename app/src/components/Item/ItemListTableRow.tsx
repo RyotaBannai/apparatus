@@ -71,7 +71,7 @@ function ItemListTableRow(props: IProps) {
       </TableRow>
       {goToItem ? (
         <TableRow className={classes.root}>
-          <TableCell colSpan={2}>
+          <TableCell colSpan={3}>
             <Collapse in={goToItem} timeout="auto" unmountOnExit>
               <Box margin={1} style={{ margin: 0 }}>
                 <Grid container direction="row" spacing={1}>

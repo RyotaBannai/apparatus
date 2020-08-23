@@ -1,6 +1,12 @@
 import React, { useEffect, FC } from "react";
 import { useStyles } from "../../assets/style/list/item.style";
-import { Card, CardActions, CardContent, Typography } from "@material-ui/core";
+import {
+  Card,
+  CardActions,
+  CardContent,
+  Divider,
+  Typography,
+} from "@material-ui/core";
 import { NavLink } from "react-router-dom";
 import { ListEditTargetButton } from "../Parts/Button/ListEditTargetButton";
 
@@ -21,11 +27,20 @@ const ListEditListItem: FC<TProps> = (props) => {
   return (
     <CardHoverable {...props}>
       <CardContent>
-        <Typography gutterBottom variant="body1" component="h4">
+        <Typography gutterBottom variant="subtitle1" component="h4">
           {item?.data ?? ""}
         </Typography>
-        <Typography variant="body2" color="textSecondary" component="p">
+        <Typography variant="body2" color="textPrimary" component="p">
           {item.description ?? ""}
+        </Typography>
+        <Divider />
+        <Typography
+          variant="body2"
+          color="textSecondary"
+          component="p"
+          style={{ marginTop: 5 }}
+        >
+          {item.note ?? ""}
         </Typography>
       </CardContent>
     </CardHoverable>
