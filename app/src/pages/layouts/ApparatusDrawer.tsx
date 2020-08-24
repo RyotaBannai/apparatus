@@ -177,48 +177,19 @@ export const ApparatusDrawer: FC<Props> = (props) => {
             </List>
           </Collapse>
           <Divider />
-          <ListItem
-            button
-            onClick={() => setOpenFolder(!openFolder)}
-            disableRipple
-            disableTouchRipple
-            className={classes.listParent}
-          >
-            <ListItemIcon>
-              <ViewColumnIcon />
-            </ListItemIcon>
-            <ListItemText primary="Folder" />
-            {openFolder ? <ExpandLess /> : <ExpandMore />}
-          </ListItem>
-          <Collapse in={openFolder} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {[
-                {
-                  text: "List",
-                  link: "/folder_list",
-                  icon: <NotesOutlinedIcon />,
-                },
-                {
-                  text: "Create",
-                  link: "/folder_create",
-                  icon: <GrainOutlinedIcon />,
-                },
-              ].map((data, index) => (
-                <NavLink exact to={data.link} key={uuidv4()}>
-                  <ListItem
-                    button
-                    key={data.text}
-                    className={classes.nested}
-                    disableRipple
-                    disableTouchRipple
-                  >
-                    <ListItemIcon>{data.icon}</ListItemIcon>
-                    <ListItemText primary={data.text} />
-                  </ListItem>
-                </NavLink>
-              ))}
-            </List>
-          </Collapse>
+          <NavLink exact to={"folder"} key={uuidv4()}>
+            <ListItem
+              button
+              disableRipple
+              disableTouchRipple
+              className={classes.listParent}
+            >
+              <ListItemIcon>
+                <ViewColumnIcon />
+              </ListItemIcon>
+              <ListItemText primary="Folder" />
+            </ListItem>
+          </NavLink>
         </List>
         <Divider />
         <List>

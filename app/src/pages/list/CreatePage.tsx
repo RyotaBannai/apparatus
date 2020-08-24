@@ -8,14 +8,7 @@ import { useListHelpers } from "../../features/list/listHelpers";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SaveButton } from "../../components/Parts/Button/SaveButton";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
-import {
-  Button,
-  Grid,
-  Icon,
-  InputLabel,
-  OutlinedInput,
-  TextField,
-} from "@material-ui/core";
+import { Grid, InputLabel, OutlinedInput, TextField } from "@material-ui/core";
 
 interface Props {}
 const CreatePage: FC<Props> = () => {
@@ -70,7 +63,7 @@ const CreatePage: FC<Props> = () => {
   return (
     <div>
       <h2>Create New List</h2>
-      <pre>{JSON.stringify(data, null, 1)}</pre>
+      {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item className={classes.gridName}>
           <InputLabel htmlFor="name">Name</InputLabel>

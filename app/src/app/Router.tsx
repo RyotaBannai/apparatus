@@ -16,6 +16,7 @@ const EditListPage = lazy(() => import("../pages/list/EditPage"));
 const EditTargetPage = lazy(() =>
   import("../components/Parts/SwitchTargetList")
 );
+const Folder = lazy(() => import("../pages/folder/FolderPage"));
 const Login = lazy(() => import("../pages/Login"));
 const Signin = lazy(() => import("../pages/Signin"));
 
@@ -39,6 +40,7 @@ export const ApparatusRouter: FC<Props> = () => {
           <Route exact path="/list_list" component={ListListPage} />
           <Route exact path="/list_create" component={CreateListPage} />
           <Route exact path="/list_edit/:list_id" component={EditListPage} />
+          <Route exact path="/folder/:folder_id" component={Folder} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/signin" component={Signin} />
         </Suspense>
