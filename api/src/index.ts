@@ -6,6 +6,7 @@ import { ItemResolver } from "./modules/item/ItemResolver";
 import { SetResolver } from "./modules/set/SetResolver";
 import { AddeeResolver } from "./modules/addee/addeeResolver";
 import { ListResolver } from "./modules/list/ListResolver";
+import { FolderResolver } from "./modules/folder/folderResolver";
 import { WorkspaceResolver } from "./modules/workspace/WorkspaceResolver";
 import { jwtMiddleware } from "./entity/User";
 import { customAuthChecker } from "./entity/User";
@@ -28,6 +29,7 @@ const main = async () => {
       SetResolver,
       AddeeResolver,
       ListResolver,
+      FolderResolver,
       WorkspaceResolver,
     ],
     authChecker: customAuthChecker,
