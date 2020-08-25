@@ -12,6 +12,7 @@ import { Item } from "./Item";
 import { ItemWorkspace } from "./ItemWorkspace";
 import { SetWorkspace } from "./SetWorkspace";
 import { ListWorkspace } from "./ListWorkspace";
+import { FolderWorkspace } from "./FolderWorkspace";
 
 @ObjectType()
 @Entity()
@@ -45,4 +46,9 @@ export class Workspace extends Base {
   @OneToMany((type) => ListWorkspace, (list_ws) => list_ws.ws)
   @JoinColumn()
   listConnector: ListWorkspace[];
+
+  @Field((type) => [FolderWorkspace])
+  @OneToMany((type) => FolderWorkspace, (folder_ws) => folder_ws.ws)
+  @JoinColumn()
+  folderConnector: FolderWorkspace[];
 }
