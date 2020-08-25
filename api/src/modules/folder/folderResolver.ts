@@ -11,6 +11,7 @@ import {
 } from "type-graphql";
 import { getRepository, getTreeRepository } from "typeorm";
 import { Context } from "vm";
+import { List } from "../../entity/List";
 import { Folder } from "../../entity/Folder";
 import { FolderWorkspace } from "../../entity/FolderWorkspace";
 import { Workspace } from "../../entity/Workspace";
@@ -75,5 +76,14 @@ export class FolderResolver {
       this_folder
     );
     return parent?.parent ?? null;
+  }
+
+  @FieldResolver()
+  async lists(@Root() folder: Folder) {
+    const this_folder: Folder = await Folder.findOneOrFail(folder.id, {
+      relations: ["listConnector", "listConnector.list"],
+    });
+    console.log(this_folder);
+    return this_folder.listConnector?.map((list_folder) => list_folder.list);
   }
 }

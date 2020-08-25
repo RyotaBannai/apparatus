@@ -5,6 +5,7 @@ import { ItemData } from "../modules/item/TypeDefs";
 import { Set } from "./Set";
 import { AddeeUnion } from "./Addee";
 import { AddeeList } from "./AddeeList";
+import { ListFolder } from "./ListFolder";
 import { ListWorkspace } from "./ListWorkspace";
 
 @ObjectType()
@@ -28,6 +29,9 @@ export class List extends Base {
   @Field((type) => [AddeeList])
   @OneToMany((type) => AddeeList, (addee_list) => addee_list.list)
   addeeConnector: AddeeList[];
+
+  @OneToOne((type) => ListFolder, (list_folder) => list_folder.list)
+  folderConnector: ListFolder;
 
   @OneToOne((type) => ListWorkspace, (list_ws) => list_ws.list)
   wsConnector: ListWorkspace;
