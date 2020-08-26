@@ -1,9 +1,6 @@
 import React, { Suspense, lazy, FC } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Layout } from "../pages/layouts/Layout";
-// import { Sub } from "../pages/Sub";
-// import { Pagination } from "../pages/DemoPagination";
-
 const CreateWorkspacePage = lazy(() => import("../pages/workspace/CreatePage"));
 const ListWorkspacePage = lazy(() => import("../pages/workspace/Listpage"));
 const EditWorkspacePage = lazy(() => import("../pages/workspace/EditPage"));
@@ -40,12 +37,10 @@ export const ApparatusRouter: FC<Props> = () => {
           <Route exact path="/list_list" component={ListListPage} />
           <Route exact path="/list_create" component={CreateListPage} />
           <Route exact path="/list_edit/:list_id" component={EditListPage} />
-          <Route exact path="/folder/:folder_id" component={Folder} />
+          <Route exact path="/folder/:folder_id?" component={Folder} />
           <Route exact path="/login" component={Login} />
           <Route exact path="/signin" component={Signin} />
         </Suspense>
-        {/* <Route exact path="/sub" component={Sub} />
-        <Route exact path="/pagination" component={Pagination} /> */}
       </Layout>
     </Router>
   );
