@@ -16,7 +16,13 @@ export class createFolderInputs {
 }
 
 @ArgsType()
+export class getFolderInputs {
+  @Field((type) => String)
+  id: string;
+}
+
+@ArgsType()
 export class getFoldersInputs {
-  @Field((type) => Number)
-  wsId: number;
+  @Field((type) => String)
+  wsId: string;
 }

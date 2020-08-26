@@ -15,7 +15,11 @@ import { List } from "../../entity/List";
 import { Folder } from "../../entity/Folder";
 import { FolderWorkspace } from "../../entity/FolderWorkspace";
 import { Workspace } from "../../entity/Workspace";
-import { getFoldersInputs, createFolderInputs } from "./TypeDefs";
+import {
+  getFolderInputs,
+  getFoldersInputs,
+  createFolderInputs,
+} from "./TypeDefs";
 
 @Resolver((of) => Folder)
 export class FolderResolver {
@@ -41,6 +45,20 @@ export class FolderResolver {
     return new_folder;
   }
 
+  @Query((returns) => Folder)
+  async getFolder(
+    @Args() { id }: getFolderInputs,
+    @Ctx() ctx: Context
+  ): Promise<Folder> {
+    return await Folder.findOneOrFail({
+      where: {
+        id: Number(id),
+        ownerId: ctx.user.id,
+      },
+      relations: ["wsConnector", "wsConnector.ws"],
+    });
+  }
+
   @Query((returns) => [Folder])
   async getFolders(
     @Args() { wsId }: getFoldersInputs,
@@ -53,11 +71,9 @@ export class FolderResolver {
       relations: ["wsConnector", "wsConnector.ws"],
     });
 
-    let filtered: Folder[] = this_folders.filter((folder) => {
-      return folder.wsConnector?.wsId === wsId;
+    return this_folders.filter((folder) => {
+      return folder.wsConnector?.wsId === Number(wsId);
     });
-
-    return filtered;
   }
 
   @FieldResolver()
@@ -66,7 +82,7 @@ export class FolderResolver {
     const children = await getTreeRepository(Folder).findDescendantsTree(
       this_folder
     );
-    return children.children;
+    return JSON.stringify(children);
   }
 
   @FieldResolver()
@@ -75,7 +91,7 @@ export class FolderResolver {
     const parent = await getTreeRepository(Folder).findAncestorsTree(
       this_folder
     );
-    return parent?.parent ?? null;
+    return parent?.parent ? JSON.stringify(parent) : null;
   }
 
   @FieldResolver()
@@ -83,7 +99,6 @@ export class FolderResolver {
     const this_folder: Folder = await Folder.findOneOrFail(folder.id, {
       relations: ["listConnector", "listConnector.list"],
     });
-    console.log(this_folder);
     return this_folder.listConnector?.map((list_folder) => list_folder.list);
   }
 }
