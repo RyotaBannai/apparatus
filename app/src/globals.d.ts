@@ -120,6 +120,22 @@ declare namespace ApparatusList {
   }
 }
 
+declare namespace Folder {
+  interface Folder {
+    id: number;
+    ownerID: number;
+    name: string;
+    description: string;
+    created_at: string;
+    parent?: Folder.Folder | null;
+  }
+
+  interface Minimal {
+    id: number;
+    name: string;
+  }
+}
+
 declare namespace Workspace {
   interface Workspace {
     name: string;

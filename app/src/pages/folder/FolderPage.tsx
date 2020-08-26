@@ -5,11 +5,14 @@ import React, {
   SyntheticEvent,
   FC,
 } from "react";
-import { useMutation, ApolloError } from "@apollo/client";
+import { useQuery, useMutation, ApolloError } from "@apollo/client";
+import { S_GET_FOLDER } from "../../api/graphql/folderQueries";
+import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
+import { FolderTitleSection } from "../../components/Folder/FolderTitleSection";
 
 interface Props {}
 const FolderPage: FC<Props> = () => {
@@ -17,25 +20,82 @@ const FolderPage: FC<Props> = () => {
   const [saveSnackBarOpen, setOpen] = useState(false);
   const { getCurrentWS } = useWSHelpers;
   let { folder_id } = useParams<{ folder_id?: string }>();
+  const ROOT_DIR = "1";
+  const COLOR = {
+    BLUE: "#0366d6",
+    GREY: "#6a737d",
+  };
 
-  useEffect(() => {}, [folder_id]);
+  const { data } = useQuery(S_GET_FOLDER, {
+    variables: {
+      id: folder_id ?? ROOT_DIR,
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
 
-  // const [s_createList, { loading: sa_loading, error: sa_error }] = useMutation(
-  //   S_CREATE_LIST,
-  //   {
-  //     onCompleted({ createList }) {
-  //       setOpen(!saveSnackBarOpen);
-  //     },
-  //     onError(error: ApolloError) {
-  //       console.log(error);
-  //     },
-  //   }
-  // );
+  const extractParentRecursive = (
+    folder: Folder.Folder,
+    trees: Folder.Minimal[] = []
+  ) => {
+    trees.push({ id: folder.id, name: folder.name });
+    if (folder?.parent !== null && typeof folder.parent === "object") {
+      extractParentRecursive(folder.parent, trees);
+    }
+  };
 
-  // if (sa_loading) return <p>Loading...</p>;
-  // if (sa_error) return <p>Error :(</p>;
+  const createSingleFolderLink = (
+    id: number | undefined,
+    name: string,
+    color: string
+  ) => {
+    let link = id === undefined ? "" : `${id}`;
+    return (
+      <>
+        <NavLink exact to={link} style={{ color }}>
+          {name}
+        </NavLink>
+        <span style={{ margin: "0 5px" }}>/</span>
+      </>
+    );
+  };
+
+  const createFolderTree = useCallback((): JSX.Element[] => {
+    if (data === undefined || data.getFolder === null) return [];
+    else {
+      let trees: Folder.Minimal[] = [];
+      const folder = JSON.parse(data?.getFolder.parent_folder);
+      extractParentRecursive(folder, trees);
+      let folder_hierarchy = trees
+        .reverse()
+        .map((folder: Folder.Minimal, index: number) =>
+          createSingleFolderLink(
+            folder.id,
+            folder.name,
+            index === trees.length - 1 ? COLOR.GREY : COLOR.BLUE
+          )
+        );
+      return folder_hierarchy;
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data?.getFolder.parent_folder) {
+      createFolderTree();
+    }
+    // console.log(JSON.parse(data?.getFolder.parent_folder));
+  }, [folder_id, data]);
+
   return (
     <div>
+      {data !== undefined ? (
+        <>
+          <FolderTitleSection parents={createFolderTree()} />
+        </>
+      ) : (
+        <div>There is no such folder.</div>
+      )}
       <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>
   );
