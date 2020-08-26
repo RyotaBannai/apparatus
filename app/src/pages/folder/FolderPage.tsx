@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { FolderTitleSection } from "../../components/Folder/FolderTitleSection";
+import { ListContents } from "../../components/Folder/ListContents";
 
 interface Props {}
 const FolderPage: FC<Props> = () => {
@@ -80,18 +81,17 @@ const FolderPage: FC<Props> = () => {
     }
   }, [data]);
 
-  useEffect(() => {
-    if (data?.getFolder.parent_folder) {
-      createFolderTree();
-    }
-    // console.log(JSON.parse(data?.getFolder.parent_folder));
-  }, [folder_id, data]);
+  useEffect(() => {}, [folder_id, data]);
 
   return (
     <div>
       {data !== undefined ? (
         <>
           <FolderTitleSection parents={createFolderTree()} />
+          <ListContents
+            children={JSON.parse(data?.getFolder.children_folder).children}
+            lists={data?.getFolder.lists}
+          />
         </>
       ) : (
         <div>There is no such folder.</div>

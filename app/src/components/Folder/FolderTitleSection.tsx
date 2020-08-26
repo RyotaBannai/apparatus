@@ -6,14 +6,7 @@ import React, {
   FC,
 } from "react";
 
-import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Grid,
-  Typography,
-} from "@material-ui/core";
+import { Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
 
 interface IProps {
   parents: JSX.Element[];
