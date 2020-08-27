@@ -22,11 +22,11 @@ const FolderPage: FC<Props> = () => {
   const [saveSnackBarOpen, setOpen] = useState(false);
   const { getCurrentWS } = useWSHelpers;
   let { folder_id } = useParams<{ folder_id?: string }>();
-  const ROOT_DIR = "1";
 
   const { data } = useQuery(S_GET_FOLDER, {
     variables: {
-      id: folder_id ?? ROOT_DIR,
+      id: folder_id ?? "",
+      wsId: Number(getCurrentWS().id),
     },
     onError(error: ApolloError) {
       console.log(error);

@@ -12,8 +12,8 @@ export const S_CREATE_FOLDER = gql`
 `;
 
 export const S_GET_FOLDER = gql`
-  query GET_FOLDER($id: String!) {
-    getFolder(id: $id) {
+  query GET_FOLDER($id: String!, $wsId: Float!) {
+    getFolder(id: $id, wsId: $wsId) {
       name
       description
       children_folder {
