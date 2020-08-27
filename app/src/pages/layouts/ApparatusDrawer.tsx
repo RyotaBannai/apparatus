@@ -177,7 +177,7 @@ export const ApparatusDrawer: FC<Props> = (props) => {
             </List>
           </Collapse>
           <Divider />
-          <NavLink exact to={"folder/"} key={uuidv4()}>
+          <NavLink exact to={"/folder/"} key={uuidv4()}>
             <ListItem
               button
               disableRipple

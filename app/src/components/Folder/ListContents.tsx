@@ -20,7 +20,7 @@ export const ListContents: FC<IProps> = (props) => {
           <TableBody>
             {children !== undefined ? (
               children.map((folder: Folder.Folder) => (
-                <FolderRow folder={folder} lists_count={0} />
+                <FolderRow folder={folder} />
               ))
             ) : (
               <></>

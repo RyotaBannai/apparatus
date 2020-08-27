@@ -8,18 +8,17 @@ import {
 import ViewColumnIcon from "@material-ui/icons/ViewColumn";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
+import { COLOR } from "../../constants/color";
 
 interface IProps {
   folder: Folder.Folder;
-  lists_count: number;
 }
 
 export const FolderRow: FC<IProps> = (props) => {
-  const { folder, lists_count } = props;
-  const children_folder_count = folder?.children?.length ?? 0;
-  useEffect(() => {
-    console.log(folder);
-  }, [folder]);
+  const { folder } = props;
+  const children_folder_count = folder?.children_folder?.length ?? 0;
+  const lists_count = folder?.lists?.length ?? 0;
+  useEffect(() => {}, [folder]);
   return (
     <>
       <TableRow hover>
@@ -27,7 +26,7 @@ export const FolderRow: FC<IProps> = (props) => {
           <TableCell style={{ width: "100%", display: "block" }}>
             <Typography style={{ display: "flex", alignItems: "center" }}>
               <ListItemIcon>
-                <ViewColumnIcon />
+                <ViewColumnIcon style={{ color: COLOR.BLUE }} />
               </ListItemIcon>
               <div>{folder.name}</div>
               <StyledCell>{folder.description}</StyledCell>|

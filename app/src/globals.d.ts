@@ -128,7 +128,8 @@ declare namespace Folder {
     description: string;
     created_at: string;
     parent?: Folder.Folder | null;
-    children?: Folder.Folder[] | null;
+    children_folder?: Folder.Folder[] | null;
+    lists?: Folder.List[];
   }
 
   interface Minimal {

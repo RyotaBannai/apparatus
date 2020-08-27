@@ -14,6 +14,7 @@ import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { FolderTitleSection } from "../../components/Folder/FolderTitleSection";
 import { ListContents } from "../../components/Folder/ListContents";
+import { COLOR } from "../../constants/color";
 
 interface Props {}
 const FolderPage: FC<Props> = () => {
@@ -22,10 +23,6 @@ const FolderPage: FC<Props> = () => {
   const { getCurrentWS } = useWSHelpers;
   let { folder_id } = useParams<{ folder_id?: string }>();
   const ROOT_DIR = "1";
-  const COLOR = {
-    BLUE: "#0366d6",
-    GREY: "#6a737d",
-  };
 
   const { data } = useQuery(S_GET_FOLDER, {
     variables: {
@@ -89,7 +86,7 @@ const FolderPage: FC<Props> = () => {
         <>
           <FolderTitleSection parents={createFolderTree()} />
           <ListContents
-            children={JSON.parse(data?.getFolder.children_folder).children}
+            children={data?.getFolder.children_folder}
             lists={data?.getFolder.lists}
           />
         </>

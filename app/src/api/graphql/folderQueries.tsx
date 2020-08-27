@@ -14,10 +14,23 @@ export const S_CREATE_FOLDER = gql`
 export const S_GET_FOLDER = gql`
   query GET_FOLDER($id: String!) {
     getFolder(id: $id) {
-      id
       name
       description
-      children_folder
+      children_folder {
+        id
+        name
+        description
+        children_folder {
+          id
+          name
+          description
+        }
+        lists {
+          id
+          name
+          description
+        }
+      }
       parent_folder
       lists {
         id
@@ -34,7 +47,21 @@ export const S_GET_FOLDERS = gql`
       id
       name
       description
-      children_folder
+      children_folder {
+        id
+        name
+        description
+        children_folder {
+          id
+          name
+          description
+        }
+        lists {
+          id
+          name
+          description
+        }
+      }
       parent_folder
       lists {
         id
