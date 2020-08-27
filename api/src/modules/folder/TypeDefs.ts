@@ -8,7 +8,7 @@ export class createFolderInputs {
   @Field((type) => String)
   description: string;
 
-  @Field((type) => Number)
+  @Field((type) => Number, { nullable: true })
   parentId: number;
 
   @Field((type) => Number)
@@ -19,6 +19,9 @@ export class createFolderInputs {
 export class getFolderInputs {
   @Field((type) => String)
   id: string;
+
+  @Field((type) => Number)
+  wsId: number;
 }
 
 @ArgsType()

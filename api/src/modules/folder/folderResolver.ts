@@ -11,7 +11,6 @@ import {
 } from "type-graphql";
 import { getRepository, getTreeRepository } from "typeorm";
 import { Context } from "vm";
-import { List } from "../../entity/List";
 import { Folder } from "../../entity/Folder";
 import { FolderWorkspace } from "../../entity/FolderWorkspace";
 import { Workspace } from "../../entity/Workspace";
@@ -28,13 +27,17 @@ export class FolderResolver {
     @Arg("data") inputs: createFolderInputs,
     @Ctx() ctx: Context
   ): Promise<Folder> {
-    let parent: Folder = await Folder.findOneOrFail(inputs.parentId);
-    let new_folder: Folder = await Folder.create({
+    let new_folder_params = {
       name: inputs.name,
       description: inputs.description,
       ownerId: ctx.user.id,
-      parent: parent,
-    }).save();
+    };
+    if (inputs.parentId) {
+      new_folder_params = Object.assign(new_folder_params, {
+        parent: await Folder.findOneOrFail(inputs.parentId),
+      });
+    }
+    let new_folder: Folder = await Folder.create(new_folder_params).save();
 
     let this_workspace: Workspace = await Workspace.findOneOrFail(inputs.wsId);
     let new_folder_ws: FolderWorkspace = new FolderWorkspace();
@@ -47,16 +50,34 @@ export class FolderResolver {
 
   @Query((returns) => Folder)
   async getFolder(
-    @Args() { id }: getFolderInputs,
+    @Args() { id, wsId }: getFolderInputs,
     @Ctx() ctx: Context
   ): Promise<Folder> {
-    return await Folder.findOneOrFail({
-      where: {
-        id: Number(id),
-        ownerId: ctx.user.id,
-      },
-      relations: ["wsConnector", "wsConnector.ws"],
-    });
+    let this_folder: Folder;
+    if (id === "") {
+      const roots = await getTreeRepository(Folder).findRoots();
+      const this_root: Folder[] = await Promise.all(
+        roots.map(
+          async (root: Folder) =>
+            await Folder.findOneOrFail(root.id, {
+              relations: ["wsConnector"],
+            })
+        )
+      );
+      return this_root.filter(
+        (root: Folder) => root.wsConnector.wsId === Number(wsId)
+      )[0];
+    } else {
+      this_folder = await Folder.findOneOrFail({
+        where: {
+          id: Number(id),
+          ownerId: ctx.user.id,
+        },
+        relations: ["wsConnector", "wsConnector.ws"],
+      });
+    }
+
+    return this_folder!;
   }
 
   @Query((returns) => [Folder])
@@ -82,7 +103,13 @@ export class FolderResolver {
     const children = await getTreeRepository(Folder).findDescendantsTree(
       this_folder
     );
-    return JSON.stringify(children);
+    return await Promise.all(
+      children?.children.map(async (child: Folder) => {
+        let this_child: Folder = await Folder.findOneOrFail(child.id);
+        this_child.children = child.children;
+        return this_child;
+      })
+    );
   }
 
   @FieldResolver()
@@ -91,7 +118,7 @@ export class FolderResolver {
     const parent = await getTreeRepository(Folder).findAncestorsTree(
       this_folder
     );
-    return parent?.parent ? JSON.stringify(parent) : null;
+    return JSON.stringify(parent);
   }
 
   @FieldResolver()

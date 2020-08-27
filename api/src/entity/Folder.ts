@@ -31,8 +31,8 @@ export class Folder extends Base {
   @TreeParent()
   parent: Folder;
 
-  @Field((type) => String, { nullable: true })
-  children_folder: string;
+  @Field((type) => [Folder], { nullable: true })
+  children_folder: Folder[];
 
   @Field((type) => String, { nullable: true })
   parent_folder: string;
