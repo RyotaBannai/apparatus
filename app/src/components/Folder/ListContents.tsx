@@ -1,7 +1,5 @@
 import React, { useEffect, useCallback, FC } from "react";
-
 import { TableContainer, Table, TableBody, Paper } from "@material-ui/core";
-
 import { ListRow } from "./ListRow";
 import { FolderRow } from "./FolderRow";
 
