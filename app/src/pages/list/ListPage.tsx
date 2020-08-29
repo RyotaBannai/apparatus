@@ -17,16 +17,18 @@ const ListPage: FC<Props> = () => {
     },
   });
 
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
+  const selectable: Folder.Selectable = {
+    is_selectable: false,
+  };
+
+  useEffect(() => {}, [refetch]);
 
   return (
     <>
       {data?.getLists.length > 0 ? (
         <div>
           <h2>Lists</h2>
-          <ListEditPageTable data={data.getLists} />
+          <ListEditPageTable data={data.getLists} selectable={selectable} />
         </div>
       ) : (
         <div>No list found</div>

@@ -8,12 +8,14 @@ import SetFeature from "../features/set/setFeatureSlice";
 import WSFeature from "../features/workspace/wsFeatureSlice";
 import ListFeature from "../features/list/listFeatureSlice";
 import ListMetaFeature from "../features/list/listMetaFeatureSlice";
+import FolderFeature from "../features/folder/folderFeatureSlice";
 
 const rootReducer = combineReducers({
   set: SetFeature,
   workspace: WSFeature,
   list: ListFeature,
   list_meta: ListMetaFeature,
+  folder: FolderFeature,
 });
 
 // export const setupStore = () => {

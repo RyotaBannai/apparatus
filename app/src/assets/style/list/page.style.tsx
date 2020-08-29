@@ -1,5 +1,4 @@
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import grey from "@material-ui/core/colors/grey";
 import indigo from "@material-ui/core/colors/indigo";
 import red from "@material-ui/core/colors/red";
 
@@ -41,17 +40,6 @@ export const useStyles = makeStyles((theme: Theme) =>
       },
       "&:focus": {
         outlineColor: red[100],
-      },
-    },
-    addableAppBar: {
-      color: "#000",
-      backgroundColor: grey[300],
-      borderRadius: 5,
-      margin: "10px 0 25px 0",
-      boxShadow:
-        "0px 2px 1px -1px rgba(0,0,0,0.2), 0px 1px 1px 0px rgba(0,0,0,0.14), 0px 1px 3px 0px rgba(0,0,0,0.12)",
-      "& h6": {
-        fontSize: "1rem",
       },
     },
     formType: {

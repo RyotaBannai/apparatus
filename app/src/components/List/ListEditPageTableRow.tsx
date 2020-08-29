@@ -1,55 +1,79 @@
-import React, { useState, SyntheticEvent } from "react";
-import { NavLink } from "react-router-dom";
+import React, { FC, useState, useCallback, SyntheticEvent } from "react";
+import { useHistory, useLocation } from "react-router-dom";
 import { useStyles } from "../../assets/style/workspace/page.style";
-import { Button, Icon, TableCell, TableRow, Tooltip } from "@material-ui/core";
+import {
+  Button,
+  Checkbox,
+  Icon,
+  TableCell,
+  TableRow,
+  Tooltip,
+} from "@material-ui/core";
 import { createData } from "./service";
+
+interface ILinkProp {
+  link: string;
+  cell_content?: string | number | null;
+}
+
+const WrapCellWithLink: FC<ILinkProp> = (props) => {
+  const { link, cell_content } = props;
+  const history = useHistory();
+  return (
+    <TableCell onClick={() => history.push(link)} style={{ cursor: "pointer" }}>
+      {cell_content}
+    </TableCell>
+  );
+};
+
+const returnWrappedComponent = (link: string) => (
+  cell_content?: string | number | null
+) => <WrapCellWithLink link={link} cell_content={cell_content} />;
 
 interface IProps {
   row: ReturnType<typeof createData>;
+  selectable: Folder.Selectable;
 }
 
 function ListEditPageTableRow(props: IProps) {
-  const { row } = props;
+  const {
+    row,
+    selectable: { is_selectable, add, remove, selected },
+  } = props;
   const classes = useStyles();
-  const [goToList, setGoToList] = useState<boolean>();
+  const is_selected = selected?.includes(row.id);
+  const cell = returnWrappedComponent(`/list_edit/${row.id}`);
+
+  const pressCheckBoxHandler = useCallback((e) => {
+    const is_checked = e.target.checked;
+    const id = e.target.value as string;
+    if (is_checked === true && add !== undefined) {
+      add(id);
+    } else if (is_checked === false && remove !== undefined) {
+      remove(id);
+    }
+  }, []);
 
   return (
-    <>
-      {!goToList ? (
-        <TableRow
-          hover
-          className={classes.root}
-          onClick={(e: SyntheticEvent) => setGoToList(!goToList)}
-        >
-          <TableCell>{row.name}</TableCell>
-          <TableCell>{row.description}</TableCell>
-          <TableCell> {row.targets_count} </TableCell>
-        </TableRow>
+    <TableRow hover className={classes.root}>
+      {is_selectable ? (
+        <TableCell>
+          <Checkbox
+            checked={is_selected}
+            color="primary"
+            inputProps={{ "aria-label": "secondary checkbox" }}
+            size={"small"}
+            onChange={pressCheckBoxHandler}
+            value={row.id}
+          />
+        </TableCell>
       ) : (
-        <TableRow hover className={classes.root}>
-          <TableCell>
-            <Tooltip title="Cancel" placement="top">
-              <Icon onClick={(e: SyntheticEvent) => setGoToList(!goToList)}>
-                close
-              </Icon>
-            </Tooltip>
-          </TableCell>
-          <TableCell colSpan={2}>
-            <NavLink exact to={`list_edit/${row.id}`}>
-              <Button
-                variant="contained"
-                color="primary"
-                endIcon={<Icon>arrow_right</Icon>}
-                disableRipple
-                disableTouchRipple
-              >
-                Go to this List
-              </Button>
-            </NavLink>
-          </TableCell>
-        </TableRow>
+        <></>
       )}
-    </>
+      {cell(row.name)}
+      {cell(row.description)}
+      {cell(row.targets_count)}
+    </TableRow>
   );
 }
 

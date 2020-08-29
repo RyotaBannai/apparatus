@@ -7,25 +7,36 @@ import React, {
 } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { S_GET_FOLDER } from "../../api/graphql/folderQueries";
+import { S_GET_LISTS } from "../../api/graphql/listQueries";
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useFolderHelpers } from "../../features/folder/folderHelpers";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { FolderTitleSection } from "../../components/Folder/FolderTitleSection";
 import { ListContents } from "../../components/Folder/ListContents";
+import { FolderAddListSection } from "../../components/Folder/FolderAddListSection";
 import { COLOR } from "../../constants/color";
 
 interface Props {}
 const FolderPage: FC<Props> = () => {
-  const dispatch = useDispatch();
   const [saveSnackBarOpen, setOpen] = useState(false);
   const { getCurrentWS } = useWSHelpers;
   let { folder_id } = useParams<{ folder_id?: string }>();
 
-  const { data } = useQuery(S_GET_FOLDER, {
+  const { data: folder_data } = useQuery(S_GET_FOLDER, {
     variables: {
       id: folder_id ?? "",
+      wsId: Number(getCurrentWS().id),
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
+  const { data: list_data } = useQuery(S_GET_LISTS, {
+    variables: {
       wsId: Number(getCurrentWS().id),
     },
     onError(error: ApolloError) {
@@ -60,10 +71,10 @@ const FolderPage: FC<Props> = () => {
   };
 
   const createFolderTree = useCallback((): JSX.Element[] => {
-    if (data === undefined || data.getFolder === null) return [];
+    if (folder_data === undefined || folder_data.getFolder === null) return [];
     else {
       let trees: Folder.Minimal[] = [];
-      const folder = JSON.parse(data?.getFolder.parent_folder);
+      const folder = JSON.parse(folder_data?.getFolder.parent_folder);
       extractParentRecursive(folder, trees);
       let folder_hierarchy = trees
         .reverse()
@@ -76,18 +87,19 @@ const FolderPage: FC<Props> = () => {
         );
       return folder_hierarchy;
     }
-  }, [data]);
+  }, [folder_data]);
 
-  useEffect(() => {}, [folder_id, data]);
+  useEffect(() => {}, [folder_id, folder_data]);
 
   return (
     <div>
-      {data !== undefined ? (
+      {folder_data !== undefined ? (
         <>
           <FolderTitleSection parents={createFolderTree()} />
+          <FolderAddListSection lists={list_data?.getLists} />
           <ListContents
-            children={data?.getFolder.children_folder}
-            lists={data?.getFolder.lists}
+            children={folder_data?.getFolder.children_folder}
+            lists={folder_data?.getFolder.lists}
           />
         </>
       ) : (

@@ -19,6 +19,7 @@ import { useMutation, ApolloError } from "@apollo/client";
 import { S_ADD_ADDEES } from "../../api/graphql/listQueries";
 import ItemListTable from "../Item/ItemListTable";
 import SetListTable from "../Set/SetListTable";
+import { StyledAppBar } from "../../components/Parts/StyleAppBar";
 
 interface IProps {
   list_id: string | undefined;
@@ -126,7 +127,7 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
             Add Form
           </Typography>
           <Divider style={{ marginBottom: 10 }} />
-          <AppBar position="static" className={classes.addableAppBar}>
+          <StyledAppBar position="static">
             <Toolbar variant="dense">
               <Grid container alignItems="center" direction="row" spacing={1}>
                 <Grid item>
@@ -168,18 +169,13 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
                         Add
                       </Button>
                     </Grid>
-                    <Grid item>
-                      <Typography variant="h6" color="inherit">
-                        to this list
-                      </Typography>
-                    </Grid>
                   </>
                 ) : (
                   ""
                 )}
               </Grid>
             </Toolbar>
-          </AppBar>
+          </StyledAppBar>
           {displayTargetsList()}
         </Box>
       ) : (

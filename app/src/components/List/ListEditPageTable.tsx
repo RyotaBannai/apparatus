@@ -14,15 +14,21 @@ import ListEditPageRow from "./ListEditPageTableRow";
 
 interface IProps {
   data: ApparatusList.ListData[];
+  selectable: Folder.Selectable;
 }
 
 const ListEditPageTable: FC<IProps> = (props) => {
-  const { data } = props;
+  const { data, selectable } = props;
   return (
     <TableContainer component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
+            {selectable.is_selectable ? (
+              <TableCell style={{ width: "10%" }}></TableCell>
+            ) : (
+              <></>
+            )}
             <TableCell>Name</TableCell>
             <TableCell>Description</TableCell>
             <TableCell>Item / Set Count</TableCell>
@@ -30,7 +36,7 @@ const ListEditPageTable: FC<IProps> = (props) => {
         </TableHead>
         <TableBody>
           {returnData(data).map((row) => (
-            <ListEditPageRow key={uuidv4()} row={row} />
+            <ListEditPageRow key={uuidv4()} row={row} selectable={selectable} />
           ))}
         </TableBody>
       </Table>

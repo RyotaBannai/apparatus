@@ -143,6 +143,13 @@ declare namespace Folder {
     description: string;
     __typename: string;
   }
+
+  interface Selectable {
+    is_selectable: boolean;
+    add?: (id: string) => void;
+    remove?: (id: string) => void;
+    selected?: string[];
+  }
 }
 
 declare namespace Workspace {
