@@ -56,7 +56,6 @@ export class ListResolver {
       name: editListData.name,
       description: editListData.description,
     });
-    console.log(result);
     return { res: Global.SUCCESS };
   }
 

@@ -15,6 +15,15 @@ export class createFolderInputs {
   wsId: number;
 }
 
+@InputType({ description: "Add List to Folder" })
+export class addListsInputs {
+  @Field((type) => Number)
+  folderId: number;
+
+  @Field((type) => [Number])
+  lists: number[];
+}
+
 @ArgsType()
 export class getFolderInputs {
   @Field((type) => String)

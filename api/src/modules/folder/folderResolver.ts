@@ -13,8 +13,11 @@ import { getRepository, getTreeRepository } from "typeorm";
 import { Context } from "vm";
 import { Folder } from "../../entity/Folder";
 import { FolderWorkspace } from "../../entity/FolderWorkspace";
+import { List } from "../../entity/List";
+import { ListFolder } from "../../entity/ListFolder";
 import { Workspace } from "../../entity/Workspace";
 import {
+  addListsInputs,
   getFolderInputs,
   getFoldersInputs,
   createFolderInputs,
@@ -46,6 +49,24 @@ export class FolderResolver {
     await getRepository(FolderWorkspace).save(new_folder_ws);
 
     return new_folder;
+  }
+
+  @Mutation(() => Folder)
+  async addLists(
+    @Arg("data") inputs: addListsInputs,
+    @Ctx() ctx: Context
+  ): Promise<Folder> {
+    const folder: Folder = await Folder.findOneOrFail(inputs.folderId);
+    await Promise.all(
+      inputs.lists.map(async (listId: number) => {
+        const this_list: List = await List.findOneOrFail(listId);
+        let new_list_folder: ListFolder = new ListFolder();
+        new_list_folder.list = this_list;
+        new_list_folder.folder = folder;
+        await getRepository(ListFolder).save(new_list_folder);
+      })
+    );
+    return folder;
   }
 
   @Query((returns) => Folder)
