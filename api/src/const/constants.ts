@@ -1,4 +1,4 @@
-export declare namespace Global {
-  const SUCCESS = "SUCCESS";
-  const FAIL = "FAIL";
-}
+export const Global = {
+  SUCCESS: "SUCCESS",
+  FAIL: "FAIL",
+};

@@ -24,6 +24,24 @@ export class addListsInputs {
   lists: number[];
 }
 
+@InputType({ description: "Update Folder" })
+export class updateFolderInputs {
+  @Field((type) => Number)
+  id: number;
+
+  @Field((type) => String)
+  name: string;
+
+  @Field((type) => String)
+  description: string;
+}
+
+@InputType({ description: "Delete Folder" })
+export class deleteFolderInputs {
+  @Field((type) => Number)
+  id: number;
+}
+
 @ArgsType()
 export class getFolderInputs {
   @Field((type) => String)

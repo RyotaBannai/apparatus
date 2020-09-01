@@ -17,7 +17,7 @@ import {
   getListByIDArgs,
   getListsArgs,
 } from "./TypeDefs";
-import { Response } from "../TypeDefsGlobal";
+import { GraphQLResponse } from "../TypeDefsGlobal";
 import { Global } from "../../const/constants";
 import { Item } from "../../entity/Item";
 import { Set } from "../../entity/Set";
@@ -50,8 +50,10 @@ export class ListResolver {
     return new_list;
   }
 
-  @Mutation(() => List)
-  async editList(@Arg("data") editListData: editListInput): Promise<Response> {
+  @Mutation(() => GraphQLResponse)
+  async editList(
+    @Arg("data") editListData: editListInput
+  ): Promise<GraphQLResponse> {
     const result: UpdateResult = await List.update(editListData.id, {
       name: editListData.name,
       description: editListData.description,

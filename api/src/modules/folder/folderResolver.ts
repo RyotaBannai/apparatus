@@ -9,7 +9,12 @@ import {
   Root,
   Query,
 } from "type-graphql";
-import { getRepository, getTreeRepository } from "typeorm";
+import {
+  getRepository,
+  getTreeRepository,
+  getConnection,
+  EntitySchema,
+} from "typeorm";
 import { Context } from "vm";
 import { Folder } from "../../entity/Folder";
 import { FolderWorkspace } from "../../entity/FolderWorkspace";
@@ -18,10 +23,14 @@ import { ListFolder } from "../../entity/ListFolder";
 import { Workspace } from "../../entity/Workspace";
 import {
   addListsInputs,
+  createFolderInputs,
+  deleteFolderInputs,
   getFolderInputs,
   getFoldersInputs,
-  createFolderInputs,
+  updateFolderInputs,
 } from "./TypeDefs";
+import { GraphQLResponse } from "../TypeDefsGlobal";
+import { Global } from "../../const/constants";
 
 @Resolver((of) => Folder)
 export class FolderResolver {
@@ -52,10 +61,7 @@ export class FolderResolver {
   }
 
   @Mutation(() => Folder)
-  async addLists(
-    @Arg("data") inputs: addListsInputs,
-    @Ctx() ctx: Context
-  ): Promise<Folder> {
+  async addLists(@Arg("data") inputs: addListsInputs): Promise<Folder> {
     const folder: Folder = await Folder.findOneOrFail(inputs.folderId);
     await Promise.all(
       inputs.lists.map(async (listId: number) => {
@@ -67,6 +73,24 @@ export class FolderResolver {
       })
     );
     return folder;
+  }
+
+  @Mutation(() => Folder)
+  async updateFolder(@Arg("data") inputs: updateFolderInputs): Promise<Folder> {
+    await Folder.update(inputs.id, {
+      name: inputs.name,
+      description: inputs.description,
+    });
+    return await Folder.findOneOrFail(inputs.id);
+  }
+
+  @Mutation(() => GraphQLResponse)
+  async deleteFolder(
+    @Arg("data") inputs: deleteFolderInputs
+  ): Promise<GraphQLResponse> {
+    await this.dropForeignKeyFromTrees(Folder);
+    await Folder.delete(inputs.id);
+    return { res: Global.SUCCESS };
   }
 
   @Query((returns) => Folder)
@@ -148,5 +172,56 @@ export class FolderResolver {
       relations: ["listConnector", "listConnector.list"],
     });
     return this_folder.listConnector?.map((list_folder) => list_folder.list);
+  }
+
+  private async dropForeignKeyFromTrees(
+    entity: string | Function | (new () => unknown) | EntitySchema<unknown>
+  ) {
+    /**
+     * Need to run every time when typeorm refreshes database.
+     */
+    const myEntityRepository = getRepository(entity);
+    const tableName = myEntityRepository.metadata.tableName;
+    const treeRelationFks =
+      myEntityRepository?.metadata?.treeParentRelation?.foreignKeys[0];
+
+    const parentIdColumnName = treeRelationFks?.columnNames[0];
+    const parentIdFkName = treeRelationFks?.name;
+
+    const closureTableMetadata =
+      myEntityRepository.metadata.closureJunctionTable;
+
+    const closureTableName = closureTableMetadata.tableName;
+    const closureAncestorColumnName =
+      closureTableMetadata.foreignKeys[0].columnNames[0];
+    const closureAncestorFkName = closureTableMetadata.foreignKeys[0].name;
+    const closureDescendantColumnName =
+      closureTableMetadata.foreignKeys[1].columnNames[0];
+    const closureDescendantFkName = closureTableMetadata.foreignKeys[1].name;
+
+    await getConnection().query(
+      `
+    ALTER TABLE ${tableName}
+    DROP CONSTRAINT "${parentIdFkName}",
+    ADD CONSTRAINT "${parentIdFkName}"
+    FOREIGN KEY ("${parentIdColumnName}")
+    REFERENCES ${tableName}(id)
+    ON DELETE CASCADE;
+
+    ALTER TABLE ${closureTableName}
+    DROP CONSTRAINT "${closureAncestorFkName}",
+    ADD CONSTRAINT "${closureAncestorFkName}"
+    FOREIGN KEY ("${closureAncestorColumnName}")
+    REFERENCES ${tableName}(id)
+    ON DELETE CASCADE;
+
+    ALTER TABLE ${closureTableName}
+    DROP CONSTRAINT "${closureDescendantFkName}",
+    ADD CONSTRAINT "${closureDescendantFkName}"
+    FOREIGN KEY ("${closureDescendantColumnName}")
+    REFERENCES ${tableName}(id)
+    ON DELETE CASCADE;
+`
+    );
   }
 }

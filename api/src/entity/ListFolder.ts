@@ -30,7 +30,9 @@ export class ListFolder {
   list: List;
 
   @Field((type) => Folder)
-  @ManyToOne((type) => Folder, (folder) => folder.listConnector)
+  @ManyToOne((type) => Folder, (folder) => folder.listConnector, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "folderId" })
   folder: Folder;
 
