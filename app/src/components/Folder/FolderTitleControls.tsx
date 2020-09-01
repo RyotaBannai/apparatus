@@ -19,8 +19,11 @@ import BlurOnIcon from "@material-ui/icons/BlurOn";
 import EditIcon from "@material-ui/icons/Edit";
 import { COLOR } from "../../constants/color";
 
-interface IProps {}
+interface IProps {
+  createNewFolder: () => Promise<void>;
+}
 export const FolderTitleControls: FC<IProps> = (props) => {
+  const { createNewFolder } = props;
   const [open, setOpen] = useState(false);
   const { addSelectedList, toggleAddableState } = useFolderActions();
   const { getAddable } = useFolderHelpers;
@@ -54,11 +57,12 @@ export const FolderTitleControls: FC<IProps> = (props) => {
     {
       icon: <ViewColumnIcon />,
       name: "Add Folder",
-      handler: () => null,
+      handler: () => createNewFolder(),
     },
     { icon: <EditIcon />, name: "Edit Folder", handler: () => null },
     { icon: <Icon>delete</Icon>, name: "Delete Folder", handler: () => null },
   ];
+  useEffect(() => {}, [createNewFolder]);
 
   return (
     <StyledSpeedDial

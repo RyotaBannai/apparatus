@@ -6,7 +6,7 @@ import React, {
   FC,
 } from "react";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
-import { S_GET_FOLDER } from "../../api/graphql/folderQueries";
+import { S_GET_FOLDER, S_CREATE_FOLDER } from "../../api/graphql/folderQueries";
 import { S_GET_LISTS } from "../../api/graphql/listQueries";
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
@@ -29,7 +29,7 @@ const FolderPage: FC<Props> = () => {
     saveSnackBarOpen,
   ]);
 
-  const { data: folder_data } = useQuery(S_GET_FOLDER, {
+  const { data: folder_data, refetch: refetchFolder } = useQuery(S_GET_FOLDER, {
     variables: {
       id: folder_id ?? "",
       wsId: Number(getCurrentWS().id),
@@ -42,6 +42,15 @@ const FolderPage: FC<Props> = () => {
   const { data: list_data } = useQuery(S_GET_LISTS, {
     variables: {
       wsId: Number(getCurrentWS().id),
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
+  const [s_createFolder] = useMutation(S_CREATE_FOLDER, {
+    onCompleted({ createFolder }) {
+      callSnackBarOpenHandler();
     },
     onError(error: ApolloError) {
       console.log(error);
@@ -93,6 +102,17 @@ const FolderPage: FC<Props> = () => {
     }
   }, [folder_data]);
 
+  const createNewFolder = useCallback(async () => {
+    const variables = {
+      name: "New Folder",
+      description: "Describe new folder",
+      wsId: Number(getCurrentWS().id),
+      parentId: Number(folder_data?.getFolder.id),
+    };
+    await s_createFolder({ variables });
+    refetchFolder();
+  }, [folder_data, refetchFolder]);
+
   useEffect(() => {}, [folder_id, folder_data]);
 
   return (
@@ -102,11 +122,13 @@ const FolderPage: FC<Props> = () => {
           <FolderTitleSection
             folder={folder_data?.getFolder}
             parents={createFolderTree()}
+            createNewFolder={createNewFolder}
           />
           <FolderAddListSection
             folder_id={folder_data?.getFolder.id}
             lists={list_data?.getLists}
             callSnackBarOpenHandler={callSnackBarOpenHandler}
+            refetchFolder={refetchFolder}
           />
           <ListContents
             children={folder_data?.getFolder.children_folder}

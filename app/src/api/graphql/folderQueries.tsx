@@ -1,8 +1,20 @@
 import { gql } from "@apollo/client";
 
 export const S_CREATE_FOLDER = gql`
-  mutation CREATE_FOLDER($wsId: Float!, $parentId: Float!) {
-    createFolder(data: { wsId: $wsId, parentId: $parentId }) {
+  mutation CREATE_FOLDER(
+    $name: String!
+    $description: String!
+    $wsId: Float!
+    $parentId: Float!
+  ) {
+    createFolder(
+      data: {
+        name: $name
+        description: $description
+        wsId: $wsId
+        parentId: $parentId
+      }
+    ) {
       id
       ownerId
       name

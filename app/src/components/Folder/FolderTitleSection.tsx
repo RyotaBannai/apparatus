@@ -11,10 +11,12 @@ import { FolderTitleControls } from "./FolderTitleControls";
 interface IProps {
   folder: Folder.Folder;
   parents: JSX.Element[];
+  createNewFolder: () => Promise<void>;
 }
 
 export const FolderTitleSection: FC<IProps> = (props) => {
-  const { folder, parents } = props;
+  const { folder, parents, createNewFolder } = props;
+  useEffect(() => {}, [createNewFolder]);
   return (
     <Card>
       <CardContent style={{ padding: "16px 16px 0 16px" }}>
@@ -37,7 +39,7 @@ export const FolderTitleSection: FC<IProps> = (props) => {
             </CardContent>
           </Grid>
           <Grid item xs={2}>
-            <FolderTitleControls />
+            <FolderTitleControls createNewFolder={createNewFolder} />
           </Grid>
         </Grid>
       </CardContent>
