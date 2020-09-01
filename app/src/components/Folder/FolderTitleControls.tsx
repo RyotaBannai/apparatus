@@ -2,6 +2,7 @@ import React, {
   useState,
   useEffect,
   useCallback,
+  useMemo,
   SyntheticEvent,
   FC,
 } from "react";
@@ -21,9 +22,11 @@ import { COLOR } from "../../constants/color";
 
 interface IProps {
   createNewFolder: () => Promise<void>;
+  editFolder: () => void;
+  is_edit_mode: boolean;
 }
 export const FolderTitleControls: FC<IProps> = (props) => {
-  const { createNewFolder } = props;
+  const { createNewFolder, editFolder, is_edit_mode } = props;
   const [open, setOpen] = useState(false);
   const { addSelectedList, toggleAddableState } = useFolderActions();
   const { getAddable } = useFolderHelpers;
@@ -38,8 +41,8 @@ export const FolderTitleControls: FC<IProps> = (props) => {
   );
 
   const onColorAdd = useCallback(
-    () => (is_addable ? COLOR.PRIMARY : "inherit"),
-    [is_addable]
+    (value: boolean) => (value ? COLOR.PRIMARY : "inherit"),
+    []
   );
 
   interface IAction {
@@ -50,16 +53,20 @@ export const FolderTitleControls: FC<IProps> = (props) => {
 
   const actions: IAction[] = [
     {
-      icon: <ViewHeadlineIcon style={{ color: onColorAdd() }} />,
+      icon: <ViewHeadlineIcon style={{ color: onColorAdd(is_addable) }} />,
       name: is_addable ? "Quit Add List" : "Add List",
       handler: toggleAddableHandler,
     },
     {
       icon: <ViewColumnIcon />,
       name: "Add Folder",
-      handler: () => createNewFolder(),
+      handler: createNewFolder,
     },
-    { icon: <EditIcon />, name: "Edit Folder", handler: () => null },
+    {
+      icon: <EditIcon style={{ color: onColorAdd(is_edit_mode) }} />,
+      name: is_edit_mode ? "Quit Edit Folder" : "Edit Folder",
+      handler: editFolder,
+    },
     { icon: <Icon>delete</Icon>, name: "Delete Folder", handler: () => null },
   ];
   useEffect(() => {}, [createNewFolder]);

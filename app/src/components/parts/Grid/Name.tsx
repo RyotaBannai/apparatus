@@ -1,4 +1,4 @@
-import React, { useEffect, SyntheticEvent, FC } from "react";
+import React, { useEffect, SyntheticEvent, FC, ChangeEvent } from "react";
 import { Grid, InputLabel, OutlinedInput } from "@material-ui/core";
 import styled from "styled-components";
 
@@ -7,25 +7,27 @@ interface IProps {
   defaultValue: string;
   fallbackValue: string;
   labelName: string;
-  handleOnClick?: (e: SyntheticEvent) => void | undefined;
+  handleOnChange?: (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void | undefined;
 }
 export const Name: FC<IProps> = (props) => {
-  const { id, defaultValue, fallbackValue, labelName, handleOnClick } = props;
+  const { id, defaultValue, fallbackValue, labelName, handleOnChange } = props;
   useEffect(() => {}, [
     id,
     defaultValue,
     fallbackValue,
     labelName,
-    handleOnClick,
+    handleOnChange,
   ]);
   return (
     <StyledGrid item>
-      <InputLabel htmlFor="name">{labelName}</InputLabel>
+      <InputLabel htmlFor={id}>{labelName}</InputLabel>
       <StyledOutlinedInput
-        id="name"
+        id={id}
         required
         defaultValue={defaultValue ?? fallbackValue}
-        onChange={handleOnClick}
+        onChange={handleOnChange}
       />
     </StyledGrid>
   );

@@ -92,3 +92,13 @@ export const S_ADD_LISTS = gql`
     }
   }
 `;
+
+export const S_UPDATE_FOLDER = gql`
+  mutation UPDATE_FOLDER($id: Float!, $name: String!, $description: String!) {
+    updateFolder(data: { id: $id, name: $name, description: $description }) {
+      id
+      name
+      description
+    }
+  }
+`;

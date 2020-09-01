@@ -123,6 +123,8 @@ const FolderPage: FC<Props> = () => {
             folder={folder_data?.getFolder}
             parents={createFolderTree()}
             createNewFolder={createNewFolder}
+            callSnackBarOpenHandler={callSnackBarOpenHandler}
+            refetchFolder={refetchFolder}
           />
           <FolderAddListSection
             folder_id={folder_data?.getFolder.id}

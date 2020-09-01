@@ -10,6 +10,7 @@ import { SaveButton } from "../../components/Parts/Button/SaveButton";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { Grid, InputLabel, OutlinedInput, TextField } from "@material-ui/core";
 import { Name } from "../../components/Parts/Grid/Name";
+import { Description } from "../../components/Parts/Grid/Description";
 
 interface Props {}
 const CreatePage: FC<Props> = () => {
@@ -64,30 +65,23 @@ const CreatePage: FC<Props> = () => {
   return (
     <div>
       <h2>Create New List</h2>
-      {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Name
           id="name"
           labelName="Name"
           defaultValue={data?.name}
           fallbackValue={"List"}
-          handleOnClick={onChangeName}
+          handleOnChange={onChangeName}
         />
       </Grid>
       <Grid container alignItems="center" direction="row" spacing={1}>
-        <Grid item className={classes.gridDescription}>
-          <InputLabel htmlFor="description">Description</InputLabel>
-          <TextField
-            id="description"
-            required
-            multiline
-            rowsMax={4}
-            variant="outlined"
-            defaultValue={data?.description ?? ""}
-            className={classes.description}
-            onChange={onChangeDescription}
-          />
-        </Grid>
+        <Description
+          id="description"
+          labelName="Description"
+          defaultValue={data?.description}
+          fallbackValue={""}
+          handleOnChange={onChangeDescription}
+        />
       </Grid>
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item>

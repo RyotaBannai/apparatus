@@ -1,37 +1,48 @@
-import React, { useEffect, SyntheticEvent, FC } from "react";
-import { Grid, InputLabel, OutlinedInput } from "@material-ui/core";
+import React, { useEffect, SyntheticEvent, FC, ChangeEvent } from "react";
+import { Grid, InputLabel, TextField } from "@material-ui/core";
 import styled from "styled-components";
 
 interface IProps {
   id: string;
-  defaultValue: string;
+  defaultValue: string | null | undefined;
   fallbackValue: string;
-  name: string;
-  handleOnClick?: (e: SyntheticEvent) => void | undefined;
+  labelName: string;
+  handleOnChange?: (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => void | undefined;
 }
-export const Name: FC<IProps> = (props) => {
-  const { id, defaultValue, fallbackValue, name, handleOnClick } = props;
-  useEffect(() => {}, [id, defaultValue, fallbackValue, name, handleOnClick]);
+export const Description: FC<IProps> = (props) => {
+  const { id, defaultValue, fallbackValue, labelName, handleOnChange } = props;
+  useEffect(() => {}, [
+    id,
+    defaultValue,
+    fallbackValue,
+    labelName,
+    handleOnChange,
+  ]);
   return (
     <StyledGrid item>
-      <InputLabel htmlFor="name">Name</InputLabel>
-      <StyledOutlinedInput
-        id="name"
+      <InputLabel htmlFor={id}>{labelName}</InputLabel>
+      <StyledTextField
+        id={id}
         required
+        multiline
+        rowsMax={4}
+        variant="outlined"
         defaultValue={defaultValue ?? fallbackValue}
-        onChange={handleOnClick}
+        onChange={handleOnChange}
       />
     </StyledGrid>
   );
 };
 
 const StyledGrid = styled(Grid)`
-  width: "100%";
+  width: 100%;
 `;
 
-const StyledOutlinedInput = styled(OutlinedInput)`
+const StyledTextField = styled(TextField)`
   width: 50%;
-  & input {
-    padding: ${(props) => props.theme.spacing(1)};
+  & textarea {
+    min-height: 100px;
   }
 `;
