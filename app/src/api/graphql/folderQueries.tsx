@@ -14,6 +14,7 @@ export const S_CREATE_FOLDER = gql`
 export const S_GET_FOLDER = gql`
   query GET_FOLDER($id: String!, $wsId: Float!) {
     getFolder(id: $id, wsId: $wsId) {
+      id
       name
       description
       children_folder {
@@ -68,6 +69,14 @@ export const S_GET_FOLDERS = gql`
         name
         description
       }
+    }
+  }
+`;
+
+export const S_ADD_LISTS = gql`
+  mutation ADD_LISTS($lists: [Float!]!, $folderId: Float!) {
+    addLists(data: { lists: $lists, folderId: $folderId }) {
+      id
     }
   }
 `;

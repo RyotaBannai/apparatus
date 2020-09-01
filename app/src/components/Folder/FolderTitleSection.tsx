@@ -9,10 +9,12 @@ import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 import { FolderTitleControls } from "./FolderTitleControls";
 
 interface IProps {
+  folder: Folder.Folder;
   parents: JSX.Element[];
 }
+
 export const FolderTitleSection: FC<IProps> = (props) => {
-  const { parents } = props;
+  const { folder, parents } = props;
   return (
     <Card>
       <CardContent style={{ padding: "16px 16px 0 16px" }}>
@@ -27,10 +29,10 @@ export const FolderTitleSection: FC<IProps> = (props) => {
             </Typography>
             <CardContent>
               <Typography variant="h5" color="textPrimary" component="h2">
-                {"Folder title here"}
+                {folder.name}
               </Typography>
               <Typography variant="body2" color="textSecondary" component="p">
-                {"Folder description here"}
+                {folder.description}
               </Typography>
             </CardContent>
           </Grid>

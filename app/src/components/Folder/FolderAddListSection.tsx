@@ -5,6 +5,8 @@ import React, {
   SyntheticEvent,
   FC,
 } from "react";
+import { useQuery, useMutation, ApolloError } from "@apollo/client";
+import { S_ADD_LISTS } from "../../api/graphql/folderQueries";
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -24,10 +26,12 @@ import { StyledAppBar } from "../Parts/StyleAppBar";
 import ListEditPageTable from "../List/ListEditPageTable";
 
 interface Props {
+  folder_id: string;
   lists: ApparatusList.ListData[];
+  callSnackBarOpenHandler: () => void;
 }
 export const FolderAddListSection: FC<Props> = (props) => {
-  const { lists } = props;
+  const { folder_id, lists, callSnackBarOpenHandler } = props;
   const {
     addSelectedList,
     removeSelectedList,
@@ -48,6 +52,27 @@ export const FolderAddListSection: FC<Props> = (props) => {
     remove: onRemoveSelectedListHandler,
     selected: selected_lists,
   };
+
+  const [s_addLists, { loading: sa_loading, error: sa_error }] = useMutation(
+    S_ADD_LISTS,
+    {
+      onCompleted({ addLists }) {
+        callSnackBarOpenHandler();
+      },
+      onError(error: ApolloError) {
+        console.log(error);
+      },
+    }
+  );
+
+  let addListsToFolderHandler = useCallback(() => {
+    const variables = {
+      folderId: Number(folder_id),
+      lists: selected_lists.map((listId: string) => Number(listId)),
+    };
+    console.log(variables);
+    s_addLists({ variables });
+  }, [s_addLists, selected_lists, folder_id]);
 
   useEffect(() => {}, [lists]);
 
@@ -87,7 +112,7 @@ export const FolderAddListSection: FC<Props> = (props) => {
                         endIcon={<Icon>arrow_right</Icon>}
                         disableRipple
                         disableTouchRipple
-                        onClick={() => null}
+                        onClick={addListsToFolderHandler}
                       >
                         Add
                       </Button>

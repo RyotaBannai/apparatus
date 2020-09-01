@@ -25,6 +25,10 @@ const FolderPage: FC<Props> = () => {
   const { getCurrentWS } = useWSHelpers;
   let { folder_id } = useParams<{ folder_id?: string }>();
 
+  let callSnackBarOpenHandler = useCallback(() => setOpen(!saveSnackBarOpen), [
+    saveSnackBarOpen,
+  ]);
+
   const { data: folder_data } = useQuery(S_GET_FOLDER, {
     variables: {
       id: folder_id ?? "",
@@ -95,8 +99,15 @@ const FolderPage: FC<Props> = () => {
     <div>
       {folder_data !== undefined ? (
         <>
-          <FolderTitleSection parents={createFolderTree()} />
-          <FolderAddListSection lists={list_data?.getLists} />
+          <FolderTitleSection
+            folder={folder_data?.getFolder}
+            parents={createFolderTree()}
+          />
+          <FolderAddListSection
+            folder_id={folder_data?.getFolder.id}
+            lists={list_data?.getLists}
+            callSnackBarOpenHandler={callSnackBarOpenHandler}
+          />
           <ListContents
             children={folder_data?.getFolder.children_folder}
             lists={folder_data?.getFolder.lists}
