@@ -102,3 +102,11 @@ export const S_UPDATE_FOLDER = gql`
     }
   }
 `;
+
+export const S_DELETE_FOLDER = gql`
+  mutation DELETE_FOLDER($id: Float!) {
+    deleteFolder(data: { id: $id }) {
+      res
+    }
+  }
+`;

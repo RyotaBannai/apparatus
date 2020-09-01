@@ -17,7 +17,7 @@ interface IProps {
   folder: Folder.Folder;
   parents: JSX.Element[];
   createNewFolder: () => Promise<void>;
-  callSnackBarOpenHandler: () => void;
+  deleteFolder: () => Promise<void>;
   refetchFolder: (
     variables?:
       | Partial<{
@@ -26,6 +26,7 @@ interface IProps {
         }>
       | undefined
   ) => Promise<ApolloQueryResult<any>>;
+  callSnackBarOpenHandler: () => void;
 }
 
 export const FolderTitleSection: FC<IProps> = (props) => {
@@ -33,12 +34,13 @@ export const FolderTitleSection: FC<IProps> = (props) => {
     folder,
     parents,
     createNewFolder,
-    callSnackBarOpenHandler,
+    deleteFolder,
     refetchFolder,
+    callSnackBarOpenHandler,
   } = props;
   const [edit_mode, setEditMode] = useState<boolean>(false);
-  const [name, setName] = useState<string>(folder.name);
-  const [description, setDescription] = useState<string>(folder.description);
+  const [name, setName] = useState<string>(folder?.name);
+  const [description, setDescription] = useState<string>(folder?.description);
 
   const handleOnChangeName = useCallback(
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -71,11 +73,13 @@ export const FolderTitleSection: FC<IProps> = (props) => {
       description,
       id: Number(folder.id),
     };
-    await Promise.all([s_updateFolder({ variables }), refetchFolder()]);
+    await s_updateFolder({ variables });
+    await refetchFolder();
     editModeHandler();
   }, [s_updateFolder, name, description, editModeHandler]);
 
-  useEffect(() => {}, [createNewFolder]);
+  useEffect(() => {}, [createNewFolder, deleteFolder]);
+
   return (
     <Card>
       <CardContent style={{ padding: "16px" }}>
@@ -92,14 +96,14 @@ export const FolderTitleSection: FC<IProps> = (props) => {
                 </Typography>
                 <CardContent>
                   <Typography variant="h5" color="textPrimary" component="h2">
-                    {folder.name}
+                    {folder?.name}
                   </Typography>
                   <Typography
                     variant="body2"
                     color="textSecondary"
                     component="p"
                   >
-                    {folder.description}
+                    {folder?.description}
                   </Typography>
                 </CardContent>
               </>
@@ -137,6 +141,7 @@ export const FolderTitleSection: FC<IProps> = (props) => {
           <Grid item xs={2}>
             <FolderTitleControls
               createNewFolder={createNewFolder}
+              deleteFolder={deleteFolder}
               editFolder={editModeHandler}
               is_edit_mode={edit_mode}
             />

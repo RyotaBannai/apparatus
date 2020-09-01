@@ -1,14 +1,7 @@
-import React, { FC, useState, useCallback, SyntheticEvent } from "react";
-import { useHistory, useLocation } from "react-router-dom";
+import React, { FC, useCallback } from "react";
+import { useHistory } from "react-router-dom";
 import { useStyles } from "../../assets/style/workspace/page.style";
-import {
-  Button,
-  Checkbox,
-  Icon,
-  TableCell,
-  TableRow,
-  Tooltip,
-} from "@material-ui/core";
+import { Checkbox, TableCell, TableRow } from "@material-ui/core";
 import { createData } from "./service";
 
 interface ILinkProp {

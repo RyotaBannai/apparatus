@@ -1,17 +1,14 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
+import React, { useState, useEffect, useCallback, FC } from "react";
+import { useHistory } from "react-router-dom";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
-import { S_GET_FOLDER, S_CREATE_FOLDER } from "../../api/graphql/folderQueries";
+import {
+  S_GET_FOLDER,
+  S_CREATE_FOLDER,
+  S_DELETE_FOLDER,
+} from "../../api/graphql/folderQueries";
 import { S_GET_LISTS } from "../../api/graphql/listQueries";
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useFolderHelpers } from "../../features/folder/folderHelpers";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { FolderTitleSection } from "../../components/Folder/FolderTitleSection";
@@ -19,11 +16,12 @@ import { ListContents } from "../../components/Folder/ListContents";
 import { FolderAddListSection } from "../../components/Folder/FolderAddListSection";
 import { COLOR } from "../../constants/color";
 
-interface Props {}
-const FolderPage: FC<Props> = () => {
+interface IProps {}
+const FolderPage: FC<IProps> = () => {
   const [saveSnackBarOpen, setOpen] = useState(false);
-  const { getCurrentWS } = useWSHelpers;
   let { folder_id } = useParams<{ folder_id?: string }>();
+  const history = useHistory();
+  const { getCurrentWS } = useWSHelpers;
 
   let callSnackBarOpenHandler = useCallback(() => setOpen(!saveSnackBarOpen), [
     saveSnackBarOpen,
@@ -57,6 +55,15 @@ const FolderPage: FC<Props> = () => {
     },
   });
 
+  const [s_deleteFolder] = useMutation(S_DELETE_FOLDER, {
+    onCompleted({ deleteFolder }) {
+      callSnackBarOpenHandler();
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
   const extractParentRecursive = (
     folder: Folder.Folder,
     trees: Folder.Minimal[] = []
@@ -83,11 +90,21 @@ const FolderPage: FC<Props> = () => {
     );
   };
 
+  const parseParentFolderJson = useCallback(
+    () => JSON.parse(folder_data?.getFolder?.parent_folder),
+    [folder_data]
+  );
+
   const createFolderTree = useCallback((): JSX.Element[] => {
-    if (folder_data === undefined || folder_data.getFolder === null) return [];
+    if (
+      folder_data === undefined ||
+      folder_data?.getFolder === undefined ||
+      folder_data?.getFolder === null
+    )
+      return [];
     else {
       let trees: Folder.Minimal[] = [];
-      const folder = JSON.parse(folder_data?.getFolder.parent_folder);
+      const folder = parseParentFolderJson();
       extractParentRecursive(folder, trees);
       let folder_hierarchy = trees
         .reverse()
@@ -113,7 +130,18 @@ const FolderPage: FC<Props> = () => {
     refetchFolder();
   }, [folder_data, refetchFolder]);
 
-  useEffect(() => {}, [folder_id, folder_data]);
+  const deleteFolder = useCallback(async () => {
+    await s_deleteFolder({
+      variables: {
+        id: Number(folder_data?.getFolder.id),
+      },
+    });
+    history.push(`/folder/${parseParentFolderJson().parent.id}`);
+  }, [folder_data]);
+
+  useEffect(() => {
+    refetchFolder();
+  }, [folder_id, folder_data]);
 
   return (
     <div>
@@ -123,8 +151,9 @@ const FolderPage: FC<Props> = () => {
             folder={folder_data?.getFolder}
             parents={createFolderTree()}
             createNewFolder={createNewFolder}
-            callSnackBarOpenHandler={callSnackBarOpenHandler}
+            deleteFolder={deleteFolder}
             refetchFolder={refetchFolder}
+            callSnackBarOpenHandler={callSnackBarOpenHandler}
           />
           <FolderAddListSection
             folder_id={folder_data?.getFolder.id}

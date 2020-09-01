@@ -22,11 +22,12 @@ import { COLOR } from "../../constants/color";
 
 interface IProps {
   createNewFolder: () => Promise<void>;
+  deleteFolder: () => Promise<void>;
   editFolder: () => void;
   is_edit_mode: boolean;
 }
 export const FolderTitleControls: FC<IProps> = (props) => {
-  const { createNewFolder, editFolder, is_edit_mode } = props;
+  const { createNewFolder, deleteFolder, editFolder, is_edit_mode } = props;
   const [open, setOpen] = useState(false);
   const { addSelectedList, toggleAddableState } = useFolderActions();
   const { getAddable } = useFolderHelpers;
@@ -67,9 +68,14 @@ export const FolderTitleControls: FC<IProps> = (props) => {
       name: is_edit_mode ? "Quit Edit Folder" : "Edit Folder",
       handler: editFolder,
     },
-    { icon: <Icon>delete</Icon>, name: "Delete Folder", handler: () => null },
+    { icon: <Icon>delete</Icon>, name: "Delete Folder", handler: deleteFolder },
   ];
-  useEffect(() => {}, [createNewFolder]);
+  useEffect(() => {}, [
+    createNewFolder,
+    deleteFolder,
+    editFolder,
+    is_edit_mode,
+  ]);
 
   return (
     <StyledSpeedDial
