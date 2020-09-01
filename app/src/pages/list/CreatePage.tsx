@@ -9,6 +9,7 @@ import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SaveButton } from "../../components/Parts/Button/SaveButton";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { Grid, InputLabel, OutlinedInput, TextField } from "@material-ui/core";
+import { Name } from "../../components/Parts/Grid/Name";
 
 interface Props {}
 const CreatePage: FC<Props> = () => {
@@ -65,16 +66,13 @@ const CreatePage: FC<Props> = () => {
       <h2>Create New List</h2>
       {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
       <Grid container alignItems="center" direction="row" spacing={1}>
-        <Grid item className={classes.gridName}>
-          <InputLabel htmlFor="name">Name</InputLabel>
-          <OutlinedInput
-            id="name"
-            required
-            defaultValue={data?.name ?? "List"}
-            className={classes.name}
-            onChange={onChangeName}
-          />
-        </Grid>
+        <Name
+          id="name"
+          labelName="Name"
+          defaultValue={data?.name}
+          fallbackValue={"List"}
+          handleOnClick={onChangeName}
+        />
       </Grid>
       <Grid container alignItems="center" direction="row" spacing={1}>
         <Grid item className={classes.gridDescription}>

@@ -2,12 +2,23 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./app/App";
-import { StylesProvider } from "@material-ui/styles";
+import { ThemeProvider } from "styled-components";
+import {
+  StylesProvider,
+  ThemeProvider as MuiThemeProvider,
+  createMuiTheme,
+} from "@material-ui/core";
 import * as serviceWorker from "./serviceWorker";
+
+const theme = createMuiTheme();
 
 ReactDOM.render(
   <StylesProvider injectFirst>
-    <App />
+    <MuiThemeProvider theme={theme}>
+      <ThemeProvider theme={theme}>
+        <App />
+      </ThemeProvider>
+    </MuiThemeProvider>
   </StylesProvider>,
   document.getElementById("root")
 );
