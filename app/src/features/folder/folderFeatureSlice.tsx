@@ -4,7 +4,6 @@ import * as _ from "lodash";
 
 interface IState {
   addable: {
-    is_addable: boolean;
     lists: ApparatusList.ListData[];
     selected_lists: string[];
   };
@@ -14,7 +13,6 @@ interface IState {
 }
 let initialState: IState = {
   addable: {
-    is_addable: false,
     lists: [],
     selected_lists: [],
   },
@@ -27,18 +25,6 @@ export const FolderFeature = createSlice({
   name: "folder",
   initialState,
   reducers: {
-    toggleAddableState: (
-      state,
-      action: {
-        type: string;
-        payload: {
-          is_addable: boolean;
-        };
-      }
-    ) => {
-      state.addable.is_addable = action.payload.is_addable;
-    },
-
     updateLists: (
       state,
       action: {

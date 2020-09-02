@@ -21,6 +21,7 @@ interface IProps {}
 const FolderPage: FC<IProps> = () => {
   const [saveSnackBarOpen, setOpen] = useState(false);
   const [deletable, setDeletable] = useState(false);
+  const [addable, setAddable] = useState(false);
   let { folder_id } = useParams<{ folder_id?: string }>();
   const history = useHistory();
   const { getCurrentWS } = useWSHelpers;
@@ -32,6 +33,10 @@ const FolderPage: FC<IProps> = () => {
 
   const toggleDeletableHandler = useCallback(() => setDeletable(!deletable), [
     deletable,
+  ]);
+
+  const toggleAddableHandler = useCallback(() => setAddable(!addable), [
+    addable,
   ]);
 
   const { data: folder_data, refetch: refetchFolder } = useQuery(S_GET_FOLDER, {
@@ -160,18 +165,21 @@ const FolderPage: FC<IProps> = () => {
             createNewFolder={createNewFolder}
             deleteFolder={deleteFolder}
             refetchFolder={refetchFolder}
-            id_deletable={deletable}
+            is_deletable={deletable}
+            is_addable={addable}
             callSnackBarOpenHandler={callSnackBarOpenHandler}
             toggleDeletableHandler={toggleDeletableHandler}
+            toggleAddableHandler={toggleAddableHandler}
           />
           <FolderAddListSection
+            is_addable={addable}
             folder_id={folder_data?.getFolder.id}
             lists={list_data?.getLists}
             callSnackBarOpenHandler={callSnackBarOpenHandler}
             refetchFolder={refetchFolder}
           />
           <FolderDeleteListSection
-            id_deletable={deletable}
+            is_deletable={deletable}
             folder_id={folder_data?.getFolder.id}
             callSnackBarOpenHandler={callSnackBarOpenHandler}
             refetchFolder={refetchFolder}

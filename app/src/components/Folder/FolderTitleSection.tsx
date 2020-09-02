@@ -26,9 +26,11 @@ interface IProps {
         }>
       | undefined
   ) => Promise<ApolloQueryResult<any>>;
-  id_deletable: boolean;
-  callSnackBarOpenHandler: () => void;
+  is_deletable: boolean;
+  is_addable: boolean;
   toggleDeletableHandler: () => void;
+  toggleAddableHandler: () => void;
+  callSnackBarOpenHandler: () => void;
 }
 
 export const FolderTitleSection: FC<IProps> = (props) => {
@@ -38,9 +40,11 @@ export const FolderTitleSection: FC<IProps> = (props) => {
     createNewFolder,
     deleteFolder,
     refetchFolder,
-    id_deletable,
-    callSnackBarOpenHandler,
+    is_deletable,
+    is_addable,
     toggleDeletableHandler,
+    toggleAddableHandler,
+    callSnackBarOpenHandler,
   } = props;
   const [edit_mode, setEditMode] = useState<boolean>(false);
   const [name, setName] = useState<string>(folder?.name);
@@ -155,8 +159,10 @@ export const FolderTitleSection: FC<IProps> = (props) => {
               deleteFolder={deleteFolder}
               editFolder={editModeHandler}
               is_edit_mode={edit_mode}
-              id_deletable={id_deletable}
+              is_deletable={is_deletable}
+              is_addable={is_addable}
               toggleDeletableHandler={toggleDeletableHandler}
+              toggleAddableHandler={toggleAddableHandler}
             />
           </Grid>
         </Grid>

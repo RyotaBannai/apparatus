@@ -1,19 +1,6 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
-import {
-  useQuery,
-  useMutation,
-  ApolloError,
-  ApolloQueryResult,
-} from "@apollo/client";
+import React, { useEffect, useCallback, FC } from "react";
+import { useMutation, ApolloError, ApolloQueryResult } from "@apollo/client";
 import { S_ADD_LISTS } from "../../api/graphql/folderQueries";
-import { NavLink } from "react-router-dom";
-import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useFolderActions } from "../../features/folder/folderFeatureSlice";
 import { useFolderHelpers } from "../../features/folder/folderHelpers";
@@ -31,6 +18,7 @@ import { StyledAppBar } from "../Parts/StyleAppBar";
 import ListEditPageTable from "../List/ListEditPageTable";
 
 interface Props {
+  is_addable: boolean;
   folder_id: string;
   lists: ApparatusList.ListData[];
   callSnackBarOpenHandler: () => void;
@@ -44,13 +32,19 @@ interface Props {
   ) => Promise<ApolloQueryResult<any>>;
 }
 export const FolderAddListSection: FC<Props> = (props) => {
-  const { folder_id, lists, callSnackBarOpenHandler, refetchFolder } = props;
+  const {
+    is_addable,
+    folder_id,
+    lists,
+    callSnackBarOpenHandler,
+    refetchFolder,
+  } = props;
   const {
     addSelectedListToAddable,
     removeSelectedListToAddable,
   } = useFolderActions();
   const { getAddable } = useFolderHelpers;
-  const { is_addable, selected_lists } = useSelector(getAddable);
+  const { selected_lists } = useSelector(getAddable);
   const dispatch = useDispatch();
 
   const onAddSelectedListHandler = (id: string) =>

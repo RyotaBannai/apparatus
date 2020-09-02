@@ -15,7 +15,7 @@ import {
 import { StyledAppBar } from "../Parts/StyleAppBar";
 
 interface Props {
-  id_deletable: boolean;
+  is_deletable: boolean;
   folder_id: string;
   callSnackBarOpenHandler: () => void;
   refetchFolder: (
@@ -30,7 +30,7 @@ interface Props {
 
 export const FolderDeleteListSection: FC<Props> = (props) => {
   const {
-    id_deletable,
+    is_deletable,
     folder_id,
     callSnackBarOpenHandler,
     refetchFolder,
@@ -56,11 +56,11 @@ export const FolderDeleteListSection: FC<Props> = (props) => {
     refetchFolder();
   }, [s_deleteLists, selected_lists, folder_id, refetchFolder]);
 
-  useEffect(() => {}, [id_deletable]);
+  useEffect(() => {}, [is_deletable]);
 
   return (
     <>
-      {id_deletable ? (
+      {is_deletable ? (
         <Box>
           <Typography
             variant="h5"

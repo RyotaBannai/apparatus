@@ -1,14 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useMemo,
-  SyntheticEvent,
-  FC,
-} from "react";
-import { useFolderActions } from "../../features/folder/folderFeatureSlice";
-import { useFolderHelpers } from "../../features/folder/folderHelpers";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useState, useEffect, useCallback, FC } from "react";
 import styled from "styled-components";
 import DeleteIcon from "@material-ui/icons/Delete";
 import ClearAllIcon from "@material-ui/icons/ClearAll";
@@ -26,30 +16,26 @@ interface IProps {
   deleteFolder: () => Promise<void>;
   editFolder: () => void;
   is_edit_mode: boolean;
-  id_deletable: boolean;
+  is_deletable: boolean;
+  is_addable: boolean;
   toggleDeletableHandler: () => void;
+  toggleAddableHandler: () => void;
 }
+
 export const FolderTitleControls: FC<IProps> = (props) => {
   const {
     createNewFolder,
     deleteFolder,
     editFolder,
     is_edit_mode,
-    id_deletable,
+    is_deletable,
+    is_addable,
     toggleDeletableHandler,
+    toggleAddableHandler,
   } = props;
   const [open, setOpen] = useState(false);
-  const { addSelectedListToAddable, toggleAddableState } = useFolderActions();
-  const { getAddable } = useFolderHelpers;
-  const dispatch = useDispatch();
-  const { is_addable } = useSelector(getAddable);
-
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const toggleAddableHandler = useCallback(
-    () => dispatch(toggleAddableState({ is_addable: !is_addable })),
-    [is_addable]
-  );
 
   const onColorAdd = useCallback(
     (value: boolean) => (value ? COLOR.PRIMARY : "inherit"),
@@ -69,8 +55,8 @@ export const FolderTitleControls: FC<IProps> = (props) => {
       handler: toggleAddableHandler,
     },
     {
-      icon: <ClearAllIcon style={{ color: onColorAdd(id_deletable) }} />,
-      name: id_deletable ? "Quit Delete List" : "Delete List",
+      icon: <ClearAllIcon style={{ color: onColorAdd(is_deletable) }} />,
+      name: is_deletable ? "Quit Delete List" : "Delete List",
       handler: toggleDeletableHandler,
     },
     {
@@ -89,8 +75,10 @@ export const FolderTitleControls: FC<IProps> = (props) => {
     createNewFolder,
     deleteFolder,
     editFolder,
-    is_edit_mode,
+    is_deletable,
+    is_addable,
     toggleDeletableHandler,
+    toggleAddableHandler,
   ]);
 
   return (
