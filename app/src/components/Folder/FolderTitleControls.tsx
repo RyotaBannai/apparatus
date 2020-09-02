@@ -10,7 +10,8 @@ import { useFolderActions } from "../../features/folder/folderFeatureSlice";
 import { useFolderHelpers } from "../../features/folder/folderHelpers";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import { Icon } from "@material-ui/core";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ClearAllIcon from "@material-ui/icons/ClearAll";
 import SpeedDial from "@material-ui/lab/SpeedDial";
 import SpeedDialIcon from "@material-ui/lab/SpeedDialIcon";
 import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
@@ -25,11 +26,20 @@ interface IProps {
   deleteFolder: () => Promise<void>;
   editFolder: () => void;
   is_edit_mode: boolean;
+  id_deletable: boolean;
+  toggleDeletableHandler: () => void;
 }
 export const FolderTitleControls: FC<IProps> = (props) => {
-  const { createNewFolder, deleteFolder, editFolder, is_edit_mode } = props;
+  const {
+    createNewFolder,
+    deleteFolder,
+    editFolder,
+    is_edit_mode,
+    id_deletable,
+    toggleDeletableHandler,
+  } = props;
   const [open, setOpen] = useState(false);
-  const { addSelectedList, toggleAddableState } = useFolderActions();
+  const { addSelectedListToAddable, toggleAddableState } = useFolderActions();
   const { getAddable } = useFolderHelpers;
   const dispatch = useDispatch();
   const { is_addable } = useSelector(getAddable);
@@ -59,6 +69,11 @@ export const FolderTitleControls: FC<IProps> = (props) => {
       handler: toggleAddableHandler,
     },
     {
+      icon: <ClearAllIcon style={{ color: onColorAdd(id_deletable) }} />,
+      name: id_deletable ? "Quit Delete List" : "Delete List",
+      handler: toggleDeletableHandler,
+    },
+    {
       icon: <ViewColumnIcon />,
       name: "Add Folder",
       handler: createNewFolder,
@@ -68,13 +83,14 @@ export const FolderTitleControls: FC<IProps> = (props) => {
       name: is_edit_mode ? "Quit Edit Folder" : "Edit Folder",
       handler: editFolder,
     },
-    { icon: <Icon>delete</Icon>, name: "Delete Folder", handler: deleteFolder },
+    { icon: <DeleteIcon />, name: "Delete Folder", handler: deleteFolder },
   ];
   useEffect(() => {}, [
     createNewFolder,
     deleteFolder,
     editFolder,
     is_edit_mode,
+    toggleDeletableHandler,
   ]);
 
   return (

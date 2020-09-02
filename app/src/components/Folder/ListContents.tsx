@@ -1,16 +1,39 @@
 import React, { useEffect, useCallback, FC } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { TableContainer, Table, TableBody, Paper } from "@material-ui/core";
 import { ListRow } from "./ListRow";
 import { FolderRow } from "./FolderRow";
+import { useFolderActions } from "../../features/folder/folderFeatureSlice";
+import { useFolderHelpers } from "../../features/folder/folderHelpers";
 
 interface IProps {
+  id_deletable: boolean;
   children: Folder.Folder[];
   lists: Folder.List[];
 }
 
 export const ListContents: FC<IProps> = (props) => {
-  const { children, lists } = props;
-  useEffect(() => {}, [children, lists]);
+  const { id_deletable, children, lists } = props;
+  const dispatch = useDispatch();
+  const {
+    addSelectedListToDeletable,
+    removeSelectedListToDeletable,
+  } = useFolderActions();
+  const onAddSelectedListHandler = (id: string) =>
+    dispatch(addSelectedListToDeletable({ list_id: id }));
+  const onRemoveSelectedListHandler = (id: string) =>
+    dispatch(removeSelectedListToDeletable({ list_id: id }));
+  const { getDeletable } = useFolderHelpers;
+  const { selected_lists } = useSelector(getDeletable);
+
+  const selectable: Folder.Selectable = {
+    is_selectable: id_deletable,
+    add: onAddSelectedListHandler,
+    remove: onRemoveSelectedListHandler,
+    selected: selected_lists,
+  };
+
+  useEffect(() => {}, [id_deletable, children, lists]);
   return (
     <>
       <TableContainer component={Paper} style={{ marginTop: 25 }}>
@@ -24,7 +47,9 @@ export const ListContents: FC<IProps> = (props) => {
               <></>
             )}
             {lists !== undefined ? (
-              lists.map((list: Folder.List) => <ListRow list={list} />)
+              lists.map((list: Folder.List) => (
+                <ListRow selectable={selectable} list={list} />
+              ))
             ) : (
               <></>
             )}

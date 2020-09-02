@@ -8,11 +8,17 @@ interface IState {
     lists: ApparatusList.ListData[];
     selected_lists: string[];
   };
+  deletable: {
+    selected_lists: string[];
+  };
 }
 let initialState: IState = {
   addable: {
     is_addable: false,
     lists: [],
+    selected_lists: [],
+  },
+  deletable: {
     selected_lists: [],
   },
 };
@@ -48,7 +54,7 @@ export const FolderFeature = createSlice({
       ] as ApparatusList.ListData[];
     },
 
-    addSelectedList: (
+    addSelectedListToAddable: (
       state,
       action: {
         type: string;
@@ -63,7 +69,7 @@ export const FolderFeature = createSlice({
       ];
     },
 
-    removeSelectedList: (
+    removeSelectedListToAddable: (
       state,
       action: {
         type: string;
@@ -73,6 +79,35 @@ export const FolderFeature = createSlice({
       }
     ) => {
       state.addable.selected_lists = state.addable.selected_lists.filter(
+        (list_id: string) => list_id !== action.payload.list_id
+      );
+    },
+
+    addSelectedListToDeletable: (
+      state,
+      action: {
+        type: string;
+        payload: {
+          list_id: string;
+        };
+      }
+    ) => {
+      state.deletable.selected_lists = [
+        ...state.deletable.selected_lists,
+        action.payload.list_id,
+      ];
+    },
+
+    removeSelectedListToDeletable: (
+      state,
+      action: {
+        type: string;
+        payload: {
+          list_id: string;
+        };
+      }
+    ) => {
+      state.deletable.selected_lists = state.deletable.selected_lists.filter(
         (list_id: string) => list_id !== action.payload.list_id
       );
     },

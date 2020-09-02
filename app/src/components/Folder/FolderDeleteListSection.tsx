@@ -1,23 +1,8 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
-import {
-  useQuery,
-  useMutation,
-  ApolloError,
-  ApolloQueryResult,
-} from "@apollo/client";
-import { S_ADD_LISTS } from "../../api/graphql/folderQueries";
-import { NavLink } from "react-router-dom";
-import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { useFolderActions } from "../../features/folder/folderFeatureSlice";
+import React, { useEffect, useCallback, FC } from "react";
+import { useMutation, ApolloError, ApolloQueryResult } from "@apollo/client";
+import { S_DELETE_LISTS } from "../../api/graphql/folderQueries";
+import { useSelector } from "react-redux";
 import { useFolderHelpers } from "../../features/folder/folderHelpers";
-import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import {
   Box,
   Button,
@@ -28,11 +13,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import { StyledAppBar } from "../Parts/StyleAppBar";
-import ListEditPageTable from "../List/ListEditPageTable";
 
 interface Props {
+  id_deletable: boolean;
   folder_id: string;
-  lists: ApparatusList.ListData[];
   callSnackBarOpenHandler: () => void;
   refetchFolder: (
     variables?:
@@ -43,30 +27,19 @@ interface Props {
       | undefined
   ) => Promise<ApolloQueryResult<any>>;
 }
-export const FolderAddListSection: FC<Props> = (props) => {
-  const { folder_id, lists, callSnackBarOpenHandler, refetchFolder } = props;
+
+export const FolderDeleteListSection: FC<Props> = (props) => {
   const {
-    addSelectedListToAddable,
-    removeSelectedListToAddable,
-  } = useFolderActions();
-  const { getAddable } = useFolderHelpers;
-  const { is_addable, selected_lists } = useSelector(getAddable);
-  const dispatch = useDispatch();
+    id_deletable,
+    folder_id,
+    callSnackBarOpenHandler,
+    refetchFolder,
+  } = props;
+  const { getDeletable } = useFolderHelpers;
+  const { selected_lists } = useSelector(getDeletable);
 
-  const onAddSelectedListHandler = (id: string) =>
-    dispatch(addSelectedListToAddable({ list_id: id }));
-  const onRemoveSelectedListHandler = (id: string) =>
-    dispatch(removeSelectedListToAddable({ list_id: id }));
-
-  const selectable: Folder.Selectable = {
-    is_selectable: true,
-    add: onAddSelectedListHandler,
-    remove: onRemoveSelectedListHandler,
-    selected: selected_lists,
-  };
-
-  const [s_addLists] = useMutation(S_ADD_LISTS, {
-    onCompleted({ addLists }) {
+  const [s_deleteLists] = useMutation(S_DELETE_LISTS, {
+    onCompleted({ deleteLists }) {
       callSnackBarOpenHandler();
     },
     onError(error: ApolloError) {
@@ -74,20 +47,20 @@ export const FolderAddListSection: FC<Props> = (props) => {
     },
   });
 
-  let addListsToFolderHandler = useCallback(async () => {
+  let deleteListsFromFolderHandler = useCallback(async () => {
     const variables = {
       folderId: Number(folder_id),
-      lists: selected_lists.map((listId: string) => Number(listId)),
+      listIds: selected_lists.map((listId: string) => Number(listId)),
     };
-    await s_addLists({ variables });
+    await s_deleteLists({ variables });
     refetchFolder();
-  }, [s_addLists, selected_lists, folder_id, refetchFolder]);
+  }, [s_deleteLists, selected_lists, folder_id, refetchFolder]);
 
-  useEffect(() => {}, [lists]);
+  useEffect(() => {}, [id_deletable]);
 
   return (
     <>
-      {is_addable ? (
+      {id_deletable ? (
         <Box>
           <Typography
             variant="h5"
@@ -95,7 +68,7 @@ export const FolderAddListSection: FC<Props> = (props) => {
             component="p"
             style={{ marginLeft: 10, marginTop: 30 }}
           >
-            Add Form
+            Delete Form
           </Typography>
           <Divider style={{ marginBottom: 10 }} />
           <StyledAppBar position="static">
@@ -103,10 +76,9 @@ export const FolderAddListSection: FC<Props> = (props) => {
               <Grid container alignItems="center" direction="row" spacing={1}>
                 <Grid item>
                   <Typography variant="h6" color="inherit">
-                    Add From List
+                    Delete
                   </Typography>
                 </Grid>
-
                 {selected_lists?.length > 0 ? (
                   <>
                     <Grid item>
@@ -121,9 +93,9 @@ export const FolderAddListSection: FC<Props> = (props) => {
                         endIcon={<Icon>arrow_right</Icon>}
                         disableRipple
                         disableTouchRipple
-                        onClick={addListsToFolderHandler}
+                        onClick={deleteListsFromFolderHandler}
                       >
-                        Add
+                        Delete
                       </Button>
                     </Grid>
                   </>
@@ -133,11 +105,6 @@ export const FolderAddListSection: FC<Props> = (props) => {
               </Grid>
             </Toolbar>
           </StyledAppBar>
-          {lists?.length > 0 ? (
-            <ListEditPageTable data={lists} selectable={selectable} />
-          ) : (
-            <div>No list found</div>
-          )}
         </Box>
       ) : (
         <></>

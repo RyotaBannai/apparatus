@@ -14,17 +14,24 @@ import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { FolderTitleSection } from "../../components/Folder/FolderTitleSection";
 import { ListContents } from "../../components/Folder/ListContents";
 import { FolderAddListSection } from "../../components/Folder/FolderAddListSection";
+import { FolderDeleteListSection } from "../../components/Folder/FolderDeleteListSection";
 import { COLOR } from "../../constants/color";
 
 interface IProps {}
 const FolderPage: FC<IProps> = () => {
   const [saveSnackBarOpen, setOpen] = useState(false);
+  const [deletable, setDeletable] = useState(false);
   let { folder_id } = useParams<{ folder_id?: string }>();
   const history = useHistory();
   const { getCurrentWS } = useWSHelpers;
 
-  let callSnackBarOpenHandler = useCallback(() => setOpen(!saveSnackBarOpen), [
-    saveSnackBarOpen,
+  const callSnackBarOpenHandler = useCallback(
+    () => setOpen(!saveSnackBarOpen),
+    [saveSnackBarOpen]
+  );
+
+  const toggleDeletableHandler = useCallback(() => setDeletable(!deletable), [
+    deletable,
   ]);
 
   const { data: folder_data, refetch: refetchFolder } = useQuery(S_GET_FOLDER, {
@@ -153,7 +160,9 @@ const FolderPage: FC<IProps> = () => {
             createNewFolder={createNewFolder}
             deleteFolder={deleteFolder}
             refetchFolder={refetchFolder}
+            id_deletable={deletable}
             callSnackBarOpenHandler={callSnackBarOpenHandler}
+            toggleDeletableHandler={toggleDeletableHandler}
           />
           <FolderAddListSection
             folder_id={folder_data?.getFolder.id}
@@ -161,7 +170,14 @@ const FolderPage: FC<IProps> = () => {
             callSnackBarOpenHandler={callSnackBarOpenHandler}
             refetchFolder={refetchFolder}
           />
+          <FolderDeleteListSection
+            id_deletable={deletable}
+            folder_id={folder_data?.getFolder.id}
+            callSnackBarOpenHandler={callSnackBarOpenHandler}
+            refetchFolder={refetchFolder}
+          />
           <ListContents
+            id_deletable={deletable}
             children={folder_data?.getFolder.children_folder}
             lists={folder_data?.getFolder.lists}
           />

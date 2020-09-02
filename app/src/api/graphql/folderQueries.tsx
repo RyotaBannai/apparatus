@@ -110,3 +110,11 @@ export const S_DELETE_FOLDER = gql`
     }
   }
 `;
+
+export const S_DELETE_LISTS = gql`
+  mutation DELETE_LISTS($folderId: Float!, $listIds: [Float!]!) {
+    deleteLists(data: { folderId: $folderId, listIds: $listIds }) {
+      res
+    }
+  }
+`;
