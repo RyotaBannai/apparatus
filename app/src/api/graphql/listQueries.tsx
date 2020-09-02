@@ -79,3 +79,11 @@ export const S_ADD_ADDEES = gql`
     }
   }
 `;
+
+export const S_DELETE_LIST = gql`
+  mutation DELETE_LIST($id: String!) {
+    deleteList(data: { id: $id }) {
+      res
+    }
+  }
+`;

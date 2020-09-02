@@ -1,6 +1,12 @@
 import React, { useState, useEffect, useCallback, FC } from "react";
-import { useLazyQuery, useQuery } from "@apollo/client";
-import { S_GET_LIST } from "../../api/graphql/listQueries";
+import { useHistory } from "react-router-dom";
+import {
+  useLazyQuery,
+  useQuery,
+  useMutation,
+  ApolloError,
+} from "@apollo/client";
+import { S_GET_LIST, S_DELETE_LIST } from "../../api/graphql/listQueries";
 import { S_GET_SETS } from "../../api/graphql/setQueries";
 import { S_GET_ITEMS } from "../../api/graphql/itemQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
@@ -10,19 +16,21 @@ import { useListActions } from "../../features/list/listFeatureSlice";
 import { useListMetaActions } from "../../features/list/listMetaFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
-import ListEditPageTopName from "../../components/List/ListEditPageTopName";
+import ListEditPageTopName from "../../components/List/ListEditPageTitleSection";
 import ListEditPageAddSection from "../../components/List/ListEditPageAddSection";
 import ListEditPageListTargets from "../../components/List/ListEditPageListTargets";
 
 interface Props {}
 
 const EditPage: FC<Props> = () => {
+  const [deletable, setDeletable] = useState(false);
+  const [addable, setAddable] = useState(false);
   const [saveSnackBarOpen, setOpen] = useState(false);
   const dispatch = useDispatch();
   const { addateList } = useListActions();
   const { addateHoverState, updateAddableTargets } = useListMetaActions();
   let { list_id } = useParams<{ list_id?: string }>();
-
+  const history = useHistory();
   const {
     getEditLists,
     getListByKey,
@@ -41,6 +49,14 @@ const EditPage: FC<Props> = () => {
   const list_meta = useSelector(getListMeta);
   const targets = useSelector(getAddableTargets);
   const selected = useSelector(getAddableSelected);
+
+  const toggleDeletableHandler = useCallback(() => setDeletable(!deletable), [
+    deletable,
+  ]);
+
+  const toggleAddableHandler = useCallback(() => setAddable(!addable), [
+    addable,
+  ]);
 
   const [
     fetchList,
@@ -63,6 +79,24 @@ const EditPage: FC<Props> = () => {
       );
     },
   });
+
+  const [s_deleteList] = useMutation(S_DELETE_LIST, {
+    onCompleted({ deleteFolder }) {
+      callSnackBarOpenHandler();
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
+  const deleteList = useCallback(async () => {
+    await s_deleteList({
+      variables: {
+        id: this_list?.id_on_server,
+      },
+    });
+    history.push(`/list_list`);
+  }, [this_list]);
 
   let callSnackBarOpenHandler = useCallback(() => setOpen(!saveSnackBarOpen), [
     saveSnackBarOpen,
@@ -118,9 +152,13 @@ const EditPage: FC<Props> = () => {
       <ListEditPageTopName
         this_list={this_list}
         data={data}
-        getHoverStateByIdHandler={getHoverStateByIdHandler}
-        changeHoverState={changeHoverState}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
+        // refetchFolder={refetchFolder}
+        deleteList={deleteList}
+        is_deletable={deletable}
+        is_addable={addable}
+        toggleDeletableHandler={toggleDeletableHandler}
+        toggleAddableHandler={toggleAddableHandler}
       />
       <ListEditPageAddSection
         list_id={list_id}

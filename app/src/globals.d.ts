@@ -71,7 +71,9 @@ declare namespace ApparatusList {
 
   type Lists = ApparatusList.List[];
 
-  type ListData = { id: string; targets: Addee.Addees } & List;
+  type ListData = { id: string; targets: Addee.Addees } & List & {
+      id_on_server?: string;
+    };
 
   interface ListState {
     new: ApparatusList.List;
