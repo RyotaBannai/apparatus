@@ -19,6 +19,7 @@ import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import ListEditPageTopName from "../../components/List/ListEditPageTitleSection";
 import ListEditPageAddSection from "../../components/List/ListEditPageAddSection";
 import ListEditPageListTargets from "../../components/List/ListEditPageListTargets";
+import { ListEditPageDeleteListSection } from "../../components/List/ListEditPageDeleteSection";
 
 interface Props {}
 
@@ -161,12 +162,20 @@ const EditPage: FC<Props> = () => {
         toggleAddableHandler={toggleAddableHandler}
       />
       <ListEditPageAddSection
+        is_addable={addable}
         list_id={list_id}
         selected={selected}
         targets={targets}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
       />
+      <ListEditPageDeleteListSection
+        is_deletable={deletable}
+        list_id={this_list?.id_on_server}
+        callSnackBarOpenHandler={callSnackBarOpenHandler}
+        // refetchList={refetchList}
+      />
       <ListEditPageListTargets
+        is_deletable={deletable}
         targets={this_list?.targets}
         getHoverStateByIdHandler={getHoverStateByIdHandler}
         changeHoverState={changeHoverState}

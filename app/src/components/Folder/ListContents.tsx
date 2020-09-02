@@ -7,13 +7,13 @@ import { useFolderActions } from "../../features/folder/folderFeatureSlice";
 import { useFolderHelpers } from "../../features/folder/folderHelpers";
 
 interface IProps {
-  id_deletable: boolean;
+  is_deletable: boolean;
   children: Folder.Folder[];
   lists: Folder.List[];
 }
 
 export const ListContents: FC<IProps> = (props) => {
-  const { id_deletable, children, lists } = props;
+  const { is_deletable, children, lists } = props;
   const dispatch = useDispatch();
   const {
     addSelectedListToDeletable,
@@ -27,13 +27,13 @@ export const ListContents: FC<IProps> = (props) => {
   const { selected_lists } = useSelector(getDeletable);
 
   const selectable: Folder.Selectable = {
-    is_selectable: id_deletable,
+    is_selectable: is_deletable,
     add: onAddSelectedListHandler,
     remove: onRemoveSelectedListHandler,
     selected: selected_lists,
   };
 
-  useEffect(() => {}, [id_deletable, children, lists]);
+  useEffect(() => {}, [is_deletable, children, lists]);
   return (
     <>
       <TableContainer component={Paper} style={{ marginTop: 25 }}>

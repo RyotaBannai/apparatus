@@ -185,7 +185,7 @@ const FolderPage: FC<IProps> = () => {
             refetchFolder={refetchFolder}
           />
           <ListContents
-            id_deletable={deletable}
+            is_deletable={deletable}
             children={folder_data?.getFolder.children_folder}
             lists={folder_data?.getFolder.lists}
           />

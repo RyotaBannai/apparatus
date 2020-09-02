@@ -39,11 +39,12 @@ export const ListRow: FC<IProps> = (props) => {
     <>
       <TableRow hover>
         {is_selectable ? (
-          <TableCell style={{ width: "10%" }}>
+          <TableCell style={{ width: "8%", textAlign: "center" }}>
             <Checkbox
               checked={is_selected}
               color="primary"
               inputProps={{ "aria-label": "secondary checkbox" }}
+              style={{ margin: "auto" }}
               size={"small"}
               onChange={pressCheckBoxHandler}
               value={list.id}
@@ -55,7 +56,7 @@ export const ListRow: FC<IProps> = (props) => {
         <TableCell
           style={{
             cursor: "pointer",
-            width: is_selectable ? "90%" : "100%",
+            width: is_selectable ? "92%" : "100%",
             display: is_selectable ? "" : "block",
           }}
           onClick={goToList}

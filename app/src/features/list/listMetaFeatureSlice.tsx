@@ -17,6 +17,12 @@ let initialMetaList: ApparatusList.InitialListMeta = {
       sets: [],
     },
   },
+  deletable: {
+    selected_targets: {
+      items: [],
+      sets: [],
+    },
+  },
 };
 
 export const ListMetaFeature = createSlice({
@@ -111,7 +117,7 @@ export const ListMetaFeature = createSlice({
       }
     },
 
-    addSelectedTarget: (
+    addSelectedTargetToAddable: (
       state,
       action: {
         type: string;
@@ -135,7 +141,7 @@ export const ListMetaFeature = createSlice({
       }
     },
 
-    removeUnSelectedTarget: (
+    removeUnSelectedTargetToAddable: (
       state,
       action: {
         type: string;
@@ -152,6 +158,52 @@ export const ListMetaFeature = createSlice({
         );
       } else if (add_to === "sets") {
         state.addable.selected_targets.sets = state.addable.selected_targets.sets.filter(
+          (set_id: number) => set_id !== id
+        );
+      }
+    },
+
+    addSelectedTargetToDeletable: (
+      state,
+      action: {
+        type: string;
+        payload: {
+          id: number;
+          add_to: "items" | "sets";
+        };
+      }
+    ) => {
+      const { id, add_to } = action.payload;
+      if (add_to === "items") {
+        state.deletable.selected_targets.items = [
+          ...state.deletable.selected_targets.items,
+          id,
+        ];
+      } else if (add_to === "sets") {
+        state.deletable.selected_targets.sets = [
+          ...state.deletable.selected_targets.sets,
+          id,
+        ];
+      }
+    },
+
+    removeUnSelectedTargetToDeletable: (
+      state,
+      action: {
+        type: string;
+        payload: {
+          id: number;
+          add_to: "items" | "sets";
+        };
+      }
+    ) => {
+      const { id, add_to } = action.payload;
+      if (add_to === "items") {
+        state.deletable.selected_targets.items = state.deletable.selected_targets.items.filter(
+          (item_id: number) => item_id !== id
+        );
+      } else if (add_to === "sets") {
+        state.deletable.selected_targets.sets = state.deletable.selected_targets.sets.filter(
           (set_id: number) => set_id !== id
         );
       }

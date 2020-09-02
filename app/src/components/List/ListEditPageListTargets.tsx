@@ -1,11 +1,15 @@
 import React, { useEffect, FC } from "react";
 import { Box, Divider, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
+import { useDispatch, useSelector } from "react-redux";
+import { useListMetaActions } from "../../features/list/listMetaFeatureSlice";
+import { useListHelpers } from "../../features/list/listHelpers";
 import ListEditListItem from "./ListEditListItem";
 import ListEditListSet from "./ListEditListSet";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
+  is_deletable: boolean;
   targets: Addee.Addees;
   getHoverStateByIdHandler: (id: string) => any;
   changeHoverState: ({ id, is_hover }: ApparatusList.ListHoverState) => any;
@@ -14,12 +18,43 @@ interface Props {
 
 const ListEditPageListTargets: FC<Props> = (props) => {
   const {
+    is_deletable,
     targets,
     getHoverStateByIdHandler,
     changeHoverState,
     callSnackBarOpenHandler,
   } = props;
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const { getDeletable } = useListHelpers;
+  const { selected_targets } = useSelector(getDeletable);
+  const {
+    addSelectedTargetToDeletable,
+    removeUnSelectedTargetToDeletable,
+  } = useListMetaActions();
+
+  const onAddSelectedListHandler = ({
+    id,
+    add_to,
+  }: {
+    id: number;
+    add_to: "items" | "sets";
+  }) => dispatch(addSelectedTargetToDeletable({ id, add_to }));
+
+  const onRemoveSelectedListHandler = ({
+    id,
+    add_to,
+  }: {
+    id: number;
+    add_to: "items" | "sets";
+  }) => dispatch(removeUnSelectedTargetToDeletable({ id, add_to }));
+
+  const selectable: ApparatusList.Selectable = {
+    is_selectable: is_deletable,
+    add: onAddSelectedListHandler,
+    remove: onRemoveSelectedListHandler,
+    selected: selected_targets,
+  };
 
   useEffect(() => {}, [targets]);
 
@@ -38,6 +73,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
         if (target.__typename === "ItemData") {
           return (
             <ListEditListItem
+              selectable={selectable}
               is_set={false}
               item={target}
               getHoverStateByIdHandler={getHoverStateByIdHandler}
@@ -48,6 +84,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
         } else if (target.__typename === "Set") {
           return (
             <ListEditListSet
+              selectable={selectable}
               key={uuidv4()}
               set={target}
               getHoverStateByIdHandler={getHoverStateByIdHandler}

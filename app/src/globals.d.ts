@@ -100,6 +100,12 @@ declare namespace ApparatusList {
         sets: number[];
       };
     };
+    deletable: {
+      selected_targets: {
+        items: number[];
+        sets: number[];
+      };
+    };
   }
 
   type AddateListActionPayload = Partial<ApparatusList.List> & {

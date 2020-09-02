@@ -5,15 +5,7 @@ import React, {
   FC,
   ChangeEvent,
 } from "react";
-import {
-  Card,
-  CardContent,
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  Switch,
-  Typography,
-} from "@material-ui/core";
+import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useListActions } from "../../features/list/listFeatureSlice";

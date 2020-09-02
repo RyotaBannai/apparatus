@@ -14,6 +14,8 @@ export const useListHelpers = {
 
   getAddable: (state: Global.RootState) => state.list_meta.addable,
 
+  getDeletable: (state: Global.RootState) => state.list_meta.deletable,
+
   getAddableTargets: (state: Global.RootState) =>
     state.list_meta.addable.targets,
 

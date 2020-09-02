@@ -80,6 +80,20 @@ export const S_ADD_ADDEES = gql`
   }
 `;
 
+export const S_DELTEE_ADDEES = gql`
+  mutation DELETE_ADDEES(
+    $listId: Float!
+    $itemIds: [Float!]!
+    $setIds: [Float!]!
+  ) {
+    deleteAddees(
+      data: { listId: $listId, itemIds: $itemIds, setIds: $setIds }
+    ) {
+      res
+    }
+  }
+`;
+
 export const S_DELETE_LIST = gql`
   mutation DELETE_LIST($id: String!) {
     deleteList(data: { id: $id }) {

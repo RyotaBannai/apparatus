@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback, FC } from "react";
 import {
-  AppBar,
   Box,
   Button,
   Divider,
@@ -22,6 +21,7 @@ import SetListTable from "../Set/SetListTable";
 import { StyledAppBar } from "../../components/Parts/StyleAppBar";
 
 interface IProps {
+  is_addable: boolean;
   list_id: string | undefined;
   selected: {
     items: number[];
@@ -35,15 +35,20 @@ interface IProps {
 }
 
 const ListEditPageAddSection: FC<IProps> = (props) => {
-  const { list_id, selected, targets, callSnackBarOpenHandler } = props;
+  const {
+    is_addable,
+    list_id,
+    selected,
+    targets,
+    callSnackBarOpenHandler,
+  } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
-  const { getAddableState, getAddableAddFrom } = useListHelpers;
-  const is_addable = useSelector(getAddableState);
+  const { getAddableAddFrom } = useListHelpers;
   const add_from = useSelector(getAddableAddFrom);
   const {
-    addSelectedTarget,
-    removeUnSelectedTarget,
+    addSelectedTargetToAddable,
+    removeUnSelectedTargetToAddable,
     updateAddableAddFrom,
   } = useListMetaActions();
 
@@ -62,7 +67,7 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
   }: {
     id: number;
     add_to: "items" | "sets";
-  }) => dispatch(addSelectedTarget({ id, add_to }));
+  }) => dispatch(addSelectedTargetToAddable({ id, add_to }));
 
   const removeUnSelectedTargetHandler = ({
     id,
@@ -70,7 +75,7 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
   }: {
     id: number;
     add_to: "items" | "sets";
-  }) => dispatch(removeUnSelectedTarget({ id, add_to }));
+  }) => dispatch(removeUnSelectedTargetToAddable({ id, add_to }));
 
   const onChangeAddableTarget = (e: any) =>
     dispatch(updateAddableAddFrom({ add_from: e.target.value }));

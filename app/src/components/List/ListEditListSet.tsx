@@ -1,12 +1,12 @@
 import React, { useEffect, useCallback, FC } from "react";
-import { Box, Typography } from "@material-ui/core";
-import { NavLink } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { Box, Checkbox, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/set.style";
 import ListEditListItem from "./ListEditListItem";
-import { ListEditTargetButton } from "../Parts/Button/ListEditTargetButton";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
+  selectable: ApparatusList.Selectable;
   set: ApparatusSet.Set;
   getHoverStateByIdHandler: (id: string) => any;
   changeHoverState: ({ id, is_hover }: ApparatusList.ListHoverState) => any;
@@ -15,63 +15,79 @@ interface Props {
 
 const ListEditPageListTargets: FC<Props> = (props) => {
   const {
+    selectable,
     set,
     getHoverStateByIdHandler,
     changeHoverState,
     callSnackBarOpenHandler,
   } = props;
+  const { is_selectable, add, remove, selected } = selectable;
   const classes = useStyles();
-  const hover_state_prefix = "Set-";
-  const set_id = hover_state_prefix + set.id;
-  const set_link = `/set_edit/${set.id}`;
+  const history = useHistory();
+  let is_selected = selected?.sets.includes(set?.id);
+
+  const goToSet = useCallback(() => history.push(`/set_edit/${set.id}`), [set]);
+
+  const pressCheckBoxHandler = useCallback((e) => {
+    const is_checked = e.target.checked;
+    const id = e.target.value;
+    const add_to = "sets" as "sets";
+    if (is_checked === true && add !== undefined) {
+      add({ id, add_to });
+    } else if (is_checked === false && remove !== undefined) {
+      remove({ id, add_to });
+    }
+  }, []);
 
   useEffect(() => {}, [set]);
 
   return (
-    <Box
-      className={classes.root}
-      onMouseEnter={() =>
-        changeHoverState({
-          id: set_id,
-          is_hover: true,
-        })
-      }
-      onMouseLeave={() =>
-        changeHoverState({
-          id: set_id,
-          is_hover: false,
-        })
-      }
-    >
-      <Typography
-        variant="subtitle1"
-        color="textSecondary"
-        component="p"
-        style={{ marginLeft: 10 }}
-      >
-        {set.name}
-      </Typography>
-      {set?.items.map((item: Item.Item) => {
-        return (
-          <ListEditListItem
-            key={uuidv4()}
-            item={item}
-            is_set={true}
-            getHoverStateByIdHandler={getHoverStateByIdHandler}
-            changeHoverState={changeHoverState}
-            callSnackBarOpenHandler={callSnackBarOpenHandler}
-          />
-        );
-      })}
-      {getHoverStateByIdHandler(set_id)?.is_hover ? (
-        <Box style={{ padding: 6 }}>
-          <NavLink exact to={set_link} key={uuidv4()}>
-            <ListEditTargetButton name="Edit" />
-          </NavLink>
-        </Box>
-      ) : (
-        <></>
-      )}
+    <Box className={classes.root}>
+      <Grid container direction="row" spacing={1}>
+        {is_selectable ? (
+          <Grid item xs={1} style={{ display: "inline-grid" }}>
+            <Checkbox
+              checked={is_selected}
+              color="primary"
+              inputProps={{ "aria-label": "secondary checkbox" }}
+              style={{ margin: "auto" }}
+              size={"small"}
+              onChange={pressCheckBoxHandler}
+              value={set.id}
+            />
+          </Grid>
+        ) : (
+          <></>
+        )}
+        <Grid
+          item
+          xs={is_selectable ? 11 : 12}
+          onClick={goToSet}
+          style={{ cursor: "pointer" }}
+        >
+          <Typography
+            variant="subtitle1"
+            color="textSecondary"
+            component="p"
+            style={{ marginLeft: 10 }}
+          >
+            {set.name}
+          </Typography>
+          {set?.items.map((item: Item.Item) => {
+            return (
+              <ListEditListItem
+                selectable={{ is_selectable: false }}
+                key={uuidv4()}
+                item={item}
+                is_set={true}
+                getHoverStateByIdHandler={getHoverStateByIdHandler}
+                changeHoverState={changeHoverState}
+                callSnackBarOpenHandler={callSnackBarOpenHandler}
+              />
+            );
+          })}
+        </Grid>
+      </Grid>
     </Box>
   );
 };
