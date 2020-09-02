@@ -24,7 +24,7 @@ interface IMethod {
 }
 
 const ListEditListItem: FC<TProps> = (props) => {
-  const { selectable, item } = props;
+  const { selectable, item, is_set } = props;
   const { is_selectable, add, remove, selected } = selectable;
   const classes = useStyles();
 
@@ -70,7 +70,7 @@ const ListEditListItem: FC<TProps> = (props) => {
           <Grid
             item
             xs={is_selectable ? 11 : 12}
-            onClick={goToItem}
+            onClick={is_set ? () => {} : goToItem}
             style={{ cursor: "pointer" }}
           >
             <Typography gutterBottom variant="subtitle1" component="h4">

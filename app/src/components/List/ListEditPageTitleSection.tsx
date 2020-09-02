@@ -111,7 +111,7 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
         <Grid container direction="row" spacing={1}>
           <Grid item xs={10}>
             {edit_mode ? (
-              <Grid container direction="row" spacing={1}>
+              <>
                 <Grid container alignItems="center" direction="row" spacing={1}>
                   <Name
                     id="name"
@@ -147,7 +147,7 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
                   spacing={1}
                   onClick={saveChangeHandler}
                 ></Grid>
-              </Grid>
+              </>
             ) : (
               <>
                 <Typography gutterBottom variant="h5" component="h2">
