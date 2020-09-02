@@ -7,7 +7,7 @@ export class getAddessArgs {
 }
 
 @InputType({ description: "New Addees to List's[id]" })
-export class addAddeesInput {
+export class addAddeesInputs {
   @Field((type) => Number)
   id: number;
 
@@ -16,4 +16,18 @@ export class addAddeesInput {
 
   @Field((type) => Number)
   addee_ids: number[];
+}
+
+@InputType({
+  description: "Delete Addees(item's[id], set's[id]) from List's[id]",
+})
+export class deleteAddeesInputs {
+  @Field((type) => Number)
+  listId: number;
+
+  @Field((type) => Number)
+  itemIds: number[];
+
+  @Field((type) => Number)
+  setIds: number[];
 }
