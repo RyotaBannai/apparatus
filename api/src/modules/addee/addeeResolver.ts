@@ -14,11 +14,10 @@ import { Context } from "vm";
 import { Addee, AddeeUnion } from "../../entity/Addee";
 import { AddeeList } from "../../entity/AddeeList";
 import { getAddessArgs, addAddeesInputs, deleteAddeesInputs } from "./TyepDevs";
-import { Item } from "../../entity/Item";
-import { Set } from "../../entity/Set";
 import { List } from "../../entity/List";
 import { GraphQLResponse } from "../TypeDefsGlobal";
 import { Global } from "../../const/constants";
+import * as _ from "lodash";
 
 @Resolver((of) => Addee)
 export class AddeeResolver {
@@ -72,15 +71,32 @@ export class AddeeResolver {
     @Arg("data") inputs: deleteAddeesInputs
   ): Promise<GraphQLResponse> {
     const this_list: List = await List.findOneOrFail(inputs.listId);
-    for (const id of inputs.itemIds) {
+    const addees_data: Array<[number | undefined, string]> = [
+      _.zip(inputs.itemIds, new Array(inputs.itemIds.length).fill("Item")),
+      _.zip(inputs.setIds, new Array(inputs.setIds.length).fill("Set")),
+    ].flat();
+    for (const [id, type] of addees_data) {
       const addee_data = {
-        morphType: "Item",
+        morphType: type,
         morphId: id,
       };
-      let addee: Addee = await Addee.findOneOrFail({
+      let addees: Addee[] = await Addee.find({
         where: addee_data,
       });
-      await Addee.remove(addee);
+
+      const addee_lists: (AddeeList | undefined)[] = (
+        await Promise.all(
+          addees.map((addee: Addee) =>
+            getRepository(AddeeList).findOne({
+              where: {
+                listId: this_list.id,
+                addeeId: addee?.id,
+              },
+            })
+          )
+        )
+      ).filter((addee_list: AddeeList | undefined) => addee_list !== undefined);
+      await Addee.delete(addee_lists[0]?.addeeId!);
     }
     return { res: Global.SUCCESS };
   }
