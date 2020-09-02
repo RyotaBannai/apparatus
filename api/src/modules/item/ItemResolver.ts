@@ -227,16 +227,6 @@ export class ItemResolver {
       .filter((item) => item.setConnector.length === 0);
   }
 
-  // @Query((returns) => [Item])
-  // async getItems(
-  //   @Args() { startIndex, endIndex }: GetItemArgs
-  // ): Promise<Item[]> {
-  //   this.itemCollection = await Item.find({
-  //     relations: ["item_meta"],
-  //   });
-  //   return this.itemCollection.slice(startIndex, endIndex);
-  // }
-
   @Query((returns) => Item)
   async getItem(@Arg("id") id: number): Promise<Item> {
     return Item.findOneOrFail(id, {

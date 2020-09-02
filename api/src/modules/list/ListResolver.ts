@@ -13,7 +13,8 @@ import { getRepository, UpdateResult } from "typeorm";
 import { Context } from "vm";
 import {
   createListInput,
-  editListInput,
+  editListInputs,
+  deleteListInputs,
   getListByIDArgs,
   getListsArgs,
 } from "./TypeDefs";
@@ -52,12 +53,20 @@ export class ListResolver {
 
   @Mutation(() => GraphQLResponse)
   async editList(
-    @Arg("data") editListData: editListInput
+    @Arg("data") editListData: editListInputs
   ): Promise<GraphQLResponse> {
     const result: UpdateResult = await List.update(editListData.id, {
       name: editListData.name,
       description: editListData.description,
     });
+    return { res: Global.SUCCESS };
+  }
+
+  @Mutation(() => GraphQLResponse)
+  async deleteList(
+    @Arg("data") inputs: deleteListInputs
+  ): Promise<GraphQLResponse> {
+    await List.delete(inputs.id);
     return { res: Global.SUCCESS };
   }
 

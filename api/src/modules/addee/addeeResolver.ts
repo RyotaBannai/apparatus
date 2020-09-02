@@ -36,16 +36,24 @@ export class AddeeResolver {
         morphType: addeestData.addee_type === "items" ? "Item" : "Set",
         morphId: id,
       };
-      let [addee, addee_count] = await Addee.findAndCount({
+      let addee: Addee | undefined = await Addee.findOne({
         where: addee_data,
       });
-      if (addee_count > 0) continue;
-
-      let new_addee: Addee = await Addee.create(addee_data).save();
-      let new_addee_list: AddeeList = new AddeeList();
-      new_addee_list.addee = new_addee;
-      new_addee_list.list = this_list;
-      await getRepository(AddeeList).save(new_addee_list);
+      if (
+        addee === undefined ||
+        (await getRepository(AddeeList).findOne({
+          where: {
+            listId: this_list.id,
+            addeeId: addee?.id,
+          },
+        })) === undefined
+      ) {
+        let new_addee: Addee = await Addee.create(addee_data).save();
+        let new_addee_list: AddeeList = new AddeeList();
+        new_addee_list.addee = new_addee;
+        new_addee_list.list = this_list;
+        await getRepository(AddeeList).save(new_addee_list);
+      }
     }
     return this_list;
   }

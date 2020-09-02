@@ -14,7 +14,13 @@ export class createListInput implements Partial<List> {
 }
 
 @InputType({ description: "Edit List" })
-export class editListInput extends createListInput {
+export class editListInputs extends createListInput {
+  @Field((type) => String)
+  id: string;
+}
+
+@InputType({ description: "Delete List" })
+export class deleteListInputs {
   @Field((type) => String)
   id: string;
 }
