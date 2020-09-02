@@ -42,6 +42,15 @@ export class deleteFolderInputs {
   id: number;
 }
 
+@InputType({ description: "Delete Lists from Folder" })
+export class deleteListsInputs {
+  @Field((type) => Number)
+  folderId: number;
+
+  @Field((type) => [Number])
+  listIds: number[];
+}
+
 @ArgsType()
 export class getFolderInputs {
   @Field((type) => String)

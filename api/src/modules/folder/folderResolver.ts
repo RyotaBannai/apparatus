@@ -25,6 +25,7 @@ import {
   addListsInputs,
   createFolderInputs,
   deleteFolderInputs,
+  deleteListsInputs,
   getFolderInputs,
   getFoldersInputs,
   updateFolderInputs,
@@ -73,6 +74,28 @@ export class FolderResolver {
       })
     );
     return folder;
+  }
+
+  @Mutation(() => GraphQLResponse)
+  async deleteLists(
+    @Arg("data") inputs: deleteListsInputs
+  ): Promise<GraphQLResponse> {
+    const folder: Folder = await Folder.findOneOrFail(inputs.folderId);
+    await Promise.all(
+      inputs.listIds.map(async (listId: number) => {
+        const this_list: List = await List.findOneOrFail(listId);
+        let list_folder: ListFolder = await getRepository(
+          ListFolder
+        ).findOneOrFail({
+          where: {
+            folderId: folder.id,
+            listId,
+          },
+        });
+        await getRepository(ListFolder).remove(list_folder);
+      })
+    );
+    return { res: Global.SUCCESS };
   }
 
   @Mutation(() => Folder)
