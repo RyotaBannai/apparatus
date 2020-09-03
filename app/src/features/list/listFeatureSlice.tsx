@@ -11,9 +11,9 @@ let initialList: ApparatusList.ListState = {
 };
 
 const updateList = (
-  new_data: { list: ApparatusList.List } & Partial<ApparatusList.List>
+  new_data: { list: ApparatusList.List } & Partial<ApparatusList.ListData>
 ) => {
-  const { list, name, description } = new_data;
+  const { list, name, description, targets } = new_data;
   let updated_list: Partial<ApparatusList.ListData> = list;
   if (name !== undefined) {
     updated_list = {
@@ -25,6 +25,12 @@ const updateList = (
     updated_list = {
       ...updated_list,
       description,
+    };
+  }
+  if (description !== targets) {
+    updated_list = {
+      ...updated_list,
+      targets,
     };
   }
   return updated_list;
@@ -49,9 +55,9 @@ export const ListFeature = createSlice({
         id_on_server,
         targets,
       } = action.payload;
-      if (mode === "edit" && id !== undefined) {
+      if (mode === "edit" && id_on_server !== undefined) {
         let list: ApparatusList.List = _.find(state.edit, {
-          id: id,
+          id_on_server,
         }) as ApparatusList.List;
         if (list === undefined) {
           state.edit = [
@@ -67,7 +73,12 @@ export const ListFeature = createSlice({
         } else {
           state.edit = whereUpdateArray<ApparatusList.List, string>(
             state.edit,
-            updateList({ name, description, list }) as ApparatusList.List,
+            updateList({
+              name,
+              description,
+              list,
+              targets,
+            }) as ApparatusList.List,
             "id",
             String(id)
           );

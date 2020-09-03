@@ -14,7 +14,7 @@ import { useStyles } from "../../assets/style/list/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useListMetaActions } from "../../features/list/listMetaFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";
-import { useMutation, ApolloError } from "@apollo/client";
+import { useMutation, ApolloError, ApolloQueryResult } from "@apollo/client";
 import { S_ADD_ADDEES } from "../../api/graphql/listQueries";
 import ItemListTable from "../Item/ItemListTable";
 import SetListTable from "../Set/SetListTable";
@@ -32,6 +32,13 @@ interface IProps {
     sets: ApparatusSet.Sets;
   };
   callSnackBarOpenHandler: () => void;
+  refetchList: (
+    variables?:
+      | Partial<{
+          id: string;
+        }>
+      | undefined
+  ) => Promise<ApolloQueryResult<any>>;
 }
 
 const ListEditPageAddSection: FC<IProps> = (props) => {
@@ -41,6 +48,7 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
     selected,
     targets,
     callSnackBarOpenHandler,
+    refetchList,
   } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -80,15 +88,16 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
   const onChangeAddableTarget = (e: any) =>
     dispatch(updateAddableAddFrom({ add_from: e.target.value }));
 
-  const onClickAddAddeeHandler = () => {
+  const onClickAddAddeeHandler = async () => {
     const variables = {
       id: Number(list_id),
       addee_type: add_from,
       addee_ids: selected[add_from],
     };
-    s_add_addees({
+    await s_add_addees({
       variables,
     });
+    await refetchList();
   };
 
   const displayTargetsList = useCallback(() => {

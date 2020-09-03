@@ -1,22 +1,16 @@
 import React, { useState, useEffect, useCallback, FC } from "react";
 import { useHistory } from "react-router-dom";
-import {
-  useLazyQuery,
-  useQuery,
-  useMutation,
-  ApolloError,
-} from "@apollo/client";
+import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { S_GET_LIST, S_DELETE_LIST } from "../../api/graphql/listQueries";
 import { S_GET_SETS } from "../../api/graphql/setQueries";
 import { S_GET_ITEMS } from "../../api/graphql/itemQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useListActions } from "../../features/list/listFeatureSlice";
 import { useListMetaActions } from "../../features/list/listMetaFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
-import ListEditPageTopName from "../../components/List/ListEditPageTitleSection";
+import ListEditPageTitleSection from "../../components/List/ListEditPageTitleSection";
 import ListEditPageAddSection from "../../components/List/ListEditPageAddSection";
 import ListEditPageListTargets from "../../components/List/ListEditPageListTargets";
 import { ListEditPageDeleteListSection } from "../../components/List/ListEditPageDeleteSection";
@@ -28,15 +22,12 @@ const EditPage: FC<Props> = () => {
   const [addable, setAddable] = useState(false);
   const [saveSnackBarOpen, setOpen] = useState(false);
   const dispatch = useDispatch();
-  const { addateList } = useListActions();
   const { updateAddableTargets } = useListMetaActions();
   let { list_id } = useParams<{ list_id?: string }>();
   const history = useHistory();
   const {
     getEditLists,
     getListByKey,
-    getListMeta,
-    takeIdForList,
     getAddableTargets,
     getAddableSelected,
   } = useListHelpers;
@@ -46,7 +37,6 @@ const EditPage: FC<Props> = () => {
     key: list_id,
   });
 
-  const list_meta = useSelector(getListMeta);
   const targets = useSelector(getAddableTargets);
   const selected = useSelector(getAddableSelected);
 
@@ -58,26 +48,16 @@ const EditPage: FC<Props> = () => {
     addable,
   ]);
 
-  const [
-    fetchList,
-    { loading: sg_loading, error: sg_error, data },
-  ] = useLazyQuery(S_GET_LIST, {
+  const {
+    loading: sg_loading,
+    error: sg_error,
+    refetch: refetchList,
+    data: list,
+  } = useQuery(S_GET_LIST, {
     variables: {
       id: String(list_id),
     },
-    onCompleted({ getList }) {
-      const { id, description, name, targets } = getList;
-      dispatch(
-        addateList({
-          id: takeIdForList(),
-          id_on_server: id,
-          description,
-          name,
-          targets,
-          mode: "edit",
-        })
-      );
-    },
+    onCompleted({ getList }) {},
   });
 
   const [s_deleteList] = useMutation(S_DELETE_LIST, {
@@ -92,11 +72,11 @@ const EditPage: FC<Props> = () => {
   const deleteList = useCallback(async () => {
     await s_deleteList({
       variables: {
-        id: this_list?.id_on_server,
+        id: list?.getList.id,
       },
     });
     history.push(`/list_list`);
-  }, [this_list]);
+  }, [list]);
 
   let callSnackBarOpenHandler = useCallback(() => setOpen(!saveSnackBarOpen), [
     saveSnackBarOpen,
@@ -121,11 +101,7 @@ const EditPage: FC<Props> = () => {
     },
   });
 
-  useEffect(() => {
-    if (this_list === undefined) {
-      fetchList();
-    }
-  }, [this_list]);
+  useEffect(() => {}, [list]);
 
   if (sg_loading) return <p>Loading...</p>;
   if (sg_error) return <p>Error :(</p>;
@@ -133,16 +109,15 @@ const EditPage: FC<Props> = () => {
     <div>
       {/* <pre>{JSON.stringify(data, null, 1)}</pre> */}
       {/* <pre>{JSON.stringify(this_list, null, 1)}</pre> */}
-      <ListEditPageTopName
-        this_list={this_list}
-        data={data}
+      <ListEditPageTitleSection
+        data={list?.getList}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
-        // refetchFolder={refetchFolder}
         deleteList={deleteList}
         is_deletable={deletable}
         is_addable={addable}
         toggleDeletableHandler={toggleDeletableHandler}
         toggleAddableHandler={toggleAddableHandler}
+        refetchList={refetchList}
       />
       <ListEditPageAddSection
         is_addable={addable}
@@ -150,16 +125,17 @@ const EditPage: FC<Props> = () => {
         selected={selected}
         targets={targets}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
+        refetchList={refetchList}
       />
       <ListEditPageDeleteListSection
         is_deletable={deletable}
-        list_id={this_list?.id_on_server}
+        list_id={list?.getList.id}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
-        // refetchList={refetchList}
+        refetchList={refetchList}
       />
       <ListEditPageListTargets
         is_deletable={deletable}
-        targets={this_list?.targets}
+        targets={list?.getList.targets}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
       />
       <SnackbarAlert isOpen={saveSnackBarOpen} />

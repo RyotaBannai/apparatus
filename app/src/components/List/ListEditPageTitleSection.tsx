@@ -16,24 +16,24 @@ import { Description } from "../Parts/Grid/Description";
 import { ListEditPageTitleControls } from "./ListEditPageTitleControls";
 
 interface Props {
-  this_list: ApparatusList.ListData;
-  data: {
-    getList: {
-      name: string;
-      description: string;
-    };
-  };
+  data: ApparatusList.ListData;
   deleteList: () => Promise<void>;
   is_deletable: boolean;
   is_addable: boolean;
   toggleDeletableHandler: () => void;
   toggleAddableHandler: () => void;
   callSnackBarOpenHandler: () => void;
+  refetchList: (
+    variables?:
+      | Partial<{
+          id: string;
+        }>
+      | undefined
+  ) => Promise<ApolloQueryResult<any>>;
 }
 
 const ListEditPageTitleSection: FC<Props> = (props) => {
   const {
-    this_list,
     data,
     deleteList,
     is_deletable,
@@ -41,14 +41,13 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
     toggleDeletableHandler,
     toggleAddableHandler,
     callSnackBarOpenHandler,
+    refetchList,
   } = props;
   const classes = useStyles();
   const [edit_mode, setEditMode] = useState<boolean>(false);
-  const [name, setName] = useState<string>(
-    this_list?.name ?? data?.getList.name ?? ""
-  );
+  const [name, setName] = useState<string>(data?.name ?? "");
   const [description, setDescription] = useState<string>(
-    this_list?.description ?? data?.getList.description ?? ""
+    data?.description ?? ""
   );
 
   const handleOnChangeName = useCallback(
@@ -80,16 +79,16 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
     const variables = {
       name,
       description,
-      id: Number(this_list?.id_on_server),
+      id: Number(data?.id_on_server),
     };
     await s_updateAddees({
       variables,
     });
-    // await refetchFolder();
+    await refetchList();
     editModeHandler();
-  }, [name, description, this_list]);
+  }, [name, description, refetchList]);
 
-  useEffect(() => {}, [this_list, data, callSnackBarOpenHandler]);
+  useEffect(() => {}, [data, callSnackBarOpenHandler]);
 
   return (
     <Card className={classes.listName}>
@@ -102,7 +101,7 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
                   <Name
                     id="name"
                     labelName="Name"
-                    defaultValue={this_list?.name ?? data?.getList.name}
+                    defaultValue={data?.name}
                     fallbackValue={""}
                     handleOnChange={handleOnChangeName}
                   />
@@ -111,9 +110,7 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
                   <Description
                     id="description"
                     labelName="Description"
-                    defaultValue={
-                      this_list?.description ?? data?.getList.description
-                    }
+                    defaultValue={data?.description}
                     fallbackValue={""}
                     handleOnChange={handleOnChangeDescription}
                   />
@@ -130,10 +127,10 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
             ) : (
               <>
                 <Typography gutterBottom variant="h5" component="h2">
-                  {this_list?.name ?? data?.getList.name ?? ""}
+                  {data?.name ?? ""}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  {this_list?.description ?? data?.getList.description ?? ""}
+                  {data?.description ?? ""}
                 </Typography>
               </>
             )}

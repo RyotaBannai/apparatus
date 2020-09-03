@@ -18,23 +18,17 @@ interface Props {
   is_deletable: boolean;
   list_id: string | undefined;
   callSnackBarOpenHandler: () => void;
-  refetchFolder?: (
+  refetchList: (
     variables?:
       | Partial<{
           id: string;
-          wsId: number;
         }>
       | undefined
   ) => Promise<ApolloQueryResult<any>>;
 }
 
 export const ListEditPageDeleteListSection: FC<Props> = (props) => {
-  const {
-    is_deletable,
-    list_id,
-    callSnackBarOpenHandler,
-    // refetchFolder,
-  } = props;
+  const { is_deletable, list_id, callSnackBarOpenHandler, refetchList } = props;
   const { getDeletable } = useListHelpers;
   const { selected_targets } = useSelector(getDeletable);
 
@@ -55,7 +49,7 @@ export const ListEditPageDeleteListSection: FC<Props> = (props) => {
       setIds: sets.map((setId: number) => Number(setId)),
     };
     await s_deleteAddees({ variables });
-    // refetchFolder();
+    await refetchList();
   }, [s_deleteAddees, selected_targets, list_id, is_deletable]);
 
   const createToolBarContents = () => {
@@ -106,7 +100,7 @@ export const ListEditPageDeleteListSection: FC<Props> = (props) => {
     );
   };
 
-  useEffect(() => {}, [is_deletable, selected_targets]);
+  useEffect(() => {}, [is_deletable, selected_targets, refetchList]);
 
   return (
     <>
