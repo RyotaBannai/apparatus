@@ -1,8 +1,19 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { useStyles } from "../../assets/style/set/page.style";
-import { Checkbox, TableCell, TableRow } from "@material-ui/core";
+import {
+  Checkbox,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography,
+} from "@material-ui/core";
 import { createData } from "./service";
+import { StyledTableRow } from "../Parts/StyledTableRow";
+import ItemListTableRow from "../../components/Item/ItemListTableRow";
+import { v4 as uuidv4 } from "uuid";
 
 interface IProps {
   row: ReturnType<typeof createData>;
@@ -38,7 +49,7 @@ function SetListTableRow(props: IProps) {
   useEffect(() => {}, [selected]);
 
   return (
-    <TableRow hover className={classes.root}>
+    <StyledTableRow hover className={classes.root}>
       {is_selectable ? (
         <TableCell>
           <Checkbox
@@ -54,12 +65,34 @@ function SetListTableRow(props: IProps) {
         <></>
       )}
       <TableCell onClick={goToEditSetPage} style={{ cursor: "pointer" }}>
-        {row.name}
+        <Typography
+          variant="subtitle1"
+          color="textSecondary"
+          component="p"
+          style={{ marginLeft: 10 }}
+        >
+          {row.name}
+        </Typography>
+        <Table aria-label="collapsible table" size={"small"}>
+          <TableHead>
+            <TableRow>
+              <TableCell style={{ padding: "0" }} />
+              <TableCell style={{ padding: "0" }} />
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {row.items.map((row) => (
+              <ItemListTableRow
+                is_set={true}
+                key={uuidv4()}
+                row={row}
+                selectable={{ is_selectable: false }}
+              />
+            ))}
+          </TableBody>
+        </Table>
       </TableCell>
-      <TableCell onClick={goToEditSetPage} style={{ cursor: "pointer" }}>
-        {row.item_count}
-      </TableCell>
-    </TableRow>
+    </StyledTableRow>
   );
 }
 

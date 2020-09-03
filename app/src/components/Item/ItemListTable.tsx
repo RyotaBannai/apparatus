@@ -39,6 +39,7 @@ const ItemListTable: FC<IProps> = (props) => {
         <TableBody>
           {returnData(data).map((row) => (
             <ItemListTableRow
+              is_set={false}
               key={uuidv4()}
               row={row}
               selectable={selectable}

@@ -8,8 +8,8 @@ export function createData(
     id,
     type,
     data,
-    description: item_meta.description,
-    note: item_meta.note,
+    description: item_meta?.description,
+    note: item_meta?.note,
   };
 }
 

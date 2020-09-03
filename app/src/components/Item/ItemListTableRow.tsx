@@ -1,19 +1,42 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, FC } from "react";
 import { useHistory } from "react-router-dom";
 import { useStyles } from "../../assets/style/item/page.style";
 import { Checkbox, TableCell, TableRow } from "@material-ui/core";
+import { StyledTableRow } from "../Parts/StyledTableRow";
+
+interface IHoeverrable {
+  is_set: boolean;
+  children: JSX.Element[];
+}
+
+const ItemHoverable: FC<IHoeverrable> = (props) => {
+  const { is_set, children } = props;
+  const classes = useStyles();
+  return (
+    <>
+      {is_set ? (
+        <TableRow className={classes.root}>{children}</TableRow>
+      ) : (
+        <StyledTableRow hover className={classes.root}>
+          {props.children}
+        </StyledTableRow>
+      )}
+    </>
+  );
+};
 
 interface IProps {
+  is_set: boolean;
   row: Item.Item;
   selectable: ApparatusList.Selectable;
 }
 
 function ItemListTableRow(props: IProps) {
   const {
+    is_set,
     row,
     selectable: { is_selectable, add, remove, selected },
   } = props;
-  const classes = useStyles();
   const history = useHistory();
   const is_selected = selected?.items.includes(Number(row.id));
   const goToEditItemPage = useCallback(
@@ -37,7 +60,7 @@ function ItemListTableRow(props: IProps) {
   useEffect(() => {}, [selected, is_selected]);
 
   return (
-    <TableRow hover className={classes.root}>
+    <ItemHoverable is_set={is_set}>
       {is_selectable ? (
         <TableCell>
           <Checkbox
@@ -58,7 +81,7 @@ function ItemListTableRow(props: IProps) {
       <TableCell onClick={goToEditItemPage} style={{ cursor: "pointer" }}>
         {row?.description ?? "No description"}
       </TableCell>
-    </TableRow>
+    </ItemHoverable>
   );
 }
 

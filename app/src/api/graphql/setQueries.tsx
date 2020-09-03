@@ -25,6 +25,8 @@ export const S_GET_SETS = gql`
         id
         type
         data
+        description
+        note
       }
     }
   }

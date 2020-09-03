@@ -32,8 +32,7 @@ const SetListTable: FC<IProps> = (props) => {
             ) : (
               <></>
             )}
-            <TableCell>Name</TableCell>
-            <TableCell>Item Count</TableCell>
+            <TableCell>Set Name & Items</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
