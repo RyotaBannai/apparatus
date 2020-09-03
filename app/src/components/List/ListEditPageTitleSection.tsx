@@ -5,9 +5,10 @@ import React, {
   FC,
   ChangeEvent,
 } from "react";
+import { useMutation, ApolloError, ApolloQueryResult } from "@apollo/client";
+import { S_UPDATE_LIST } from "../../api/graphql/listQueries";
 import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
-import { useDispatch } from "react-redux";
 import { useListActions } from "../../features/list/listFeatureSlice";
 import { SaveButton } from "../Parts/Button/SaveButton";
 import { Name } from "../Parts/Grid/Name";
@@ -47,10 +48,8 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
     this_list?.name ?? data?.getList.name ?? ""
   );
   const [description, setDescription] = useState<string>(
-    this_list?.description ?? ""
+    this_list?.description ?? data?.getList.description ?? ""
   );
-  const dispatch = useDispatch();
-  const { addateList } = useListActions();
 
   const handleOnChangeName = useCallback(
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -68,31 +67,27 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
     edit_mode,
   ]);
 
+  const [s_updateAddees] = useMutation(S_UPDATE_LIST, {
+    onCompleted({ deleteAddees }) {
+      callSnackBarOpenHandler();
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
   const saveChangeHandler = useCallback(async () => {
     const variables = {
       name,
       description,
-      id: Number(this_list?.id),
+      id: Number(this_list?.id_on_server),
     };
-    // await s_save_list_change({
-    //   variables: { ...l_data, id: getCurrentWS().id },
-    // });
+    await s_updateAddees({
+      variables,
+    });
     // await refetchFolder();
     editModeHandler();
   }, [name, description, this_list]);
-
-  const setChange = (newListData: ApparatusList.UpdateSetInput[]) => {
-    let payload = Object.assign(
-      {
-        id: Number(this_list?.id),
-        mode: "edit",
-      },
-      ...newListData.map((keyValue: ApparatusList.UpdateSetInput) => ({
-        [keyValue.key]: keyValue.value,
-      }))
-    );
-    dispatch(addateList(payload));
-  };
 
   useEffect(() => {}, [this_list, data, callSnackBarOpenHandler]);
 
@@ -116,7 +111,9 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
                   <Description
                     id="description"
                     labelName="Description"
-                    defaultValue={this_list?.description}
+                    defaultValue={
+                      this_list?.description ?? data?.getList.description
+                    }
                     fallbackValue={""}
                     handleOnChange={handleOnChangeDescription}
                   />
@@ -125,19 +122,10 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
                   <Grid item>
                     <SaveButton
                       name="Save Change"
-                      handleOnClick={() => setEditMode(!edit_mode)}
+                      handleOnClick={saveChangeHandler}
                     />
                   </Grid>
                 </Grid>
-                <Grid
-                  container
-                  justify="space-between"
-                  alignItems="center"
-                  direction="row"
-                  className={classes.gridButtonArea}
-                  spacing={1}
-                  onClick={saveChangeHandler}
-                ></Grid>
               </>
             ) : (
               <>
@@ -145,7 +133,7 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
                   {this_list?.name ?? data?.getList.name ?? ""}
                 </Typography>
                 <Typography variant="body2" color="textSecondary" component="p">
-                  {this_list?.description ?? ""}
+                  {this_list?.description ?? data?.getList.description ?? ""}
                 </Typography>
               </>
             )}

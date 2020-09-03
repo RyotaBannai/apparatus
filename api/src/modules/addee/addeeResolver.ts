@@ -71,10 +71,10 @@ export class AddeeResolver {
     @Arg("data") inputs: deleteAddeesInputs
   ): Promise<GraphQLResponse> {
     const this_list: List = await List.findOneOrFail(inputs.listId);
-    const addees_data: Array<[number | undefined, string]> = [
+    const addees_data: Array<[number, string]> = _.concat(
       _.zip(inputs.itemIds, new Array(inputs.itemIds.length).fill("Item")),
-      _.zip(inputs.setIds, new Array(inputs.setIds.length).fill("Set")),
-    ].flat();
+      _.zip(inputs.setIds, new Array(inputs.setIds.length).fill("Set"))
+    ) as Array<[number, string]>;
     for (const [id, type] of addees_data) {
       const addee_data = {
         morphType: type,

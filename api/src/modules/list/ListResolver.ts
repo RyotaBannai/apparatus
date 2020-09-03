@@ -53,11 +53,12 @@ export class ListResolver {
 
   @Mutation(() => GraphQLResponse)
   async editList(
-    @Arg("data") editListData: editListInputs
+    @Arg("data") inputs: editListInputs
   ): Promise<GraphQLResponse> {
-    const result: UpdateResult = await List.update(editListData.id, {
-      name: editListData.name,
-      description: editListData.description,
+    const { id, name, description } = inputs;
+    await List.update(id, {
+      name,
+      description,
     });
     return { res: Global.SUCCESS };
   }

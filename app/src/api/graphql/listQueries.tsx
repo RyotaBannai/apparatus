@@ -101,3 +101,11 @@ export const S_DELETE_LIST = gql`
     }
   }
 `;
+
+export const S_UPDATE_LIST = gql`
+  mutation UPDATE_LIST($id: Float!, $name: String!, $description: String!) {
+    editList(data: { id: $id, name: $name, description: $description }) {
+      res
+    }
+  }
+`;
