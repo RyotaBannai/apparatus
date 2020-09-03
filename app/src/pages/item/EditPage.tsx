@@ -15,7 +15,6 @@ import {
   S_DELETE_ITEM,
 } from "../../api/graphql/itemQueries";
 import { useStyles } from "../../assets/style/item/page.style";
-import { Alert } from "@material-ui/lab";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { BottomButtonSection } from "../../components/Parts/BottomButtonSection";
@@ -124,11 +123,6 @@ const EditPage: FC<IProps> = () => {
   return (
     <div>
       <h2>Edit Item</h2>
-      {!set?.show && (
-        <Alert severity="info" className={classes.alertDeleteSetOnEdit}>
-          Delete this Set and its items by pressing SAVE EDIT button.
-        </Alert>
-      )}
       {children.map((child) => child)}
       <BottomButtonSection
         mode={mode}
