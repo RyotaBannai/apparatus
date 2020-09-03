@@ -1,4 +1,7 @@
-import React, { FC } from "react";
+import React, { FC, ChangeEvent } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useItemActions } from "../../features/item/itemFeatureSlice";
+import { useItemHelpers } from "../../features/item/itemHelpers";
 import { AppBar, Box, Tab, Tabs } from "@material-ui/core";
 import styled from "styled-components";
 import ListItemPage from "../../pages/item/ListPage";
@@ -35,17 +38,19 @@ function a11yProps(index: any) {
 interface IProps {}
 
 export const SwitchTargetList: FC<IProps> = () => {
-  const [value, setValue] = React.useState(0);
+  const { getTabState } = useItemHelpers;
+  const tabState = useSelector(getTabState);
+  const { switchTabState } = useItemActions();
+  const dispatch = useDispatch();
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    setValue(newValue);
-  };
+  const handleChange = (event: ChangeEvent<{}>, newValue: number) =>
+    dispatch(switchTabState({ tab: newValue }));
 
   return (
     <StyledHeader>
       <StyledAppBar position="static">
         <Tabs
-          value={value}
+          value={tabState}
           onChange={handleChange}
           aria-label="Switch Target Pages With Tabs"
         >
@@ -53,10 +58,10 @@ export const SwitchTargetList: FC<IProps> = () => {
           <Tab label="Set" {...a11yProps(1)} />
         </Tabs>
       </StyledAppBar>
-      <TabPanel value={value} index={0}>
+      <TabPanel value={tabState} index={0}>
         <ListItemPage />
       </TabPanel>
-      <TabPanel value={value} index={1}>
+      <TabPanel value={tabState} index={1}>
         <ListSetPage />
       </TabPanel>
     </StyledHeader>

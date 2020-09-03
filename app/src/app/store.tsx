@@ -4,6 +4,7 @@ import {
   getDefaultMiddleware,
 } from "@reduxjs/toolkit";
 // import logger from "redux-logger";
+import ItemFeature from "../features/item/itemFeatureSlice";
 import SetFeature from "../features/set/setFeatureSlice";
 import WSFeature from "../features/workspace/wsFeatureSlice";
 import ListFeature from "../features/list/listFeatureSlice";
@@ -11,6 +12,7 @@ import ListMetaFeature from "../features/list/listMetaFeatureSlice";
 import FolderFeature from "../features/folder/folderFeatureSlice";
 
 const rootReducer = combineReducers({
+  item: ItemFeature,
   set: SetFeature,
   workspace: WSFeature,
   list: ListFeature,
