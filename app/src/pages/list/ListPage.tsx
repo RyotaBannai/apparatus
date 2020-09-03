@@ -21,7 +21,9 @@ const ListPage: FC<Props> = () => {
     is_selectable: false,
   };
 
-  useEffect(() => {}, [refetch]);
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <>
