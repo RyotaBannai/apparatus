@@ -44,9 +44,6 @@ const FolderPage: FC<IProps> = () => {
       id: folder_id ?? "",
       wsId: Number(getCurrentWS().id),
     },
-    onError(error: ApolloError) {
-      console.log(error);
-    },
   });
 
   const { data: list_data } = useQuery(S_GET_LISTS, {

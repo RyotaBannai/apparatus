@@ -7,10 +7,8 @@ import React, {
 } from "react";
 import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useListActions } from "../../features/list/listFeatureSlice";
-import { useListMetaActions } from "../../features/list/listMetaFeatureSlice";
-import { useListHelpers } from "../../features/list/listHelpers";
 import { SaveButton } from "../Parts/Button/SaveButton";
 import { Name } from "../Parts/Grid/Name";
 import { Description } from "../Parts/Grid/Description";
@@ -53,13 +51,6 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
   );
   const dispatch = useDispatch();
   const { addateList } = useListActions();
-  const {
-    toggleListEditableState,
-    toggleListAddableState,
-  } = useListMetaActions();
-  const { getEdibleState, getAddableState } = useListHelpers;
-  // const is_editable = useSelector(getEdibleState);
-  // const is_addable = useSelector(getAddableState);
 
   const handleOnChangeName = useCallback(
     (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>

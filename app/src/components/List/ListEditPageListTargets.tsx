@@ -11,19 +11,11 @@ import { v4 as uuidv4 } from "uuid";
 interface Props {
   is_deletable: boolean;
   targets: Addee.Addees;
-  getHoverStateByIdHandler: (id: string) => any;
-  changeHoverState: ({ id, is_hover }: ApparatusList.ListHoverState) => any;
   callSnackBarOpenHandler: () => void;
 }
 
 const ListEditPageListTargets: FC<Props> = (props) => {
-  const {
-    is_deletable,
-    targets,
-    getHoverStateByIdHandler,
-    changeHoverState,
-    callSnackBarOpenHandler,
-  } = props;
+  const { is_deletable, targets, callSnackBarOpenHandler } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const { getDeletable } = useListHelpers;
@@ -76,8 +68,6 @@ const ListEditPageListTargets: FC<Props> = (props) => {
               selectable={selectable}
               is_set={false}
               item={target}
-              getHoverStateByIdHandler={getHoverStateByIdHandler}
-              changeHoverState={changeHoverState}
               callSnackBarOpenHandler={callSnackBarOpenHandler}
             />
           );
@@ -87,8 +77,6 @@ const ListEditPageListTargets: FC<Props> = (props) => {
               selectable={selectable}
               key={uuidv4()}
               set={target}
-              getHoverStateByIdHandler={getHoverStateByIdHandler}
-              changeHoverState={changeHoverState}
               callSnackBarOpenHandler={callSnackBarOpenHandler}
             />
           );

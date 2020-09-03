@@ -9,19 +9,13 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
-import { ListEditTargetButton } from "../Parts/Button/ListEditTargetButton";
 
 type TProps = {
   selectable: ApparatusList.Selectable;
   item: Item.Item;
   is_set: boolean;
-} & IMethod;
-
-interface IMethod {
-  getHoverStateByIdHandler: (id: string) => any;
-  changeHoverState: ({ id, is_hover }: ApparatusList.ListHoverState) => any;
   callSnackBarOpenHandler: () => void;
-}
+};
 
 const ListEditListItem: FC<TProps> = (props) => {
   const { selectable, item, is_set } = props;

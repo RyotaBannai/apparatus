@@ -10,17 +10,12 @@ export const useListHelpers = {
 
   getListMeta: (state: Global.RootState) => state.list_meta,
 
-  getEdibleState: (state: Global.RootState) => state.list_meta.editable,
-
   getAddable: (state: Global.RootState) => state.list_meta.addable,
 
   getDeletable: (state: Global.RootState) => state.list_meta.deletable,
 
   getAddableTargets: (state: Global.RootState) =>
     state.list_meta.addable.targets,
-
-  getAddableState: (state: Global.RootState) =>
-    state.list_meta.addable.is_addable,
 
   getAddableAddFrom: (state: Global.RootState) =>
     state.list_meta.addable.add_from,
@@ -35,14 +30,6 @@ export const useListHelpers = {
     _.find(lists, {
       [key_name]: key,
     }) as ApparatusList.ListData,
-
-  getHoverStateById: (
-    hover_states: ApparatusList.ListHoverState[],
-    { id }: { id: string }
-  ) =>
-    _.find(hover_states, {
-      id,
-    }) as ApparatusList.ListHoverState,
 
   takeIdForList: () => listCount(listCount() + 1) && listCount(),
 };

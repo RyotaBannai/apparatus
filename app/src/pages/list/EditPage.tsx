@@ -29,14 +29,13 @@ const EditPage: FC<Props> = () => {
   const [saveSnackBarOpen, setOpen] = useState(false);
   const dispatch = useDispatch();
   const { addateList } = useListActions();
-  const { addateHoverState, updateAddableTargets } = useListMetaActions();
+  const { updateAddableTargets } = useListMetaActions();
   let { list_id } = useParams<{ list_id?: string }>();
   const history = useHistory();
   const {
     getEditLists,
     getListByKey,
     getListMeta,
-    getHoverStateById,
     takeIdForList,
     getAddableTargets,
     getAddableSelected,
@@ -103,17 +102,6 @@ const EditPage: FC<Props> = () => {
     saveSnackBarOpen,
   ]);
 
-  const getHoverStateByIdHandler = (id: string) =>
-    getHoverStateById(list_meta.hover_states, { id });
-
-  const changeHoverState = ({ id, is_hover }: ApparatusList.ListHoverState) =>
-    dispatch(
-      addateHoverState({
-        id,
-        is_hover,
-      })
-    );
-
   const { getCurrentWS } = useWSHelpers;
   const { data: sets } = useQuery(S_GET_SETS, {
     variables: {
@@ -137,11 +125,6 @@ const EditPage: FC<Props> = () => {
     if (this_list === undefined) {
       fetchList();
     }
-
-    changeHoverState({
-      id: "list_title",
-      is_hover: false,
-    });
   }, [this_list]);
 
   if (sg_loading) return <p>Loading...</p>;
@@ -177,8 +160,6 @@ const EditPage: FC<Props> = () => {
       <ListEditPageListTargets
         is_deletable={deletable}
         targets={this_list?.targets}
-        getHoverStateByIdHandler={getHoverStateByIdHandler}
-        changeHoverState={changeHoverState}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
       />
       <SnackbarAlert isOpen={saveSnackBarOpen} />

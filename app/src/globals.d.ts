@@ -80,16 +80,8 @@ declare namespace ApparatusList {
     edit: (ApparatusList.List & { id_on_server?: string })[];
   }
 
-  interface ListHoverState {
-    id: string;
-    is_hover: boolean;
-  }
-
   interface InitialListMeta {
-    hover_states: ListHoverState[];
-    editable: boolean;
     addable: {
-      is_addable: boolean;
       add_from: "items" | "sets";
       targets: {
         items: Array<Item.Item & { item_meta: Item.ItemMeta }>;

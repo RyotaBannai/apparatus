@@ -4,9 +4,9 @@ import { S_GET_ITEMS } from "../../api/graphql/itemQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import ItemListTable from "../../components/Item/ItemListTable";
 
-interface Props {}
+interface IProps {}
 
-const ListPage: FC<Props> = () => {
+const ListPage: FC<IProps> = () => {
   const { getCurrentWS } = useWSHelpers;
   const { loading: sg_loading, error: sg_error, data, refetch } = useQuery(
     S_GET_ITEMS,

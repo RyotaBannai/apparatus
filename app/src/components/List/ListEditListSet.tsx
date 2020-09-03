@@ -8,19 +8,11 @@ import { v4 as uuidv4 } from "uuid";
 interface Props {
   selectable: ApparatusList.Selectable;
   set: ApparatusSet.Set;
-  getHoverStateByIdHandler: (id: string) => any;
-  changeHoverState: ({ id, is_hover }: ApparatusList.ListHoverState) => any;
   callSnackBarOpenHandler: () => void;
 }
 
 const ListEditPageListTargets: FC<Props> = (props) => {
-  const {
-    selectable,
-    set,
-    getHoverStateByIdHandler,
-    changeHoverState,
-    callSnackBarOpenHandler,
-  } = props;
+  const { selectable, set, callSnackBarOpenHandler } = props;
   const { is_selectable, add, remove, selected } = selectable;
   const classes = useStyles();
   const history = useHistory();
@@ -80,8 +72,6 @@ const ListEditPageListTargets: FC<Props> = (props) => {
                 key={uuidv4()}
                 item={item}
                 is_set={true}
-                getHoverStateByIdHandler={getHoverStateByIdHandler}
-                changeHoverState={changeHoverState}
                 callSnackBarOpenHandler={callSnackBarOpenHandler}
               />
             );
