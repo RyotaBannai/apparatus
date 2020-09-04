@@ -7,8 +7,10 @@ import {
   Checkbox,
   Divider,
   Grid,
+  TextField,
   Typography,
 } from "@material-ui/core";
+import styled from "styled-components";
 
 type TProps = {
   selectable: ApparatusList.Selectable;
@@ -40,6 +42,39 @@ const ListEditListItem: FC<TProps> = (props) => {
     }
   }, []);
 
+  const createHighlight = (): HTMLSpanElement => {
+    let highlight = document.createElement("span");
+    highlight.setAttribute("class", "highlight-red");
+    return highlight;
+  };
+
+  const highlightText = useCallback(() => {
+    const highlight = createHighlight();
+    let range = window.getSelection();
+    const selectedRange = range?.getRangeAt(0);
+    const domFragment = selectedRange?.extractContents();
+
+    try {
+      console.log(range);
+      domFragment
+        ?.querySelectorAll("span")
+        .forEach((node: any) => node.unwrap());
+
+      selectedRange?.surroundContents(highlight);
+    } catch (error) {
+      console.log(domFragment);
+      console.log(
+        "InvalidStateError: Failed to execute 'surroundContents' on 'Range': The Range has partially selected a non-Text node."
+      );
+
+      // if(){
+      //   return;
+      // }else{
+      //
+      // }
+    }
+  }, []);
+
   useEffect(() => {}, [props]);
 
   return (
@@ -64,14 +99,19 @@ const ListEditListItem: FC<TProps> = (props) => {
           <Grid
             item
             xs={is_selectable ? 11 : 12}
-            onClick={is_set ? () => {} : goToItem}
+            // onClick={is_set ? () => {} : goToItem}
             style={{ cursor: "pointer" }}
           >
             <Typography gutterBottom variant="subtitle1" component="h4">
               {item?.data ?? ""}
             </Typography>
-            <Typography variant="body2" color="textPrimary" component="p">
-              {item.description ?? ""}
+            <Typography
+              variant="body2"
+              color="textPrimary"
+              component="p"
+              onMouseUp={highlightText}
+            >
+              {item.description}
             </Typography>
             <Divider />
             <Typography

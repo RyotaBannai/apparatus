@@ -14,7 +14,7 @@ import { store } from "./store";
 import { Provider } from "react-redux";
 import "bootstrap/dist/css/bootstrap.css";
 import "bootstrap/dist/js/bootstrap.js";
-import "./App.css";
+import "./App.scss";
 
 const cache = new InMemoryCache({
   possibleTypes,

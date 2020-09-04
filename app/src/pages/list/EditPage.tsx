@@ -101,7 +101,9 @@ const EditPage: FC<Props> = () => {
     },
   });
 
-  useEffect(() => {}, [list]);
+  useEffect(() => {
+    refetchList();
+  }, [list]);
 
   if (sg_loading) return <p>Loading...</p>;
   if (sg_error) return <p>Error :(</p>;
