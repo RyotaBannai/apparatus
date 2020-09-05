@@ -7,7 +7,6 @@ import {
   Checkbox,
   Divider,
   Grid,
-  TextField,
   Typography,
 } from "@material-ui/core";
 import styled from "styled-components";
@@ -48,42 +47,39 @@ const ListEditListItem: FC<TProps> = (props) => {
     return highlight;
   };
 
+  const extractTexts = (childNodes: NodeListOf<ChildNode>): string =>
+    Array.prototype.reduce.call(
+      childNodes,
+      (result, node) =>
+        result + ((node.innerHTML ?? "") || (node.nodeValue ?? "")),
+      ""
+    ) as string;
+
   const highlightText = useCallback(() => {
-    const highlight = createHighlight();
     let range = window.getSelection();
     const selectedRange = range?.getRangeAt(0);
-    console.log(selectedRange);
+    if (
+      !(
+        selectedRange?.commonAncestorContainer?.nodeName === "#text" ||
+        (selectedRange?.commonAncestorContainer as HTMLElement).className?.includes(
+          "highlightable"
+        )
+      )
+    ) {
+      return;
+    }
+
     const domFragment = selectedRange?.extractContents();
     if (domFragment?.childNodes.length === 0) return;
 
-    const nodeLists: any[] = Array.from(domFragment?.childNodes!);
+    const highlight = createHighlight();
+    highlight.innerHTML = extractTexts(domFragment?.childNodes!);
+    selectedRange?.insertNode(highlight!);
 
-    if (
-      nodeLists.every((element, index, array) => {
-        return (
-          element.nodeName === "#text" ||
-          (element.nodeName === "SPAN" &&
-            element?.className! === "highlight-red")
-        );
-      })
-    ) {
-      highlight.innerHTML = Array.prototype.reduce.call(
-        domFragment?.childNodes,
-        (result, node) =>
-          result + ((node.innerHTML ?? "") || (node.nodeValue ?? "")),
-        ""
-      ) as string;
-      selectedRange?.insertNode(highlight!);
-    }
     Array.from(document.querySelectorAll("span.highlight-red")).forEach(
       (element: any) => {
         if (element.querySelector("span.highlight-red") !== null)
-          element.innerHTML = Array.prototype.reduce.call(
-            element.childNodes,
-            (result, node) =>
-              result + ((node.innerHTML ?? "") || (node.nodeValue ?? "")),
-            ""
-          ) as string;
+          element.innerHTML = extractTexts(element.childNodes!);
         if (element.innerHTML === "") element.remove();
       }
     );
@@ -120,6 +116,7 @@ const ListEditListItem: FC<TProps> = (props) => {
               {item?.data ?? ""}
             </Typography>
             <Typography
+              className={"highlightable"}
               variant="body2"
               color="textPrimary"
               component="p"
