@@ -52,27 +52,41 @@ const ListEditListItem: FC<TProps> = (props) => {
     const highlight = createHighlight();
     let range = window.getSelection();
     const selectedRange = range?.getRangeAt(0);
+    console.log(selectedRange);
     const domFragment = selectedRange?.extractContents();
+    if (domFragment?.childNodes.length === 0) return;
 
-    try {
-      console.log(range);
-      domFragment
-        ?.querySelectorAll("span")
-        .forEach((node: any) => node.unwrap());
+    const nodeLists: any[] = Array.from(domFragment?.childNodes!);
 
-      selectedRange?.surroundContents(highlight);
-    } catch (error) {
-      console.log(domFragment);
-      console.log(
-        "InvalidStateError: Failed to execute 'surroundContents' on 'Range': The Range has partially selected a non-Text node."
-      );
-
-      // if(){
-      //   return;
-      // }else{
-      //
-      // }
+    if (
+      nodeLists.every((element, index, array) => {
+        return (
+          element.nodeName === "#text" ||
+          (element.nodeName === "SPAN" &&
+            element?.className! === "highlight-red")
+        );
+      })
+    ) {
+      highlight.innerHTML = Array.prototype.reduce.call(
+        domFragment?.childNodes,
+        (result, node) =>
+          result + ((node.innerHTML ?? "") || (node.nodeValue ?? "")),
+        ""
+      ) as string;
+      selectedRange?.insertNode(highlight!);
     }
+    Array.from(document.querySelectorAll("span.highlight-red")).forEach(
+      (element: any) => {
+        if (element.querySelector("span.highlight-red") !== null)
+          element.innerHTML = Array.prototype.reduce.call(
+            element.childNodes,
+            (result, node) =>
+              result + ((node.innerHTML ?? "") || (node.nodeValue ?? "")),
+            ""
+          ) as string;
+        if (element.innerHTML === "") element.remove();
+      }
+    );
   }, []);
 
   useEffect(() => {}, [props]);
