@@ -7,6 +7,11 @@ import {
   Checkbox,
   Divider,
   Grid,
+  Icon,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Typography,
   Popover,
 } from "@material-ui/core";
@@ -82,11 +87,17 @@ const ListEditListItem: FC<TProps> = (props) => {
   const goToItem = useCallback(() => history.push(`/item_edit/${item.id}`), [
     item,
   ]);
+
   const handleClose = () => {
     setPopoverOpen(false);
   };
 
-  const onHighlightHandler = (): void | undefined => {
+  const onHighlightHandler = () => {
+    highlightText(selectedRange!);
+    handleClose();
+  };
+
+  const onMouseUpHandler = (): void | undefined => {
     const range = proceedHighlightText();
     if (range === undefined) return;
 
@@ -148,7 +159,7 @@ const ListEditListItem: FC<TProps> = (props) => {
                 variant="body2"
                 color="textPrimary"
                 component="p"
-                onMouseUp={onHighlightHandler}
+                onMouseUp={onMouseUpHandler}
               >
                 {item.description}
               </Typography>
@@ -177,20 +188,42 @@ const ListEditListItem: FC<TProps> = (props) => {
           horizontal: "right",
         }}
         transformOrigin={{
-          vertical: "bottom",
+          vertical: "top",
           horizontal: "left",
         }}
         onClose={handleClose}
       >
-        The content of the Popover.
+        <List style={{ padding: 0 }}>
+          <PopoverListItem
+            content="Highlight"
+            onClickHandler={onHighlightHandler}
+          />
+          <PopoverListItem content="Unhighlight" onClickHandler={() => {}} />
+          <PopoverListItem content="Make Quiz" onClickHandler={() => {}} />
+        </List>
       </StyledPopover>
     </>
   );
 };
 
+interface IListItem {
+  content: string;
+  onClickHandler: () => void;
+}
+
+const PopoverListItem: FC<IListItem> = (props) => {
+  const { content, onClickHandler } = props;
+  return (
+    <ListItem button onClick={onClickHandler} disableRipple disableTouchRipple>
+      <ListItemText primary={content} />
+      <Icon>arrow_right</Icon>
+    </ListItem>
+  );
+};
+
 const StyledPopover = styled(Popover)`
   & .MuiPaper-root {
-    padding: ${(props) => props.theme.spacing(2)}px;
+    padding: ${(props) => props.theme.spacing(1)}px;
   }
 `;
 
