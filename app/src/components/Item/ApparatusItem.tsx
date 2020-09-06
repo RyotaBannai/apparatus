@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
+import { useMount } from "react-use";
 import {
   Grid,
   Icon,
@@ -72,9 +73,9 @@ export const ApparatusItem: FC<IProps> = ({
     dispatch(deleteItem({ set_id, item_id: id, mode }));
   };
 
-  useEffect(() => {
+  useMount(() => {
     if (type === undefined && data === undefined) setChange("type", "line");
-  }, []);
+  });
 
   if (!show) return <></>;
   else

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FC } from "react";
+import { useMount } from "react-use";
 import {
   Button,
   Box,
@@ -79,7 +80,7 @@ export const ApparatusSet: FC<IProps> = ({
     dispatch(createSet(payload));
   };
 
-  useEffect(() => {
+  useMount(() => {
     if (mode === "edit") {
       if (items === undefined) return;
 
@@ -147,7 +148,7 @@ export const ApparatusSet: FC<IProps> = ({
         "Error on ApparatusSet component: couldn't accept this mode."
       );
     }
-  }, []);
+  });
 
   if (!show) return <></>;
   else
