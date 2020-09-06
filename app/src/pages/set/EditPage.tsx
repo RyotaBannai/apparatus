@@ -6,7 +6,6 @@ import { useSetHelpers } from "../../features/set/setHelpers";
 import { S_GET_SET } from "../../api/graphql/setQueries";
 import { S_DELETE_ITEMS } from "../../api/graphql/itemQueries";
 import { S_EDIT_ITEMS } from "../../api/graphql/itemQueries";
-import { useStyles } from "../../assets/style/item/page.style";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
 import { BottomButtonSection } from "../../components/Parts/BottomButtonSection";
@@ -14,7 +13,6 @@ import { BottomButtonSection } from "../../components/Parts/BottomButtonSection"
 interface Props {}
 
 const EditPage: FC<Props> = () => {
-  const classes = useStyles();
   const [children, setChild] = useState<Array<any>>([]);
   const [saveSnackBarOpen, setOpen] = useState(false);
   let { set_id } = useParams<{ set_id?: string | undefined }>();

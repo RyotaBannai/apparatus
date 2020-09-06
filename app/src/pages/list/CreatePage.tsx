@@ -8,7 +8,7 @@ import { useListHelpers } from "../../features/list/listHelpers";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { SaveButton } from "../../components/Parts/Button/SaveButton";
 import { SnackbarAlert } from "../../components/Parts/SnackbarAlert";
-import { Grid, InputLabel, OutlinedInput, TextField } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import { Name } from "../../components/Parts/Grid/Name";
 import { Description } from "../../components/Parts/Grid/Description";
 
@@ -18,7 +18,6 @@ const CreatePage: FC<Props> = () => {
   const { addateList } = useListActions();
   const { getNewList } = useListHelpers;
   const data = useSelector(getNewList);
-  const classes = useStyles();
   const [saveSnackBarOpen, setOpen] = useState(false);
   const { getCurrentWS } = useWSHelpers;
 

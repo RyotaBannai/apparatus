@@ -124,7 +124,13 @@ const ListEditPageAddSection: FC<IProps> = (props) => {
     } else {
       return <div>No data</div>;
     }
-  }, [targets, add_from, selected]);
+  }, [
+    targets,
+    add_from,
+    selected,
+    addSelectedTargetHandler,
+    removeUnSelectedTargetHandler,
+  ]);
 
   useEffect(() => {}, [list_id, selected, targets, callSnackBarOpenHandler]);
 

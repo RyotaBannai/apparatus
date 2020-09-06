@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import styled from "styled-components";
 
-const createHighlight = (): HTMLSpanElement => {
+const createHighlightedDomElement = (): HTMLSpanElement => {
   let highlight = document.createElement("span");
   highlight.setAttribute("class", "highlight-red");
   return highlight;
@@ -46,7 +46,7 @@ const highlightText = (selectedRange: Range) => {
   const domFragment = selectedRange?.extractContents();
   if (domFragment?.childNodes.length === 0) return;
 
-  const highlight = createHighlight();
+  const highlight = createHighlightedDomElement();
   highlight.innerHTML = extractTexts(domFragment?.childNodes!);
   selectedRange?.insertNode(highlight!);
 
@@ -86,8 +86,10 @@ const ListEditListItem: FC<TProps> = (props) => {
     setPopoverOpen(false);
   };
 
-  const onHighlightHandler = () => {
+  const onHighlightHandler = (): void | undefined => {
     const range = proceedHighlightText();
+    if (range === undefined) return;
+
     setSelectedRange(range);
     const { top, left, width } = range?.getBoundingClientRect()!;
     setPopoverPosition({ top, left: left + width });
@@ -185,9 +187,11 @@ const ListEditListItem: FC<TProps> = (props) => {
     </>
   );
 };
+
 const StyledPopover = styled(Popover)`
   & .MuiPaper-root {
     padding: ${(props) => props.theme.spacing(2)}px;
   }
 `;
+
 export { ListEditListItem as default };
