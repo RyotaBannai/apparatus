@@ -14,12 +14,13 @@ type TProps = {
   selectable: ApparatusList.Selectable;
   item: Item.Item;
   is_set: boolean;
+  is_note_mode: boolean;
   callSnackBarOpenHandler: () => void;
   onMouseUpHandler: () => void;
 };
 
 const ListEditListItem: FC<TProps> = (props) => {
-  const { selectable, item, is_set, onMouseUpHandler } = props;
+  const { selectable, item, is_note_mode, is_set, onMouseUpHandler } = props;
   const { is_selectable, add, remove, selected } = selectable;
   const classes = useStyles();
   const history = useHistory();
@@ -42,6 +43,8 @@ const ListEditListItem: FC<TProps> = (props) => {
     },
     [add, remove]
   );
+
+  const onDoNothing = () => {};
 
   useEffect(() => {}, [props]);
 
@@ -68,18 +71,24 @@ const ListEditListItem: FC<TProps> = (props) => {
             <Grid
               item
               xs={is_selectable ? 11 : 12}
-              // onClick={is_set ? () => {} : goToItem}
+              onClick={is_set || is_note_mode ? onDoNothing : goToItem}
               style={{ cursor: "pointer" }}
             >
-              <Typography gutterBottom variant="subtitle1" component="h4">
+              <Typography
+                gutterBottom
+                variant="subtitle1"
+                component="h4"
+                className={"highlightable"}
+                onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
+              >
                 {item?.data ?? ""}
               </Typography>
               <Typography
-                className={"highlightable"}
                 variant="body2"
                 color="textPrimary"
                 component="p"
-                onMouseUp={onMouseUpHandler}
+                className={"highlightable"}
+                onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
               >
                 {item.description}
               </Typography>
@@ -89,6 +98,8 @@ const ListEditListItem: FC<TProps> = (props) => {
                 color="textSecondary"
                 component="p"
                 style={{ marginTop: 5 }}
+                className={"highlightable"}
+                onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
               >
                 {item.note ?? ""}
               </Typography>

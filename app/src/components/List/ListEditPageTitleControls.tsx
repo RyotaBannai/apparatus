@@ -8,16 +8,19 @@ import SpeedDialAction from "@material-ui/lab/SpeedDialAction";
 import ViewHeadlineIcon from "@material-ui/icons/ViewHeadline";
 import BlurOnIcon from "@material-ui/icons/BlurOn";
 import EditIcon from "@material-ui/icons/Edit";
+import NoteIcon from "@material-ui/icons/Note";
 import { COLOR } from "../../constants/color";
 
 interface IProps {
   deleteList: () => Promise<void>;
   editList: () => void;
   is_edit_mode: boolean;
+  is_note_mode: boolean;
   is_deletable: boolean;
   is_addable: boolean;
   toggleDeletableHandler: () => void;
   toggleAddableHandler: () => void;
+  toggleNoteModeHandler: () => void;
 }
 
 export const ListEditPageTitleControls: FC<IProps> = (props) => {
@@ -25,10 +28,12 @@ export const ListEditPageTitleControls: FC<IProps> = (props) => {
     deleteList,
     editList,
     is_edit_mode,
+    is_note_mode,
     is_deletable,
     is_addable,
     toggleDeletableHandler,
     toggleAddableHandler,
+    toggleNoteModeHandler,
   } = props;
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -46,6 +51,11 @@ export const ListEditPageTitleControls: FC<IProps> = (props) => {
   }
 
   const actions: IAction[] = [
+    {
+      icon: <NoteIcon style={{ color: onColorAdd(is_note_mode) }} />,
+      name: is_note_mode ? "Quit Note Mode" : "Note Mode",
+      handler: toggleNoteModeHandler,
+    },
     {
       icon: <ViewHeadlineIcon style={{ color: onColorAdd(is_addable) }} />,
       name: is_addable ? "Quit Add Item" : "Add Item",

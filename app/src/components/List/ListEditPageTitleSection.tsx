@@ -20,8 +20,10 @@ interface Props {
   deleteList: () => Promise<void>;
   is_deletable: boolean;
   is_addable: boolean;
+  is_note_mode: boolean;
   toggleDeletableHandler: () => void;
   toggleAddableHandler: () => void;
+  toggleNoteModeHandler: () => void;
   callSnackBarOpenHandler: () => void;
   refetchList: (
     variables?:
@@ -38,6 +40,8 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
     deleteList,
     is_deletable,
     is_addable,
+    is_note_mode,
+    toggleNoteModeHandler,
     toggleDeletableHandler,
     toggleAddableHandler,
     callSnackBarOpenHandler,
@@ -141,9 +145,11 @@ const ListEditPageTitleSection: FC<Props> = (props) => {
               editList={editModeHandler}
               is_edit_mode={edit_mode}
               is_deletable={is_deletable}
+              is_note_mode={is_note_mode}
               is_addable={is_addable}
               toggleDeletableHandler={toggleDeletableHandler}
               toggleAddableHandler={toggleAddableHandler}
+              toggleNoteModeHandler={toggleNoteModeHandler}
             />
           </Grid>
         </Grid>

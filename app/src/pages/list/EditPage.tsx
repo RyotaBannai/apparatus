@@ -26,6 +26,7 @@ interface Props {}
 const EditPage: FC<Props> = () => {
   const [deletable, setDeletable] = useState(false);
   const [addable, setAddable] = useState(false);
+  const [noteMode, setNoteMode] = useState(false);
   const [saveSnackBarOpen, setOpen] = useState(false);
   const [selectedRange, setSelectedRange] = useState<Range | undefined>();
   const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
@@ -44,9 +45,11 @@ const EditPage: FC<Props> = () => {
   const toggleDeletableHandler = useCallback(() => setDeletable(!deletable), [
     deletable,
   ]);
-
   const toggleAddableHandler = useCallback(() => setAddable(!addable), [
     addable,
+  ]);
+  const toggleNoteModeHandler = useCallback(() => setNoteMode(!noteMode), [
+    noteMode,
   ]);
 
   const {
@@ -58,7 +61,6 @@ const EditPage: FC<Props> = () => {
     variables: {
       id: String(list_id),
     },
-    onCompleted({ getList }) {},
   });
 
   const [s_deleteList] = useMutation(S_DELETE_LIST, {
@@ -84,7 +86,7 @@ const EditPage: FC<Props> = () => {
   ]);
 
   const { getCurrentWS } = useWSHelpers;
-  const { data: sets } = useQuery(S_GET_SETS, {
+  useQuery(S_GET_SETS, {
     variables: {
       wsId: Number(getCurrentWS().id),
     },
@@ -93,7 +95,7 @@ const EditPage: FC<Props> = () => {
     },
   });
 
-  const { data: items } = useQuery(S_GET_ITEMS, {
+  useQuery(S_GET_ITEMS, {
     variables: {
       wsId: Number(getCurrentWS().id),
     },
@@ -142,8 +144,10 @@ const EditPage: FC<Props> = () => {
         deleteList={deleteList}
         is_deletable={deletable}
         is_addable={addable}
+        is_note_mode={noteMode}
         toggleDeletableHandler={toggleDeletableHandler}
         toggleAddableHandler={toggleAddableHandler}
+        toggleNoteModeHandler={toggleNoteModeHandler}
         refetchList={refetchList}
       />
       <ListEditPageAddSection
@@ -162,6 +166,7 @@ const EditPage: FC<Props> = () => {
       />
       <ListEditPageListTargets
         is_deletable={deletable}
+        is_note_mode={noteMode}
         targets={list?.getList.targets}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
         onMouseUpHandler={onMouseUpHandler}

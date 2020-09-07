@@ -6,6 +6,7 @@ import ListEditListItem from "./ListEditListItem";
 import { v4 as uuidv4 } from "uuid";
 
 interface Props {
+  is_note_mode: boolean;
   selectable: ApparatusList.Selectable;
   set: ApparatusSet.Set;
   callSnackBarOpenHandler: () => void;
@@ -13,7 +14,13 @@ interface Props {
 }
 
 const ListEditPageListTargets: FC<Props> = (props) => {
-  const { selectable, set, callSnackBarOpenHandler, onMouseUpHandler } = props;
+  const {
+    is_note_mode,
+    selectable,
+    set,
+    callSnackBarOpenHandler,
+    onMouseUpHandler,
+  } = props;
   const { is_selectable, add, remove, selected } = selectable;
   const classes = useStyles();
   const history = useHistory();
@@ -31,6 +38,8 @@ const ListEditPageListTargets: FC<Props> = (props) => {
       remove({ id, add_to });
     }
   }, []);
+
+  const onDoNothing = () => {};
 
   useEffect(() => {}, [set]);
 
@@ -55,7 +64,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
         <Grid
           item
           xs={is_selectable ? 11 : 12}
-          onClick={goToSet}
+          onClick={is_note_mode ? onDoNothing : goToSet}
           style={{ cursor: "pointer" }}
         >
           <Typography
@@ -73,6 +82,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
                 key={uuidv4()}
                 item={item}
                 is_set={true}
+                is_note_mode={is_note_mode}
                 callSnackBarOpenHandler={callSnackBarOpenHandler}
                 onMouseUpHandler={onMouseUpHandler}
               />

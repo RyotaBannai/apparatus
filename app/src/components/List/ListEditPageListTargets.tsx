@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   is_deletable: boolean;
+  is_note_mode: boolean;
   targets: Addee.Addees;
   callSnackBarOpenHandler: () => void;
   onMouseUpHandler: () => void;
@@ -18,6 +19,7 @@ interface Props {
 const ListEditPageListTargets: FC<Props> = (props) => {
   const {
     is_deletable,
+    is_note_mode,
     targets,
     callSnackBarOpenHandler,
     onMouseUpHandler,
@@ -73,6 +75,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
             <ListEditListItem
               selectable={selectable}
               is_set={false}
+              is_note_mode={is_note_mode}
               item={target}
               callSnackBarOpenHandler={callSnackBarOpenHandler}
               onMouseUpHandler={onMouseUpHandler}
@@ -82,6 +85,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
           return (
             <ListEditListSet
               selectable={selectable}
+              is_note_mode={is_note_mode}
               key={uuidv4()}
               set={target}
               callSnackBarOpenHandler={callSnackBarOpenHandler}
