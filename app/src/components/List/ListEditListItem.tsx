@@ -7,141 +7,19 @@ import {
   Checkbox,
   Divider,
   Grid,
-  Icon,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
   Typography,
-  Popover,
 } from "@material-ui/core";
-import styled from "styled-components";
-
-const createHighlightedDomElement = (): HTMLSpanElement => {
-  let highlight = document.createElement("span");
-  highlight.setAttribute("class", "highlight-red");
-  return highlight;
-};
-
-const createUnhighlightedDomElement = (): HTMLSpanElement => {
-  let unhighlight = document.createElement("span");
-  unhighlight.setAttribute("class", "unhighlight");
-  return unhighlight;
-};
-
-const extractTexts = (childNodes: NodeListOf<ChildNode>): string =>
-  Array.prototype.reduce.call(
-    childNodes,
-    (result, node) =>
-      result + ((node.innerHTML ?? "") || (node.nodeValue ?? "")),
-    ""
-  ) as string;
-
-const proceedHighlightText = (): Range | undefined => {
-  let range = window.getSelection();
-  const selectedRange = range?.getRangeAt(0);
-  if (
-    !(
-      selectedRange?.commonAncestorContainer?.nodeName === "#text" ||
-      (selectedRange?.commonAncestorContainer as HTMLElement).className?.includes(
-        "highlightable"
-      )
-    )
-  ) {
-    return;
-  }
-  return selectedRange;
-};
-
-const cleanUpHighlights = () =>
-  Array.from(document.querySelectorAll("span.highlight-red")).forEach(
-    (element: any) => {
-      if (element.querySelector("span.highlight-red") !== null)
-        element.innerHTML = extractTexts(element.childNodes!);
-      if (element.innerHTML === "") element.remove();
-    }
-  );
-
-const highlightText = (selectedRange: Range) => {
-  const domFragment = selectedRange?.extractContents();
-  if (domFragment?.childNodes.length === 0) return;
-
-  const highlight = createHighlightedDomElement();
-  highlight.innerHTML = extractTexts(domFragment?.childNodes!);
-  selectedRange?.insertNode(highlight!);
-
-  cleanUpHighlights();
-};
-
-interface IPiePosition {
-  start: number;
-  end: number;
-}
-
-const unHighlightText = (selectedRange: Range) => {
-  const commonParent = selectedRange.commonAncestorContainer?.parentElement;
-  if (commonParent?.className.includes("highlight-red")) {
-    const beginSelectionPoint: number = selectedRange.startOffset;
-    const endSelectionPoint: number = selectedRange.endOffset;
-    const firstJoint: number =
-      beginSelectionPoint < endSelectionPoint
-        ? beginSelectionPoint
-        : endSelectionPoint;
-    const secondJoint: number =
-      beginSelectionPoint < endSelectionPoint
-        ? endSelectionPoint
-        : beginSelectionPoint;
-    const firstPie: IPiePosition = { start: 0, end: firstJoint };
-    const middlePie: IPiePosition = { start: firstJoint, end: secondJoint };
-    const lastPie: IPiePosition = {
-      start: secondJoint,
-      end: commonParent.innerText.length,
-    };
-
-    const fragment = new DocumentFragment();
-    const firstPieDom = createHighlightedDomElement();
-    firstPieDom.innerText = commonParent.innerText.slice(
-      firstPie.start,
-      firstPie.end
-    );
-    const middlePieDom = document.createTextNode(
-      commonParent.innerText.slice(middlePie.start, middlePie.end)
-    );
-    const lastPieDom = createHighlightedDomElement();
-    lastPieDom.innerText = commonParent.innerText.slice(
-      lastPie.start,
-      lastPie.end
-    );
-    for (const node of [firstPieDom, middlePieDom, lastPieDom]) {
-      fragment.appendChild(node);
-    }
-    commonParent.replaceWith(fragment);
-  } else {
-    const domFragment = selectedRange?.extractContents();
-    if (domFragment?.childNodes.length === 0) return;
-    selectedRange.insertNode(
-      document.createTextNode(extractTexts(domFragment?.childNodes!))
-    );
-  }
-
-  cleanUpHighlights();
-};
 
 type TProps = {
   selectable: ApparatusList.Selectable;
   item: Item.Item;
   is_set: boolean;
   callSnackBarOpenHandler: () => void;
+  onMouseUpHandler: () => void;
 };
 
 const ListEditListItem: FC<TProps> = (props) => {
-  const [selectedRange, setSelectedRange] = useState<Range>();
-  const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
-  const [popoverPosition, setPopoverPosition] = useState<{
-    top: number;
-    left: number;
-  }>();
-  const { selectable, item, is_set } = props;
+  const { selectable, item, is_set, onMouseUpHandler } = props;
   const { is_selectable, add, remove, selected } = selectable;
   const classes = useStyles();
   const history = useHistory();
@@ -150,30 +28,6 @@ const ListEditListItem: FC<TProps> = (props) => {
   const goToItem = useCallback(() => history.push(`/item_edit/${item.id}`), [
     item,
   ]);
-
-  const handleClose = () => {
-    setPopoverOpen(false);
-  };
-
-  const onHighlightHandler = () => {
-    highlightText(selectedRange!);
-    handleClose();
-  };
-
-  const onUnhighlightHander = () => {
-    unHighlightText(selectedRange!);
-    handleClose();
-  };
-
-  const onMouseUpHandler = (): void | undefined => {
-    const range = proceedHighlightText();
-    if (range === undefined) return;
-
-    setSelectedRange(range);
-    const { top, left, width } = range?.getBoundingClientRect()!;
-    setPopoverPosition({ top, left: left + width });
-    setPopoverOpen(true);
-  };
 
   const pressCheckBoxHandler = useCallback(
     (e) => {
@@ -189,9 +43,7 @@ const ListEditListItem: FC<TProps> = (props) => {
     [add, remove]
   );
 
-  useEffect(() => {
-    console.log(selectedRange);
-  }, [selectedRange, popoverPosition, popoverOpen, props]);
+  useEffect(() => {}, [props]);
 
   return (
     <>
@@ -244,58 +96,8 @@ const ListEditListItem: FC<TProps> = (props) => {
           </Grid>
         </CardContent>
       </Card>
-      <StyledPopover
-        open={popoverOpen}
-        anchorReference="anchorPosition"
-        anchorPosition={{
-          top: popoverPosition?.top ?? 0,
-          left: popoverPosition?.left ?? 0,
-        }}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "left",
-        }}
-        onClose={handleClose}
-      >
-        <List style={{ padding: 0 }}>
-          <PopoverListItem
-            content="Highlight"
-            onClickHandler={onHighlightHandler}
-          />
-          <PopoverListItem
-            content="Unhighlight"
-            onClickHandler={onUnhighlightHander}
-          />
-          <PopoverListItem content="Make Quiz" onClickHandler={() => {}} />
-        </List>
-      </StyledPopover>
     </>
   );
 };
-
-interface IListItem {
-  content: string;
-  onClickHandler: () => void;
-}
-
-const PopoverListItem: FC<IListItem> = (props) => {
-  const { content, onClickHandler } = props;
-  return (
-    <ListItem button onClick={onClickHandler} disableRipple disableTouchRipple>
-      <ListItemText primary={content} />
-      <Icon>arrow_right</Icon>
-    </ListItem>
-  );
-};
-
-const StyledPopover = styled(Popover)`
-  & .MuiPaper-root {
-    padding: ${(props) => props.theme.spacing(1)}px;
-  }
-`;
 
 export { ListEditListItem as default };

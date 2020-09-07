@@ -12,10 +12,16 @@ interface Props {
   is_deletable: boolean;
   targets: Addee.Addees;
   callSnackBarOpenHandler: () => void;
+  onMouseUpHandler: () => void;
 }
 
 const ListEditPageListTargets: FC<Props> = (props) => {
-  const { is_deletable, targets, callSnackBarOpenHandler } = props;
+  const {
+    is_deletable,
+    targets,
+    callSnackBarOpenHandler,
+    onMouseUpHandler,
+  } = props;
   const classes = useStyles();
   const dispatch = useDispatch();
   const { getDeletable } = useListHelpers;
@@ -69,6 +75,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
               is_set={false}
               item={target}
               callSnackBarOpenHandler={callSnackBarOpenHandler}
+              onMouseUpHandler={onMouseUpHandler}
             />
           );
         } else if (target.__typename === "Set") {
@@ -78,6 +85,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
               key={uuidv4()}
               set={target}
               callSnackBarOpenHandler={callSnackBarOpenHandler}
+              onMouseUpHandler={onMouseUpHandler}
             />
           );
         }

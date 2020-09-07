@@ -9,10 +9,11 @@ interface Props {
   selectable: ApparatusList.Selectable;
   set: ApparatusSet.Set;
   callSnackBarOpenHandler: () => void;
+  onMouseUpHandler: () => void;
 }
 
 const ListEditPageListTargets: FC<Props> = (props) => {
-  const { selectable, set, callSnackBarOpenHandler } = props;
+  const { selectable, set, callSnackBarOpenHandler, onMouseUpHandler } = props;
   const { is_selectable, add, remove, selected } = selectable;
   const classes = useStyles();
   const history = useHistory();
@@ -73,6 +74,7 @@ const ListEditPageListTargets: FC<Props> = (props) => {
                 item={item}
                 is_set={true}
                 callSnackBarOpenHandler={callSnackBarOpenHandler}
+                onMouseUpHandler={onMouseUpHandler}
               />
             );
           })}

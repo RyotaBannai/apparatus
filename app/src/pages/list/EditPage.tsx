@@ -14,6 +14,12 @@ import ListEditPageTitleSection from "../../components/List/ListEditPageTitleSec
 import ListEditPageAddSection from "../../components/List/ListEditPageAddSection";
 import ListEditPageListTargets from "../../components/List/ListEditPageListTargets";
 import { ListEditPageDeleteListSection } from "../../components/List/ListEditPageDeleteSection";
+import { ListEditPopover } from "../../components/List/ListEditPopover";
+import {
+  highlightText,
+  unHighlightText,
+  proceedHighlightText,
+} from "../../components/List/service";
 
 interface Props {}
 
@@ -21,22 +27,17 @@ const EditPage: FC<Props> = () => {
   const [deletable, setDeletable] = useState(false);
   const [addable, setAddable] = useState(false);
   const [saveSnackBarOpen, setOpen] = useState(false);
+  const [selectedRange, setSelectedRange] = useState<Range | undefined>();
+  const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
+  const [popoverPosition, setPopoverPosition] = useState<{
+    top: number;
+    left: number;
+  }>();
   const dispatch = useDispatch();
   const { updateAddableTargets } = useListMetaActions();
   let { list_id } = useParams<{ list_id?: string }>();
   const history = useHistory();
-  const {
-    getEditLists,
-    getListByKey,
-    getAddableTargets,
-    getAddableSelected,
-  } = useListHelpers;
-
-  const this_list = getListByKey(useSelector(getEditLists), {
-    key_name: "id_on_server",
-    key: list_id,
-  });
-
+  const { getAddableTargets, getAddableSelected } = useListHelpers;
   const targets = useSelector(getAddableTargets);
   const selected = useSelector(getAddableSelected);
 
@@ -101,6 +102,30 @@ const EditPage: FC<Props> = () => {
     },
   });
 
+  const handleClose = () => {
+    setPopoverOpen(false);
+    setSelectedRange(undefined);
+  };
+
+  const onHighlightHandler = () => {
+    highlightText(selectedRange!);
+    handleClose();
+  };
+
+  const onUnhighlightHander = () => {
+    unHighlightText(selectedRange!);
+    handleClose();
+  };
+
+  const onMouseUpHandler = (): void | undefined => {
+    const range = proceedHighlightText();
+    if (range === undefined) return;
+    const { top, left, width } = range?.getBoundingClientRect()!;
+    setPopoverPosition({ top, left: left + width });
+    setSelectedRange(range);
+    setPopoverOpen(true);
+  };
+
   useEffect(() => {
     refetchList();
   }, [list]);
@@ -139,6 +164,15 @@ const EditPage: FC<Props> = () => {
         is_deletable={deletable}
         targets={list?.getList.targets}
         callSnackBarOpenHandler={callSnackBarOpenHandler}
+        onMouseUpHandler={onMouseUpHandler}
+      />
+      <ListEditPopover
+        open={popoverOpen}
+        top={popoverPosition?.top}
+        left={popoverPosition?.left}
+        onClose={handleClose}
+        onHighlightHandler={onHighlightHandler}
+        onUnhighlightHander={onUnhighlightHander}
       />
       <SnackbarAlert isOpen={saveSnackBarOpen} />
     </div>
