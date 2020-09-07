@@ -23,6 +23,12 @@ const createHighlightedDomElement = (): HTMLSpanElement => {
   return highlight;
 };
 
+const createUnhighlightedDomElement = (): HTMLSpanElement => {
+  let unhighlight = document.createElement("span");
+  unhighlight.setAttribute("class", "unhighlight");
+  return unhighlight;
+};
+
 const extractTexts = (childNodes: NodeListOf<ChildNode>): string =>
   Array.prototype.reduce.call(
     childNodes,
@@ -47,6 +53,15 @@ const proceedHighlightText = (): Range | undefined => {
   return selectedRange;
 };
 
+const cleanUpHighlights = () =>
+  Array.from(document.querySelectorAll("span.highlight-red")).forEach(
+    (element: any) => {
+      if (element.querySelector("span.highlight-red") !== null)
+        element.innerHTML = extractTexts(element.childNodes!);
+      if (element.innerHTML === "") element.remove();
+    }
+  );
+
 const highlightText = (selectedRange: Range) => {
   const domFragment = selectedRange?.extractContents();
   if (domFragment?.childNodes.length === 0) return;
@@ -55,13 +70,61 @@ const highlightText = (selectedRange: Range) => {
   highlight.innerHTML = extractTexts(domFragment?.childNodes!);
   selectedRange?.insertNode(highlight!);
 
-  Array.from(document.querySelectorAll("span.highlight-red")).forEach(
-    (element: any) => {
-      if (element.querySelector("span.highlight-red") !== null)
-        element.innerHTML = extractTexts(element.childNodes!);
-      if (element.innerHTML === "") element.remove();
+  cleanUpHighlights();
+};
+
+interface IPiePosition {
+  start: number;
+  end: number;
+}
+
+const unHighlightText = (selectedRange: Range) => {
+  const commonParent = selectedRange.commonAncestorContainer?.parentElement;
+  if (commonParent?.className.includes("highlight-red")) {
+    const beginSelectionPoint: number = selectedRange.startOffset;
+    const endSelectionPoint: number = selectedRange.endOffset;
+    const firstJoint: number =
+      beginSelectionPoint < endSelectionPoint
+        ? beginSelectionPoint
+        : endSelectionPoint;
+    const secondJoint: number =
+      beginSelectionPoint < endSelectionPoint
+        ? endSelectionPoint
+        : beginSelectionPoint;
+    const firstPie: IPiePosition = { start: 0, end: firstJoint };
+    const middlePie: IPiePosition = { start: firstJoint, end: secondJoint };
+    const lastPie: IPiePosition = {
+      start: secondJoint,
+      end: commonParent.innerText.length,
+    };
+
+    const fragment = new DocumentFragment();
+    const firstPieDom = createHighlightedDomElement();
+    firstPieDom.innerText = commonParent.innerText.slice(
+      firstPie.start,
+      firstPie.end
+    );
+    const middlePieDom = document.createTextNode(
+      commonParent.innerText.slice(middlePie.start, middlePie.end)
+    );
+    const lastPieDom = createHighlightedDomElement();
+    lastPieDom.innerText = commonParent.innerText.slice(
+      lastPie.start,
+      lastPie.end
+    );
+    for (const node of [firstPieDom, middlePieDom, lastPieDom]) {
+      fragment.appendChild(node);
     }
-  );
+    commonParent.replaceWith(fragment);
+  } else {
+    const domFragment = selectedRange?.extractContents();
+    if (domFragment?.childNodes.length === 0) return;
+    selectedRange.insertNode(
+      document.createTextNode(extractTexts(domFragment?.childNodes!))
+    );
+  }
+
+  cleanUpHighlights();
 };
 
 type TProps = {
@@ -94,6 +157,11 @@ const ListEditListItem: FC<TProps> = (props) => {
 
   const onHighlightHandler = () => {
     highlightText(selectedRange!);
+    handleClose();
+  };
+
+  const onUnhighlightHander = () => {
+    unHighlightText(selectedRange!);
     handleClose();
   };
 
@@ -198,7 +266,10 @@ const ListEditListItem: FC<TProps> = (props) => {
             content="Highlight"
             onClickHandler={onHighlightHandler}
           />
-          <PopoverListItem content="Unhighlight" onClickHandler={() => {}} />
+          <PopoverListItem
+            content="Unhighlight"
+            onClickHandler={onUnhighlightHander}
+          />
           <PopoverListItem content="Make Quiz" onClickHandler={() => {}} />
         </List>
       </StyledPopover>
