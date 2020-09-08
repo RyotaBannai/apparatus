@@ -6,7 +6,6 @@ import { useListMetaActions } from "../../features/list/listMetaFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";
 import ListEditListItem from "./ListEditListItem";
 import ListEditListSet from "./ListEditListSet";
-import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   is_deletable: boolean;
@@ -86,7 +85,6 @@ const ListEditPageListTargets: FC<Props> = (props) => {
             <ListEditListSet
               selectable={selectable}
               is_note_mode={is_note_mode}
-              key={uuidv4()}
               set={target}
               callSnackBarOpenHandler={callSnackBarOpenHandler}
               onMouseUpHandler={onMouseUpHandler}

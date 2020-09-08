@@ -30,8 +30,8 @@ export const extractTexts = (childNodes: NodeListOf<ChildNode>): string =>
   ) as string;
 
 export const proceedHighlightText = (): Range | undefined => {
-  let range = window.getSelection();
-  const selectedRange = range?.getRangeAt(0);
+  let selection = window.getSelection();
+  const selectedRange = selection?.getRangeAt(0);
   if (
     !(
       selectedRange?.commonAncestorContainer?.nodeName === "#text" ||

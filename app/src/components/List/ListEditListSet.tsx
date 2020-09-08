@@ -3,7 +3,6 @@ import { useHistory } from "react-router-dom";
 import { Box, Checkbox, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/set.style";
 import ListEditListItem from "./ListEditListItem";
-import { v4 as uuidv4 } from "uuid";
 
 interface Props {
   is_note_mode: boolean;
@@ -41,8 +40,6 @@ const ListEditPageListTargets: FC<Props> = (props) => {
 
   const onDoNothing = () => {};
 
-  useEffect(() => {}, [set]);
-
   return (
     <Box className={classes.root}>
       <Grid container direction="row" spacing={1}>
@@ -79,7 +76,6 @@ const ListEditPageListTargets: FC<Props> = (props) => {
             return (
               <ListEditListItem
                 selectable={{ is_selectable: false }}
-                key={uuidv4()}
                 item={item}
                 is_set={true}
                 is_note_mode={is_note_mode}

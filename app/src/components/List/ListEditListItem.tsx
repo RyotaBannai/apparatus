@@ -49,65 +49,63 @@ const ListEditListItem: FC<TProps> = (props) => {
   useEffect(() => {}, [props]);
 
   return (
-    <>
-      <Card className={classes.root}>
-        <CardContent>
-          <Grid container direction="row" spacing={1}>
-            {is_selectable ? (
-              <Grid item xs={1} style={{ display: "inline-grid" }}>
-                <Checkbox
-                  checked={is_selected}
-                  color="primary"
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                  style={{ margin: "auto" }}
-                  size={"small"}
-                  onChange={pressCheckBoxHandler}
-                  value={item.id}
-                />
-              </Grid>
-            ) : (
-              <></>
-            )}
-            <Grid
-              item
-              xs={is_selectable ? 11 : 12}
-              onClick={is_set || is_note_mode ? onDoNothing : goToItem}
-              style={{ cursor: "pointer" }}
-            >
-              <Typography
-                gutterBottom
-                variant="subtitle1"
-                component="h4"
-                className={"highlightable"}
-                onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
-              >
-                {item?.data ?? ""}
-              </Typography>
-              <Typography
-                variant="body2"
-                color="textPrimary"
-                component="p"
-                className={"highlightable"}
-                onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
-              >
-                {item.description}
-              </Typography>
-              <Divider />
-              <Typography
-                variant="body2"
-                color="textSecondary"
-                component="p"
-                style={{ marginTop: 5 }}
-                className={"highlightable"}
-                onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
-              >
-                {item.note ?? ""}
-              </Typography>
+    <Card className={classes.root}>
+      <CardContent>
+        <Grid container direction="row" spacing={1}>
+          {is_selectable ? (
+            <Grid item xs={1} style={{ display: "inline-grid" }}>
+              <Checkbox
+                checked={is_selected}
+                color="primary"
+                inputProps={{ "aria-label": "secondary checkbox" }}
+                style={{ margin: "auto" }}
+                size={"small"}
+                onChange={pressCheckBoxHandler}
+                value={item.id}
+              />
             </Grid>
+          ) : (
+            <></>
+          )}
+          <Grid
+            item
+            xs={is_selectable ? 11 : 12}
+            onClick={is_set || is_note_mode ? onDoNothing : goToItem}
+            style={{ cursor: "pointer" }}
+          >
+            <Typography
+              gutterBottom
+              variant="subtitle1"
+              component="h4"
+              className={"highlightable"}
+              onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
+            >
+              {item?.data ?? ""}
+            </Typography>
+            <Typography
+              variant="body2"
+              color="textPrimary"
+              component="p"
+              className={"highlightable"}
+              onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
+            >
+              {item.description}
+            </Typography>
+            <Divider />
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              component="p"
+              style={{ marginTop: 5 }}
+              className={"highlightable"}
+              onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
+            >
+              {item.note ?? ""}
+            </Typography>
           </Grid>
-        </CardContent>
-      </Card>
-    </>
+        </Grid>
+      </CardContent>
+    </Card>
   );
 };
 

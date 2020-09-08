@@ -9,7 +9,6 @@ import { useMutation, ApolloError, ApolloQueryResult } from "@apollo/client";
 import { S_UPDATE_LIST } from "../../api/graphql/listQueries";
 import { Card, CardContent, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
-import { useListActions } from "../../features/list/listFeatureSlice";
 import { SaveButton } from "../Parts/Button/SaveButton";
 import { Name } from "../Parts/Grid/Name";
 import { Description } from "../Parts/Grid/Description";
