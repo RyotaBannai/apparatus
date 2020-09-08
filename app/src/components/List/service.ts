@@ -118,3 +118,25 @@ export const unHighlightText = (selectedRange: Range) => {
 
   cleanUpHighlights();
 };
+
+export const extractHighlightedTextIndexes = (
+  childNodes: NodeListOf<ChildNode>
+) => {
+  let acummulatedIndex: number = -1;
+  let highlightTextIndexes: Array<{ start: number; end: number }> = [];
+  for (const node of Array.from(childNodes)) {
+    if (node?.nodeName === "#text") {
+      acummulatedIndex += node.nodeValue?.length ?? 0;
+    } else if ((node as HTMLElement).className?.includes("highlight-red")) {
+      const textLength = (node as HTMLElement).innerText.length ?? 0;
+      highlightTextIndexes.push({
+        start: acummulatedIndex + 1,
+        end: acummulatedIndex + textLength,
+      });
+      acummulatedIndex += textLength;
+    } else {
+      console.log("ERROR: unexpected node");
+    }
+  }
+  return highlightTextIndexes;
+};

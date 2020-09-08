@@ -1,7 +1,6 @@
 import React, { useState, useCallback, SyntheticEvent, FC } from "react";
 import { useMutation, ApolloError } from "@apollo/client";
 import { S_CREATE_LIST } from "../../api/graphql/listQueries";
-import { useStyles } from "../../assets/style/list/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useListActions } from "../../features/list/listFeatureSlice";
 import { useListHelpers } from "../../features/list/listHelpers";

@@ -1,10 +1,5 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  SyntheticEvent,
-  FC,
-} from "react";
+import React, { useState, useCallback, SyntheticEvent, FC } from "react";
+import { useMount, useUnmount } from "react-use";
 import { useMutation, ApolloError } from "@apollo/client";
 import { S_ADD_ITEMS } from "../../api/graphql/itemQueries";
 import { ApparatusSet } from "../../components/Item/ApparatusSet";
@@ -77,7 +72,7 @@ const CreatePage: FC<Props> = () => {
     });
   };
 
-  useEffect(() => {
+  useMount(() => {
     if (sets.length > 0) {
       let old_sets: any[] = [];
       for (const set of sets) {
@@ -92,11 +87,9 @@ const CreatePage: FC<Props> = () => {
     } else {
       callSetChild(null);
     }
+  });
 
-    return () => {
-      dispatch(removeShowFalse());
-    };
-  }, []);
+  useUnmount(() => dispatch(removeShowFalse()));
 
   if (sa_loading) return <p>Loading...</p>;
   if (sa_error) return <p>Error :(</p>;

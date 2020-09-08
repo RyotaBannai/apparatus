@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback, FC } from "react";
+import React, { useState, useEffect, useCallback, RefObject, FC } from "react";
 import { useHistory } from "react-router-dom";
 import { useQuery, useMutation, ApolloError } from "@apollo/client";
 import { S_GET_LIST, S_DELETE_LIST } from "../../api/graphql/listQueries";
 import { S_GET_SETS } from "../../api/graphql/setQueries";
-import { S_GET_ITEMS } from "../../api/graphql/itemQueries";
+import { S_GET_ITEMS, S_ADD_HIGHLIGHTS } from "../../api/graphql/itemQueries";
 import { useWSHelpers } from "../../features/workspace/wsHelpers";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,21 +19,29 @@ import {
   highlightText,
   unHighlightText,
   proceedHighlightText,
+  extractHighlightedTextIndexes,
 } from "../../components/List/service";
 
 interface Props {}
 
 const EditPage: FC<Props> = () => {
-  const [deletable, setDeletable] = useState(false);
-  const [addable, setAddable] = useState(false);
-  const [noteMode, setNoteMode] = useState(false);
-  const [saveSnackBarOpen, setOpen] = useState(false);
+  const [deletable, setDeletable] = useState<boolean>(false);
+  const [addable, setAddable] = useState<boolean>(false);
+  const [noteMode, setNoteMode] = useState<boolean>(true);
+  const [saveSnackBarOpen, setOpen] = useState<boolean>(false);
   const [selectedRange, setSelectedRange] = useState<Range | undefined>();
   const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
-  const [popoverPosition, setPopoverPosition] = useState<{
-    top: number;
-    left: number;
-  }>();
+  const [popoverPosition, setPopoverPosition] = useState<
+    | {
+        top: number;
+        left: number;
+      }
+    | undefined
+  >();
+  const [itemId, setItemId] = useState<string | undefined>();
+  const [itemComponentRootDom, setItemComponentRootDom] = useState<
+    HTMLElement | undefined
+  >();
   const dispatch = useDispatch();
   const { updateAddableTargets } = useListMetaActions();
   let { list_id } = useParams<{ list_id?: string }>();
@@ -64,6 +72,15 @@ const EditPage: FC<Props> = () => {
   });
 
   const [s_deleteList] = useMutation(S_DELETE_LIST, {
+    onCompleted({ deleteFolder }) {
+      callSnackBarOpenHandler();
+    },
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
+  const [s_addHighlights] = useMutation(S_ADD_HIGHLIGHTS, {
     onCompleted({ deleteFolder }) {
       callSnackBarOpenHandler();
     },
@@ -106,26 +123,66 @@ const EditPage: FC<Props> = () => {
 
   const handleClose = () => {
     setPopoverOpen(false);
+    setPopoverPosition(undefined);
     setSelectedRange(undefined);
+    setItemId(undefined);
+    setItemComponentRootDom(undefined);
+  };
+
+  const saveHightLights = async ({
+    itemId,
+    rootDom,
+  }: {
+    itemId: string;
+    rootDom: HTMLElement;
+  }) => {
+    const data = rootDom?.querySelector(".item-data");
+    const description = rootDom?.querySelector(".item-description");
+    const note = rootDom?.querySelector(".item-note");
+    const dataIndexes = extractHighlightedTextIndexes(data?.childNodes!);
+    const descriptionIndexes = extractHighlightedTextIndexes(
+      description?.childNodes!
+    );
+    const noteIndexes = extractHighlightedTextIndexes(note?.childNodes!);
+
+    const variables = {
+      highlightInputs: {
+        id: Number(itemId),
+        data: dataIndexes,
+        description: descriptionIndexes,
+        note: noteIndexes,
+      },
+    };
+    s_addHighlights({ variables });
   };
 
   const onHighlightHandler = () => {
     highlightText(selectedRange!);
+    saveHightLights({ itemId: itemId!, rootDom: itemComponentRootDom! });
     handleClose();
   };
 
   const onUnhighlightHander = () => {
     unHighlightText(selectedRange!);
+    saveHightLights({ itemId: itemId!, rootDom: itemComponentRootDom! });
     handleClose();
   };
 
-  const onMouseUpHandler = (): void | undefined => {
+  const onMouseUpHandler = ({
+    itemId,
+    rootRef,
+  }: {
+    itemId: string;
+    rootRef: RefObject<unknown>;
+  }) => (): void | undefined => {
     const range = proceedHighlightText();
     if (range === undefined) return;
     const { top, left, width } = range?.getBoundingClientRect()!;
     setPopoverPosition({ top, left: left + width });
     setSelectedRange(range);
     setPopoverOpen(true);
+    setItemId(itemId);
+    setItemComponentRootDom(rootRef?.current as HTMLElement);
   };
 
   useEffect(() => {

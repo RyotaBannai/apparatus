@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, FC } from "react";
+import React, { createRef, RefObject, useCallback, FC } from "react";
 import { useHistory } from "react-router-dom";
 import { useStyles } from "../../assets/style/list/item.style";
 import {
@@ -16,7 +16,13 @@ type TProps = {
   is_set: boolean;
   is_note_mode: boolean;
   callSnackBarOpenHandler: () => void;
-  onMouseUpHandler: () => void;
+  onMouseUpHandler: ({
+    itemId,
+    rootRef,
+  }: {
+    itemId: string;
+    rootRef: RefObject<unknown>;
+  }) => () => void;
 };
 
 const ListEditListItem: FC<TProps> = (props) => {
@@ -24,7 +30,12 @@ const ListEditListItem: FC<TProps> = (props) => {
   const { is_selectable, add, remove, selected } = selectable;
   const classes = useStyles();
   const history = useHistory();
+  const rootRef = createRef();
   let is_selected = selected?.items.includes(item?.id);
+  const wrapOnMouseUpHandler = onMouseUpHandler({
+    itemId: String(item?.id),
+    rootRef,
+  });
 
   const goToItem = useCallback(() => history.push(`/item_edit/${item.id}`), [
     item,
@@ -46,10 +57,8 @@ const ListEditListItem: FC<TProps> = (props) => {
 
   const onDoNothing = () => {};
 
-  useEffect(() => {}, [props]);
-
   return (
-    <Card className={classes.root}>
+    <Card className={classes.root} ref={rootRef}>
       <CardContent>
         <Grid container direction="row" spacing={1}>
           {is_selectable ? (
@@ -77,8 +86,8 @@ const ListEditListItem: FC<TProps> = (props) => {
               gutterBottom
               variant="subtitle1"
               component="h4"
-              className={"highlightable"}
-              onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
+              className={"highlightable item-data"}
+              onMouseUp={is_note_mode ? wrapOnMouseUpHandler : onDoNothing}
             >
               {item?.data ?? ""}
             </Typography>
@@ -86,8 +95,8 @@ const ListEditListItem: FC<TProps> = (props) => {
               variant="body2"
               color="textPrimary"
               component="p"
-              className={"highlightable"}
-              onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
+              className={"highlightable item-description"}
+              onMouseUp={is_note_mode ? wrapOnMouseUpHandler : onDoNothing}
             >
               {item.description}
             </Typography>
@@ -97,8 +106,8 @@ const ListEditListItem: FC<TProps> = (props) => {
               color="textSecondary"
               component="p"
               style={{ marginTop: 5 }}
-              className={"highlightable"}
-              onMouseUp={is_note_mode ? onMouseUpHandler : onDoNothing}
+              className={"highlightable item-note"}
+              onMouseUp={is_note_mode ? wrapOnMouseUpHandler : onDoNothing}
             >
               {item.note ?? ""}
             </Typography>

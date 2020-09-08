@@ -90,3 +90,11 @@ export const S_DELETE_ITEMS = gql`
     }
   }
 `;
+
+export const S_ADD_HIGHLIGHTS = gql`
+  mutation ADD_HIGHLIGHTS($highlightInputs: highlightInputs!) {
+    addHighlights(highlightInputs: $highlightInputs) {
+      res
+    }
+  }
+`;

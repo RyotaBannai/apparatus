@@ -1,4 +1,4 @@
-import React, { useEffect, FC } from "react";
+import React, { useEffect, RefObject, FC } from "react";
 import { Box, Divider, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,13 @@ interface Props {
   is_note_mode: boolean;
   targets: Addee.Addees;
   callSnackBarOpenHandler: () => void;
-  onMouseUpHandler: () => void;
+  onMouseUpHandler: ({
+    itemId,
+    rootRef,
+  }: {
+    itemId: string;
+    rootRef: RefObject<unknown>;
+  }) => () => void;
 }
 
 const ListEditPageListTargets: FC<Props> = (props) => {

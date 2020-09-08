@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, FC } from "react";
+import React, { useCallback, RefObject, FC } from "react";
 import { useHistory } from "react-router-dom";
 import { Box, Checkbox, Grid, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/set.style";
@@ -9,7 +9,13 @@ interface Props {
   selectable: ApparatusList.Selectable;
   set: ApparatusSet.Set;
   callSnackBarOpenHandler: () => void;
-  onMouseUpHandler: () => void;
+  onMouseUpHandler: ({
+    itemId,
+    rootRef,
+  }: {
+    itemId: string;
+    rootRef: RefObject<unknown>;
+  }) => () => void;
 }
 
 const ListEditPageListTargets: FC<Props> = (props) => {
