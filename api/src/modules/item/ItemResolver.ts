@@ -1,27 +1,14 @@
-import {
-  Arg,
-  Args,
-  Int,
-  Mutation,
-  Query,
-  Resolver,
-  Ctx,
-  FieldResolver,
-  Root,
-  createParamDecorator,
-  Authorized,
-} from "type-graphql";
+import { Arg, Args, Mutation, Query, Resolver, Ctx } from "type-graphql";
 import { getRepository } from "typeorm";
 import {
-  Response,
   addItemInput,
   addItemInputs,
   updateItemInputs,
-  GetItemArgs,
   getItemsArgs,
   ItemData,
   ItemDataFromEdit,
 } from "./TypeDefs";
+import { GraphQLResponse } from "../TypeDefsGlobal";
 import { Context } from "vm";
 import { User } from "../../entity/User";
 import { UserMeta } from "../../entity/UserMeta";
@@ -48,7 +35,7 @@ export class ItemResolver {
     return await new_item.save();
   }
 
-  @Mutation(() => Response)
+  @Mutation(() => GraphQLResponse)
   async createItems(
     @Arg("data") newItemData: addItemInputs,
     @Ctx() ctx: Context
@@ -142,7 +129,7 @@ export class ItemResolver {
     return new_set;
   }
 
-  @Mutation(() => Response)
+  @Mutation(() => GraphQLResponse)
   async updateItem(@Arg("data") updateItemData: addItemInput): Promise<Object> {
     let set = JSON.parse(updateItemData.data)[0];
     let request_items = set.items;
@@ -154,7 +141,7 @@ export class ItemResolver {
     return { res: "Success" };
   }
 
-  @Mutation(() => Response)
+  @Mutation(() => GraphQLResponse)
   async updateItems(
     @Arg("data") newItemData: updateItemInputs,
     @Ctx() ctx: Context
@@ -234,7 +221,7 @@ export class ItemResolver {
     });
   }
 
-  @Mutation(() => Response)
+  @Mutation(() => GraphQLResponse)
   async deleteItem(@Arg("id") id: number): Promise<Object> {
     let this_item: Item = await Item.findOneOrFail(id, {
       relations: ["item_meta"],
@@ -252,7 +239,7 @@ export class ItemResolver {
     return { res: "Success" };
   }
 
-  @Mutation(() => Response)
+  @Mutation(() => GraphQLResponse)
   async deleteItems(@Arg("set_id") set_id: number): Promise<Object> {
     let this_set: Set = await Set.findOneOrFail(set_id, {
       relations: ["itemConnector", "itemConnector.item"],

@@ -3,6 +3,7 @@ import { createConnection, getConnectionOptions } from "typeorm";
 import { buildSchema } from "type-graphql";
 import { UserResolver } from "./modules/user/UserResolver";
 import { ItemResolver } from "./modules/item/ItemResolver";
+import { ItemMetaResolver } from "./modules/item/ItemMetaResolver";
 import { SetResolver } from "./modules/set/SetResolver";
 import { AddeeResolver } from "./modules/addee/addeeResolver";
 import { ListResolver } from "./modules/list/ListResolver";
@@ -26,6 +27,7 @@ const main = async () => {
     resolvers: [
       UserResolver,
       ItemResolver,
+      ItemMetaResolver,
       SetResolver,
       AddeeResolver,
       ListResolver,

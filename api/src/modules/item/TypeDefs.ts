@@ -77,10 +77,28 @@ export class ItemData {
   note: string;
 }
 
-export type ItemDataFromEdit = ItemData & { id_on_server: number };
+@InputType()
+export class HighlightsIndexes {
+  @Field((type) => Int)
+  start: number;
 
-@ObjectType()
-export class Response {
-  @Field((type) => String)
-  res: string;
+  @Field((type) => Int)
+  end: number;
 }
+
+@InputType({ description: "Add highlights to items" })
+export class highlightInputs {
+  @Field((type) => ID)
+  id: number;
+
+  @Field((type) => [HighlightsIndexes])
+  data: HighlightsIndexes[];
+
+  @Field((type) => [HighlightsIndexes!]!)
+  description: Object[];
+
+  @Field((type) => [HighlightsIndexes!]!)
+  note: Object[];
+}
+
+export type ItemDataFromEdit = ItemData & { id_on_server: number };
