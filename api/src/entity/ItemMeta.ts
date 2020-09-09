@@ -3,13 +3,14 @@ import {
   Column,
   PrimaryColumn,
   OneToOne,
+  OneToMany,
   JoinColumn,
   UpdateDateColumn,
   CreateDateColumn,
 } from "typeorm";
 import { Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Item } from "./Item";
-import { Base } from "./Base";
+import { Highlight } from "./Highlight";
 
 @ObjectType()
 @Entity()
@@ -30,6 +31,10 @@ export class ItemMeta {
   @OneToOne((type) => Item, (item) => item.item_meta, { onDelete: "CASCADE" })
   @JoinColumn({ name: "itemId" })
   item: Item;
+
+  @Field((type) => [Highlight])
+  @OneToMany((type) => Highlight, (highlight) => highlight.targetId)
+  highlight: Highlight[];
 
   @Field()
   @UpdateDateColumn()

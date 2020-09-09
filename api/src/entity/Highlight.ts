@@ -1,4 +1,11 @@
-import { Entity, Column, OneToMany, JoinColumn, OneToOne } from "typeorm";
+import {
+  Entity,
+  Column,
+  OneToMany,
+  JoinColumn,
+  OneToOne,
+  PrimaryColumn,
+} from "typeorm";
 import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
 import { Base } from "./Base";
 import { Item } from "./Item";
@@ -6,11 +13,11 @@ import { Item } from "./Item";
 @ObjectType()
 @Entity()
 export class Highlight extends Base {
-  @Column()
+  @PrimaryColumn()
   @Field((type) => ID)
   targetId: number;
 
-  @Column()
+  @PrimaryColumn()
   @Field()
   targetType: string;
 
