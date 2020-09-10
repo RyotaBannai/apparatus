@@ -30,8 +30,10 @@ export class ItemMetaHighlight {
   itemMeta: ItemMeta;
 
   @Field((type) => Highlight)
-  @OneToOne((type) => Highlight, (highlight) => highlight.itemMetaConnector)
-  @JoinColumn({ name: "wsId" })
+  @OneToOne((type) => Highlight, (highlight) => highlight.itemMetaConnector, {
+    onDelete: "CASCADE",
+  })
+  @JoinColumn({ name: "highlightId" })
   highlight: Highlight;
 
   @Field()
