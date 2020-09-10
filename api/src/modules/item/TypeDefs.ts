@@ -6,10 +6,10 @@ import {
   ObjectType,
   ArgsType,
   InputType,
-  Float,
 } from "type-graphql";
 import { Min, Max } from "class-validator";
 import { Item, ItemType } from "../../entity/Item";
+import { Highlight } from "../../entity/Highlight";
 
 @InputType({ description: "New item data" })
 export class addItemInput implements Partial<Item> {
@@ -75,6 +75,9 @@ export class ItemData {
 
   @Field()
   note: string;
+
+  @Field((type) => Highlight, { nullable: true })
+  highlights?: Highlight[];
 }
 
 @InputType()

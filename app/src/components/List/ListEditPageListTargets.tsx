@@ -61,8 +61,6 @@ const ListEditPageListTargets: FC<Props> = (props) => {
     selected: selected_targets,
   };
 
-  useEffect(() => {}, [targets]);
-
   return (
     <Box className={classes.listBox}>
       <Typography

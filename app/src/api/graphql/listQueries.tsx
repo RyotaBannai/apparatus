@@ -23,6 +23,12 @@ export const S_GET_LIST = gql`
           type
           description
           note
+          highlights {
+            id
+            targetType
+            end
+            start
+          }
         }
         ... on Set {
           id
@@ -33,6 +39,12 @@ export const S_GET_LIST = gql`
             type
             description
             note
+            highlights {
+              id
+              targetType
+              end
+              start
+            }
           }
         }
       }

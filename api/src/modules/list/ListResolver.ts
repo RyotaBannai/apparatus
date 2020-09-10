@@ -9,7 +9,7 @@ import {
   Root,
   Query,
 } from "type-graphql";
-import { getRepository, UpdateResult } from "typeorm";
+import { getRepository } from "typeorm";
 import { Context } from "vm";
 import {
   createListInput,
@@ -18,10 +18,11 @@ import {
   getListByIDArgs,
   getListsArgs,
 } from "./TypeDefs";
+import { ItemData } from "../../modules/item/TypeDefs";
 import { GraphQLResponse } from "../TypeDefsGlobal";
 import { Global } from "../../const/constants";
 import { Item } from "../../entity/Item";
-import { Set } from "../../entity/Set";
+import { ItemMetaHighlight } from "../../entity/ItemMetaHighlight";
 import { List } from "../../entity/List";
 import { AddeeList } from "../../entity/AddeeList";
 import { ListWorkspace } from "../../entity/ListWorkspace";
@@ -105,7 +106,11 @@ export class ListResolver {
     return this_list.addeeConnector.map(async (addee_list: AddeeList) => {
       let relations: string[] = [];
       if (addee_list.addee.morphType === "Item") {
-        relations = ["item_meta"];
+        relations = [
+          "item_meta",
+          "item_meta.highlightConnector",
+          "item_meta.highlightConnector.highlight",
+        ];
         const item: Item = (await getRepository(
           addee_list.addee.morphType
         ).findOneOrFail(addee_list.addee.morphId, {
@@ -117,12 +122,18 @@ export class ListResolver {
           data: item.data,
           description: item.item_meta.description,
           note: item.item_meta.note,
-        };
+          highlights: item.item_meta.highlightConnector.map(
+            (item_meta_highlight: ItemMetaHighlight) =>
+              item_meta_highlight.highlight
+          ),
+        } as ItemData;
       } else if (addee_list.addee.morphType === "Set") {
         relations = [
           "itemConnector",
           "itemConnector.item",
           "itemConnector.item.item_meta",
+          "itemConnector.item.item_meta.highlightConnector",
+          "itemConnector.item.item_meta.highlightConnector.highlight",
         ];
         return await getRepository(addee_list.addee.morphType).findOneOrFail(
           addee_list.addee.morphId,

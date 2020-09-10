@@ -9,14 +9,10 @@ import {
   Root,
   Query,
 } from "type-graphql";
-import { getRepository } from "typeorm";
 import { Context } from "vm";
-import { Item } from "../../entity/Item";
+import { ItemMetaHighlight } from "../../entity/ItemMetaHighlight";
 import { Set } from "../../entity/Set";
-import { Workspace } from "../../entity/Workspace";
-import { SetWorkspace } from "../../entity/SetWorkspace";
 import { getSetArgs, getSetbyIDArgs } from "./TypeDefs";
-import { ItemMeta } from "../../entity/ItemMeta";
 import { ItemData } from "../item/TypeDefs";
 
 @Resolver((of) => Set)
@@ -61,6 +57,8 @@ export class SetResolver {
         "itemConnector",
         "itemConnector.item",
         "itemConnector.item.item_meta",
+        "itemConnector.item.item_meta.highlightConnector",
+        "itemConnector.item.item_meta.highlightConnector.highlight",
       ],
     });
     const this_items: ItemData[] = [];
@@ -71,6 +69,10 @@ export class SetResolver {
         data: item.data,
         description: item.item_meta.description ?? "",
         note: item.item_meta.note ?? "",
+        highlights: item.item_meta.highlightConnector.map(
+          (item_meta_highlight: ItemMetaHighlight) =>
+            item_meta_highlight.highlight
+        ),
       });
     }
     return this_items;
