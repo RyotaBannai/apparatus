@@ -8,9 +8,10 @@ import {
   UpdateDateColumn,
   CreateDateColumn,
 } from "typeorm";
-import { Field, ID, ObjectType, ArgsType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 import { Item } from "./Item";
 import { Highlight } from "./Highlight";
+import { ItemMetaHighlight } from "./ItemMetaHighlight";
 
 @ObjectType()
 @Entity()
@@ -32,9 +33,12 @@ export class ItemMeta {
   @JoinColumn({ name: "itemId" })
   item: Item;
 
-  @Field((type) => [Highlight])
-  @OneToMany((type) => Highlight, (highlight) => highlight.targetId)
-  highlight: Highlight[];
+  @Field((type) => [ItemMetaHighlight])
+  @OneToMany(
+    (type) => ItemMetaHighlight,
+    (item_meta_highlight) => item_meta_highlight.itemMeta
+  )
+  highlightConnector: ItemMetaHighlight[];
 
   @Field()
   @UpdateDateColumn()

@@ -1,23 +1,12 @@
-import {
-  Entity,
-  Column,
-  OneToMany,
-  JoinColumn,
-  OneToOne,
-  PrimaryColumn,
-} from "typeorm";
-import { Ctx, Field, ID, ObjectType, ArgsType } from "type-graphql";
+import { Entity, Column, OneToOne } from "typeorm";
+import { Ctx, Field, ID, ObjectType } from "type-graphql";
 import { Base } from "./Base";
-import { Item } from "./Item";
+import { ItemMetaHighlight } from "./ItemMetaHighlight";
 
 @ObjectType()
 @Entity()
 export class Highlight extends Base {
-  @PrimaryColumn()
-  @Field((type) => ID)
-  targetId: number;
-
-  @PrimaryColumn()
+  @Column()
   @Field()
   targetType: string;
 
@@ -28,4 +17,11 @@ export class Highlight extends Base {
   @Column()
   @Field((type) => Number)
   end: number;
+
+  @Field((type) => ItemMetaHighlight)
+  @OneToOne(
+    (type) => ItemMetaHighlight,
+    (item_meta_highlight) => item_meta_highlight.itemMeta
+  )
+  itemMetaConnector: ItemMetaHighlight;
 }
