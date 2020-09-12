@@ -30,7 +30,9 @@ export class SetWorkspace {
   set: Set;
 
   @Field((type) => Workspace)
-  @ManyToOne((type) => Workspace, (ws) => ws.setConnector)
+  @ManyToOne((type) => Workspace, (ws) => ws.setConnector, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "wsId" })
   ws: Workspace;
 

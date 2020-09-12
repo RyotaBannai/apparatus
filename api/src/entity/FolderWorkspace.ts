@@ -30,7 +30,9 @@ export class FolderWorkspace {
   folder: Folder;
 
   @Field((type) => Workspace)
-  @ManyToOne((type) => Workspace, (ws) => ws.listConnector)
+  @ManyToOne((type) => Workspace, (ws) => ws.listConnector, {
+    onDelete: "CASCADE",
+  })
   @JoinColumn({ name: "wsId" })
   ws: Workspace;
 
