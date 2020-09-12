@@ -132,8 +132,9 @@ export class FolderResolver {
             })
         )
       );
+
       return this_root.filter(
-        (root: Folder) => root.wsConnector.wsId === Number(wsId)
+        (root: Folder) => root?.wsConnector?.wsId === Number(wsId)
       )[0];
     } else {
       this_folder = await Folder.findOneOrFail({

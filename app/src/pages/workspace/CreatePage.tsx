@@ -1,6 +1,7 @@
 import React, { useState, useCallback, SyntheticEvent, FC } from "react";
 import { useMutation, ApolloError } from "@apollo/client";
 import { S_CREATE_WORKSPACE } from "../../api/graphql/workspaceQueries";
+import { S_CREATE_FOLDER } from "../../api/graphql/folderQueries";
 import { useStyles } from "../../assets/style/workspace/page.style";
 import { useDispatch, useSelector } from "react-redux";
 import { useWSActions } from "../../features/workspace/wsFeatureSlice";
@@ -45,12 +46,27 @@ const CreatePage: FC<Props> = () => {
     },
   });
 
+  const [s_createFolder] = useMutation(S_CREATE_FOLDER, {
+    onError(error: ApolloError) {
+      console.log(error);
+    },
+  });
+
   let handleOnClick = useCallback(
-    (e: SyntheticEvent) => {
+    async (e: SyntheticEvent) => {
       e.preventDefault();
-      s_createWorkspace({
+      const {
+        data: { createWorkspace },
+      } = await s_createWorkspace({
         variables: data,
       });
+      console.log(createWorkspace);
+      const variables = {
+        name: "Root",
+        description: "Describe root folder",
+        wsId: Number(createWorkspace.id),
+      };
+      await s_createFolder({ variables });
     },
     [data, s_createWorkspace]
   );

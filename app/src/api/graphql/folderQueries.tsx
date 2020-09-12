@@ -5,7 +5,7 @@ export const S_CREATE_FOLDER = gql`
     $name: String!
     $description: String!
     $wsId: Float!
-    $parentId: Float!
+    $parentId: Float
   ) {
     createFolder(
       data: {
