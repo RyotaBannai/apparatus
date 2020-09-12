@@ -9,6 +9,8 @@ import {
   Grid,
   Typography,
 } from "@material-ui/core";
+import { groupBy } from "../../modules/group";
+import * as _ from "lodash";
 
 type TProps = {
   selectable: ApparatusList.Selectable;
@@ -25,6 +27,31 @@ type TProps = {
   }) => () => void;
 };
 
+const wrapWithHighlight = (
+  target: { key: keyof Item.Item; text: string },
+  defaultHighlights: {
+    [key in keyof Item.Item]: Array<{ start: number; end: number }>;
+  }
+) => {
+  let lastEndIndex = 0;
+  let currentText = target.text;
+  let nodes: Array<any> = [];
+  for (const { start, end } of defaultHighlights[target.key]!) {
+    let currentStart = start - lastEndIndex;
+    let currentEnd = end - lastEndIndex;
+    nodes.push(
+      currentText.slice(0, currentStart),
+      <span className="highlight-red">
+        {currentText.slice(currentStart, currentEnd + 1)}
+      </span>
+    );
+    lastEndIndex = end + 1;
+    currentText = currentText.slice(currentEnd + 1, target.text.length);
+  }
+  nodes.push(currentText);
+  return nodes;
+};
+
 const ListEditListItem: FC<TProps> = (props) => {
   const { selectable, item, is_note_mode, is_set, onMouseUpHandler } = props;
   const { is_selectable, add, remove, selected } = selectable;
@@ -36,6 +63,10 @@ const ListEditListItem: FC<TProps> = (props) => {
     itemId: String(item?.id),
     rootRef,
   });
+  const defaultHighlights = groupBy(
+    _.sortBy(item.highlights!, [(highlight) => highlight.start]),
+    "targetType"
+  );
 
   const goToItem = useCallback(() => history.push(`/item_edit/${item.id}`), [
     item,
@@ -89,7 +120,14 @@ const ListEditListItem: FC<TProps> = (props) => {
               className={"highlightable item-data"}
               onMouseUp={is_note_mode ? wrapOnMouseUpHandler : onDoNothing}
             >
-              {item?.data ?? ""}
+              {item.data
+                ? defaultHighlights?.data !== undefined
+                  ? wrapWithHighlight(
+                      { key: "data", text: item.data! },
+                      defaultHighlights
+                    ).map((node: any) => node)
+                  : item.data
+                : ""}
             </Typography>
             <Typography
               variant="body2"
@@ -98,7 +136,14 @@ const ListEditListItem: FC<TProps> = (props) => {
               className={"highlightable item-description"}
               onMouseUp={is_note_mode ? wrapOnMouseUpHandler : onDoNothing}
             >
-              {item.description}
+              {item.description
+                ? defaultHighlights?.description !== undefined
+                  ? wrapWithHighlight(
+                      { key: "description", text: item.description! },
+                      defaultHighlights
+                    ).map((node: any) => node)
+                  : item.description
+                : ""}
             </Typography>
             <Divider />
             <Typography
@@ -109,7 +154,14 @@ const ListEditListItem: FC<TProps> = (props) => {
               className={"highlightable item-note"}
               onMouseUp={is_note_mode ? wrapOnMouseUpHandler : onDoNothing}
             >
-              {item.note ?? ""}
+              {item.note
+                ? defaultHighlights?.note !== undefined
+                  ? wrapWithHighlight(
+                      { key: "note", text: item.note! },
+                      defaultHighlights
+                    ).map((node: any) => node)
+                  : item.note
+                : ""}
             </Typography>
           </Grid>
         </Grid>

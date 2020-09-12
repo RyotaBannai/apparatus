@@ -1,4 +1,4 @@
-import React, { useEffect, RefObject, FC } from "react";
+import React, { RefObject, FC } from "react";
 import { Box, Divider, Typography } from "@material-ui/core";
 import { useStyles } from "../../assets/style/list/page.style";
 import { useDispatch, useSelector } from "react-redux";

@@ -19,6 +19,12 @@ declare namespace Item {
   interface ItemMeta {
     description?: string;
     note?: string;
+    highlights?: Array<{
+      start: number;
+      end: number;
+      id: string;
+      targetType: "data" | "note" | "description";
+    }>;
   }
 
   type ItemOrUndefined = Item | undefined;
