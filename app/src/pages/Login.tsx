@@ -1,6 +1,7 @@
 import React from "react";
-import { gql, useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import { ApolloError } from "apollo-client";
+import { LOGIN } from "../api/graphql/authQueries";
 import { useWSHelpers } from "../features/workspace/wsHelpers";
 import {
   Button,
@@ -9,20 +10,6 @@ import {
   Grid,
   Icon,
 } from "@material-ui/core";
-
-const LOGIN = gql`
-  query LOGIN($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      ... on LoginFails {
-        message
-      }
-      ... on TokenEntity {
-        token
-        expires_in
-      }
-    }
-  }
-`;
 
 interface Props {}
 
@@ -42,7 +29,9 @@ const Login: React.FC<Props> = () => {
         console.log("Return value has an unexpected length.");
         return;
       }
-      localStorage.setItem("token", login[0].token as string);
+      localStorage.setItem("token", login.token);
+      localStorage.setItem("expiresIn", login.expires_in);
+      localStorage.setItem("logIn", "1");
       if (getCurrentWS() === null) setCurrentWS("1");
     },
     onError(error: ApolloError) {

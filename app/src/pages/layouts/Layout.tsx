@@ -3,6 +3,7 @@ import Nav from "./Nav";
 import { ApparatusDrawer } from "./ApparatusDrawer";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { Auth } from "./Auth";
 
 const navBarWidth = 64;
 const useStyles = makeStyles((theme) => ({
@@ -16,9 +17,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-interface Props {}
+interface IProps {}
 
-export const Layout: React.FC<Props> = (props) => {
+export const Layout: React.FC<IProps> = (props) => {
   const classes = useStyles();
   return (
     <div>
@@ -33,13 +34,15 @@ export const Layout: React.FC<Props> = (props) => {
       <div className="/*container*/">
         <div className={classes.root}>
           <CssBaseline />
-          <Nav />
-          <ApparatusDrawer />
-          <main className={classes.content}>
-            <div className="row">
-              <div className="col-lg-12">{props.children}</div>
-            </div>
-          </main>
+          <Auth>
+            <Nav />
+            <ApparatusDrawer />
+            <main className={classes.content}>
+              <div className="row">
+                <div className="col-lg-12">{props.children}</div>
+              </div>
+            </main>
+          </Auth>
         </div>
       </div>
     </div>
