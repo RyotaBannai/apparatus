@@ -1,6 +1,5 @@
 import { Entity, Column, OneToOne, JoinColumn } from "typeorm";
 import {
-  Int,
   Field,
   InputType,
   ObjectType,
@@ -90,7 +89,7 @@ export async function createToken(id: number): Promise<Token> {
   const secretOrKey = "secret";
   const user = { id };
   const token = jwt.sign(user, secretOrKey, { expiresIn });
-  return { expires_in: expiresIn, token };
+  return { expires_in: new Date().getTime() + expiresIn * 1000, token };
 }
 
 export interface Token {
@@ -100,7 +99,7 @@ export interface Token {
 
 @ObjectType()
 export class TokenEntity implements Token {
-  @Field((type) => Int)
+  @Field((type) => Number)
   expires_in: number;
   @Field()
   token: string;

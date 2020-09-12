@@ -51,30 +51,28 @@ export class UserResolver {
     return bcrypt.compare(password, hash);
   }
 
-  @Query((returns) => [LoginOutputUnion])
-  async login(
-    @Args() loginArgs: LoginInput
-  ): Promise<Array<typeof LoginOutputUnion>> {
+  @Query((returns) => LoginOutputUnion)
+  async login(@Args() loginArgs: LoginInput): Promise<typeof LoginOutputUnion> {
     let this_user: User | undefined;
     if (!!loginArgs.email && !!loginArgs.password) {
       this_user = await User.findOne({
         email: loginArgs.email,
       });
     } else {
-      return [{ message: "Information were not fully given." }];
+      return { message: "Information were not fully given." };
     }
 
     if (this_user === undefined || this_user.passwordHash === undefined) {
-      return [{ message: "There is no user information." }];
+      return { message: "There is no user information." };
     } else {
       let result: boolean = await this.compareHash(
         loginArgs.password,
         this_user.passwordHash
       );
       if (result === true) {
-        return [await createToken(this_user.id)];
+        return await createToken(this_user.id);
       } else {
-        return [{ message: "login fails." }];
+        return { message: "login fails." };
       }
     }
   }
